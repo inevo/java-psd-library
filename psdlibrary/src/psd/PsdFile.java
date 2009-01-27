@@ -25,13 +25,17 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import psd.objects.PsdDescriptor;
+import psd.objects.PsdList;
+import psd.objects.PsdLong;
+
 /**
  * 
  * @author Dmitry Belsky
  */
 public class PsdFile {
 
-	private static Logger logger = Logger.getLogger("psd.PsdFile");
+	private static Logger logger = Logger.getLogger("psd");
 
 	private int numberOfChannels;
 	private int width;
@@ -48,14 +52,17 @@ public class PsdFile {
 			throw new IllegalArgumentException(
 					"Param inputStream must be not null.");
 		}
-		logger.fine("psd-file started parsing");
 		PsdInputStream stream = new PsdInputStream(inputStream);
+		logger.fine("PsdFile: parse header section");
 		readHeaderSection(stream);
+		logger.fine("PsdFile: parse color mode section");
 		readColorModeSection(stream);
+		logger.fine("PsdFile: parse image resource section");
 		readImageResourceSection(stream);
+		logger.fine("PsdFile: parse layers section");
 		readLayersSection(stream);
 		setupLayersGroups();
-		logger.fine("psd-file success parsed");
+		logger.fine("PsdFile: parsing complete");
 	}
 
 	public int getLayersCount() {
@@ -184,8 +191,8 @@ public class PsdFile {
 			HashMap<Integer, Integer> delays = new HashMap<Integer, Integer>();
 			for (Object o : delaysList) {
 				PsdDescriptor frDesc = (PsdDescriptor) o;
-				delays.put((Integer) frDesc.get("FrID"), (Integer) frDesc
-						.get("FrDl"));
+				delays.put(((PsdLong) frDesc.get("FrID")).getValue(),
+						((PsdLong) frDesc.get("FrDl")).getValue());
 			}
 
 			PsdList framesSets = (PsdList) desc.get("FSts");
@@ -195,7 +202,7 @@ public class PsdFile {
 			framesIds = new HashMap<Integer, Integer>();
 			framesDelays = new int[framesList.size()];
 			for (int i = 0; i < framesList.size(); i++) {
-				int frameId = (Integer) framesList.get(i);
+				int frameId = ((PsdLong) framesList.get(i)).getValue();
 				Integer delay = delays.get(frameId);
 				framesDelays[i] = (delay == null ? 10 : delay) * 10;
 				framesIds.put(frameId, i);

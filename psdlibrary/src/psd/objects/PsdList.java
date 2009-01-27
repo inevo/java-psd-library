@@ -15,41 +15,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package psd;
+package psd.objects;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import psd.PsdInputStream;
 
 /**
  * 
  * @author Dmitry Belsky
- *
+ * 
  */
-class PsdList extends ArrayList<Object> {
+public class PsdList extends PsdObject implements Iterable<PsdObject> {
 
-	private static final long serialVersionUID = 1L;
+	private ArrayList<PsdObject> objects = new ArrayList<PsdObject>();
 
 	public PsdList(PsdInputStream stream) throws IOException {
 		int itemsCount = stream.readInt();
+		logger.finest("PsdList.itemsCount: " + itemsCount);
 		for (int i = 0; i < itemsCount; i++) {
-			String type = stream.readString(4);
-			if (type.equals("Objc")) {
-				add(new PsdDescriptor(stream));
-			} else if (type.equals("VlLs")) {
-				add(new PsdList(stream));
-			} else if (type.equals("doub")) {
-				double val = stream.readDouble();
-				add(val);
-			} else if (type.equals("long")) {
-				int val = stream.readInt();
-				add(val);
-			} else if (type.equals("bool")) {
-				boolean val = stream.readBoolean();
-				add(val);
-			} else {
-				throw new IOException("UNKNOWN TYPE");
-			}
+			objects.add(PsdObject.loadPsdObject(stream));
 		}
+	}
+
+	@Override
+	public Iterator<PsdObject> iterator() {
+		return objects.iterator();
+	}
+
+	public int size() {
+		return objects.size();
+	}
+
+	public PsdObject get(int i) {
+		return objects.get(i);
+	}
+
+	@Override
+	public String toString() {
+		return "VlLs:" + objects.toString();
 	}
 
 }

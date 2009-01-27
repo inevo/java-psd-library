@@ -5,12 +5,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,6 +22,12 @@ import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
+import psd.objects.PsdBoolean;
+import psd.objects.PsdDescriptor;
+import psd.objects.PsdList;
+import psd.objects.PsdLong;
+import psd.objects.PsdObject;
 
 /**
  * 
@@ -343,13 +349,13 @@ public class PsdLayer {
 		for (int i = 0; i < list.size(); i++) {
 			PsdDescriptor desc = (PsdDescriptor) list.get(i);
 			PsdList framesList = (PsdList) desc.get("FrLs");
-			for (Object v : framesList) {
+			for (PsdObject v : framesList) {
 				boolean visibleFrame = true;
 				int x = this.left;
 				int y = this.top;
 
 				if (desc.containsKey("enab")) {
-					visibleFrame = (Boolean) desc.get("enab");
+					visibleFrame = ((PsdBoolean) desc.get("enab")).getValue();
 				} else {
 					if (info != null) {
 						visibleFrame = info.isVisible();
@@ -358,8 +364,8 @@ public class PsdLayer {
 
 				if (desc.containsKey("Ofst")) {
 					PsdDescriptor ofst = (PsdDescriptor) desc.get("Ofst");
-					x += (Integer) ofst.get("Hrzn");
-					y += (Integer) ofst.get("Vrtc");
+					x += ((PsdLong) ofst.get("Hrzn")).getValue();
+					y += ((PsdLong) ofst.get("Vrtc")).getValue();
 				} else {
 					if (info != null) {
 						x = info.getX();
@@ -368,7 +374,7 @@ public class PsdLayer {
 
 				}
 				info = new PsdLayerFrameInfo(x, y, visibleFrame);
-				frames[psdFile.getFrameNum((Integer) v)] = info;
+				frames[psdFile.getFrameNum(((PsdLong) v).getValue())] = info;
 			}
 
 		}

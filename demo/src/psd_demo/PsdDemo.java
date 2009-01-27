@@ -21,12 +21,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -69,7 +69,7 @@ public class PsdDemo extends JFrame {
 	}
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger("psd_demo.PsdDemo");
+	private static Logger logger = Logger.getLogger("psd_demo");
 	private final PsdView view = new PsdView();
 
 	public PsdDemo() {
@@ -101,8 +101,7 @@ public class PsdDemo extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		Logger.getLogger("").setLevel(Level.ALL);
-
+		Logger.getLogger("psd").setLevel(Level.FINE);
 		Runnable startupRunnable = new Runnable() {
 			public void run() {
 				PsdDemo psdDemo = new PsdDemo();
