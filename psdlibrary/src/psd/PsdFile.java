@@ -21,8 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.logging.Level;
+import java.util.List;
 import java.util.logging.Logger;
 
 import psd.objects.PsdDescriptor;
@@ -65,12 +66,8 @@ public class PsdFile {
 		logger.fine("PsdFile: parsing complete");
 	}
 
-	public int getLayersCount() {
-		return layers.size();
-	}
-
-	public PsdLayer getLayer(int n) {
-		return layers.get(n);
+	public List<PsdLayer> getLayers() {
+		return Collections.unmodifiableList(layers);
 	}
 
 	public int getFramesCount() {
