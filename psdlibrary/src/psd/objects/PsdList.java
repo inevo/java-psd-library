@@ -40,7 +40,6 @@ public class PsdList extends PsdObject implements Iterable<PsdObject> {
 		}
 	}
 
-	@Override
 	public Iterator<PsdObject> iterator() {
 		return objects.iterator();
 	}

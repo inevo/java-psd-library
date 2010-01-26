@@ -18,7 +18,6 @@
 package psd.objects;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import psd.PsdInputStream;
 

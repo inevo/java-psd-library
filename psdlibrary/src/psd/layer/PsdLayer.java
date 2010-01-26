@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package psd;
+package psd.layer;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -23,11 +23,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import psd.objects.PsdBoolean;
-import psd.objects.PsdDescriptor;
-import psd.objects.PsdList;
-import psd.objects.PsdLong;
-import psd.objects.PsdObject;
+import psd.PsdChannelInfo;
+import psd.PsdInputStream;
 
 /**
  * 
@@ -52,14 +49,13 @@ public class PsdLayer {
 
 	private BufferedImage image;
 	private int layerId;
-	private PsdDescriptor animDescriptor;
-	private PsdLayerFrameInfo[] frames;
 
 	private PsdLayerType type;
 
 	private PsdLayer parent;
+	private PsdLayerMetaInfo metaInfo;
 
-	public PsdLayer(PsdFile psdFile, PsdInputStream stream) throws IOException {
+	public PsdLayer(PsdInputStream stream) throws IOException {
 		parent = null;
 		type = PsdLayerType.NORMAL;
 
@@ -86,20 +82,20 @@ public class PsdLayer {
 		int flags = stream.readByte();
 		visible = ((flags >> 1) & 0x01) == 0;
 		stream.readByte(); // filler. must be zero
-		readExtraData(psdFile, stream);
+		readExtraData(stream);
 	}
 
-	public PsdLayer(PsdFile psd) {
+	public PsdLayer(int width, int height, int numberOfChannels) {
 		parent = null;
 		type = PsdLayerType.NORMAL;
 
 		left = 0;
 		top = 0;
-		width = psd.getWidth();
-		height = psd.getHeight();
+		this.width = width;
+		this.height = height;
 		right = left + width;
 		bottom = top + height;
-		numberOfChannels = psd.getNumberOfChannels();
+		this.numberOfChannels = numberOfChannels;
 
 		channelsInfo = new ArrayList<PsdChannelInfo>(numberOfChannels);
 		for (int j = 0; j < numberOfChannels; j++) {
@@ -108,40 +104,16 @@ public class PsdLayer {
 		visible = true;
 	}
 
+	public PsdLayerMetaInfo getMetaInfo() {
+		return metaInfo;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public BufferedImage getImage() {
 		return image;
-	}
-
-	public int getFramesCount() {
-		return frames == null ? 1 : frames.length;
-	}
-
-	public boolean isVisible(int frameNum) {
-		if (frames == null) {
-			return isVisible();
-		} else {
-			return frames[frameNum].isVisible();
-		}
-	}
-
-	public int getX(int frameNum) {
-		if (frames == null) {
-			return getLeft();
-		} else {
-			return frames[frameNum].getX();
-		}
-	}
-
-	public int getY(int frameNum) {
-		if (frames == null) {
-			return getTop();
-		} else {
-			return frames[frameNum].getY();
-		}
 	}
 
 	public boolean isVisible() {
@@ -198,11 +170,11 @@ public class PsdLayer {
 				+ " vis=" + visible + " [group=" + parent + "]";
 	}
 
-	void readImage(PsdInputStream input) throws IOException {
+	public void readImage(PsdInputStream input) throws IOException {
 		readImage(input, true, null);
 	}
 
-	void readImage(PsdInputStream input, boolean needReadPlaneInfo,
+	public void readImage(PsdInputStream input, boolean needReadPlaneInfo,
 			short[] lineLengths) throws IOException {
 		byte[] r = null, g = null, b = null, a = null;
 		for (int j = 0; j < numberOfChannels; j++) {
@@ -242,8 +214,8 @@ public class PsdLayer {
 		image = makeImage(getWidth(), getHeight(), r, g, b, a);
 	}
 
-	private void readExtraData(PsdFile psdFile, PsdInputStream stream)
-			throws IOException, UnsupportedEncodingException {
+	private void readExtraData(PsdInputStream stream) throws IOException,
+			UnsupportedEncodingException {
 		String tag;
 		int extraSize = stream.readInt();
 		int extraPos = stream.getPos();
@@ -287,7 +259,7 @@ public class PsdLayer {
 			if (tag.equals("lyid")) {
 				layerId = stream.readInt();
 			} else if (tag.equals("shmd")) {
-				readMetadata(psdFile, stream);
+				metaInfo = new PsdLayerMetaInfo(stream);
 			} else if (tag.equals("lsct")) {
 				readLayerSectionDevider(stream);
 			} else {
@@ -312,71 +284,6 @@ public class PsdLayer {
 		case 3:
 			type = PsdLayerType.HIDDEN;
 			break;
-		}
-	}
-
-	private void readMetadata(PsdFile psdFile, PsdInputStream stream)
-			throws IOException {
-		int countOfMetaData = stream.readInt();
-		for (int i = 0; i < countOfMetaData; i++) {
-			String tag = stream.readString(4);
-			if (!tag.equals("8BIM")) {
-				throw new IOException(
-						"layer information animation signature error");
-			}
-			String key = stream.readString(4);
-			stream.readByte(); // int copyOnSheetDuplication =
-			stream.skipBytes(3); // padding
-			int len = stream.readInt();
-			int pos = stream.getPos();
-			if (key.equals("mlst")) {
-				readAnimation(psdFile, stream);
-			} else {
-				System.out.println("UNKNOWN KEY: " + key + " size: " + len);
-			}
-
-			stream.skipBytes(len - (stream.getPos() - pos));
-		}
-	}
-
-	private void readAnimation(PsdFile psdFile, PsdInputStream stream)
-			throws IOException {
-		stream.skipBytes(4); // ???
-		animDescriptor = new PsdDescriptor(stream);
-		PsdList list = (PsdList) animDescriptor.get("LaSt");
-		frames = new PsdLayerFrameInfo[list.size()];
-		PsdLayerFrameInfo info = null;
-		for (int i = 0; i < list.size(); i++) {
-			PsdDescriptor desc = (PsdDescriptor) list.get(i);
-			PsdList framesList = (PsdList) desc.get("FrLs");
-			for (PsdObject v : framesList) {
-				boolean visibleFrame = true;
-				int x = this.left;
-				int y = this.top;
-
-				if (desc.containsKey("enab")) {
-					visibleFrame = ((PsdBoolean) desc.get("enab")).getValue();
-				} else {
-					if (info != null) {
-						visibleFrame = info.isVisible();
-					}
-				}
-
-				if (desc.containsKey("Ofst")) {
-					PsdDescriptor ofst = (PsdDescriptor) desc.get("Ofst");
-					x += ((PsdLong) ofst.get("Hrzn")).getValue();
-					y += ((PsdLong) ofst.get("Vrtc")).getValue();
-				} else {
-					if (info != null) {
-						x = info.getX();
-						y = info.getY();
-					}
-
-				}
-				info = new PsdLayerFrameInfo(x, y, visibleFrame);
-				frames[psdFile.getFrameNum(((PsdLong) v).getValue())] = info;
-			}
-
 		}
 	}
 

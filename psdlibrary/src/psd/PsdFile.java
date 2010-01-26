@@ -22,13 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import psd.objects.PsdDescriptor;
-import psd.objects.PsdList;
-import psd.objects.PsdLong;
+import psd.layer.PsdLayer;
 
 /**
  * 
@@ -44,14 +41,13 @@ public class PsdFile {
 	private int depth;
 	private PsdColorMode colorMode;
 	private ArrayList<PsdLayer> layers;
-	private int[] framesDelays;
-	private HashMap<Integer, Integer> framesIds;
 	private PsdLayer baseLayer;
+
+	private PsdAnimation animation;
 
 	public PsdFile(InputStream inputStream) throws IOException {
 		if (inputStream == null) {
-			throw new IllegalArgumentException(
-					"Param inputStream must be not null.");
+			throw new IllegalArgumentException("Param inputStream must be not null.");
 		}
 		PsdInputStream stream = new PsdInputStream(inputStream);
 		logger.fine("PsdFile: parse header section");
@@ -70,12 +66,8 @@ public class PsdFile {
 		return Collections.unmodifiableList(layers);
 	}
 
-	public int getFramesCount() {
-		return framesDelays == null ? 0 : framesDelays.length;
-	}
-
-	public int getFrameDelay(int frame) {
-		return framesDelays == null ? 0 : framesDelays[frame];
+	public PsdAnimation getAnimation() {
+		return animation;
 	}
 
 	public int getWidth() {
@@ -98,10 +90,6 @@ public class PsdFile {
 		return numberOfChannels;
 	}
 
-	int getFrameNum(int frameId) {
-		return framesIds.get(frameId);
-	}
-
 	private void readHeaderSection(PsdInputStream stream) throws IOException {
 		String sig = stream.readString(4);
 		if (!sig.equals("8BPS")) {
@@ -119,8 +107,7 @@ public class PsdFile {
 		width = stream.readInt();
 		depth = stream.readShort();
 		if (depth != 8) {
-			throw new IOException(
-					"unsupported color depth: color depth must be 8");
+			throw new IOException("unsupported color depth: color depth must be 8");
 		}
 		int cm = stream.readShort();
 		colorMode = PsdColorMode.values()[cm];
@@ -135,16 +122,13 @@ public class PsdFile {
 		input.skipBytes(colorMapLength);
 	}
 
-	private void readImageResourceSection(PsdInputStream stream)
-			throws IOException {
+	private void readImageResourceSection(PsdInputStream stream) throws IOException {
 		int length = stream.readInt();
 		int pos = stream.getPos();
 		while (length > 0) {
 			String tag = stream.readString(4);
 			if (!tag.equals("8BIM") && !tag.equals("MeSa")) {
-				throw new IOException(
-						"Format error: Invalid image resources section.: "
-								+ tag);
+				throw new IOException("Format error: Invalid image resources section.: " + tag);
 			}
 			length -= 4;
 			int id = stream.readShort();
@@ -160,11 +144,14 @@ public class PsdFile {
 				sizeOfData++;
 			length -= sizeOfData;
 			int storePos = stream.getPos();
-			if (sizeOfData > 0 && tag.equals("8BIM")) {
-				// System.out.println("ID: " + id + " " + sizeOfData + " " +
-				// name);
-				if (id >= 4000 && id < 5000) {
-					readAnimationFramesInformation(stream, id, sizeOfData);
+			if (sizeOfData > 0 && tag.equals("8BIM") && id >= 4000 && id < 5000) { // TODO FIXME Is id correct ?
+				byte[] data = new byte[sizeOfData];
+				stream.read(data);
+
+				PsdInputStream st = new PsdInputStream(new ByteArrayInputStream(data));
+				String key = st.readString(4);
+				if (key.equals("mani")) {
+					animation = new PsdAnimation(st);
 				}
 			}
 			stream.skipBytes(sizeOfData - (stream.getPos() - storePos));
@@ -172,39 +159,6 @@ public class PsdFile {
 		}
 		int skipSize = length - (stream.getPos() - pos);
 		stream.skipBytes(skipSize);
-	}
-
-	private void readAnimationFramesInformation(PsdInputStream stream, int id,
-			int sizeOfData) throws IOException {
-		byte[] data = new byte[sizeOfData];
-		stream.read(data);
-
-		PsdInputStream st = new PsdInputStream(new ByteArrayInputStream(data));
-		String key = st.readString(4);
-		if (key.equals("mani")) {
-			st.skipBytes(12 + 12);
-			PsdDescriptor desc = new PsdDescriptor(st);
-			PsdList delaysList = (PsdList) desc.get("FrIn");
-			HashMap<Integer, Integer> delays = new HashMap<Integer, Integer>();
-			for (Object o : delaysList) {
-				PsdDescriptor frDesc = (PsdDescriptor) o;
-				delays.put(((PsdLong) frDesc.get("FrID")).getValue(),
-						((PsdLong) frDesc.get("FrDl")).getValue());
-			}
-
-			PsdList framesSets = (PsdList) desc.get("FSts");
-			PsdDescriptor frameSet = (PsdDescriptor) framesSets.get(0);
-			// int activeFrame = (Integer) frameSet.get("AFrm");
-			PsdList framesList = (PsdList) frameSet.get("FsFr");
-			framesIds = new HashMap<Integer, Integer>();
-			framesDelays = new int[framesList.size()];
-			for (int i = 0; i < framesList.size(); i++) {
-				int frameId = ((PsdLong) framesList.get(i)).getValue();
-				Integer delay = delays.get(frameId);
-				framesDelays[i] = (delay == null ? 10 : delay) * 10;
-				framesIds.put(frameId, i);
-			}
-		}
 	}
 
 	private void readLayersSection(PsdInputStream input) throws IOException {
@@ -224,7 +178,7 @@ public class PsdFile {
 				}
 				layers = new ArrayList<PsdLayer>(layersCount);
 				for (int i = 0; i < layersCount; i++) {
-					PsdLayer layer = new PsdLayer(this, input);
+					PsdLayer layer = new PsdLayer(input);
 					layers.add(layer);
 				}
 				for (PsdLayer layer : layers) {
@@ -236,11 +190,10 @@ public class PsdFile {
 			input.skipBytes(maskSize);
 		}
 
-		baseLayer = new PsdLayer(this);
+		baseLayer = new PsdLayer(getWidth(), getHeight(), getNumberOfChannels());
 		boolean rle = input.readShort() == 1;
 		if (rle) {
-			int nLines = baseLayer.getHeight()
-					* baseLayer.getNumberOfChannels();
+			int nLines = baseLayer.getHeight() * baseLayer.getNumberOfChannels();
 			short[] lineLengths = new short[nLines];
 			for (int i = 0; i < nLines; i++) {
 				lineLengths[i] = input.readShort();
