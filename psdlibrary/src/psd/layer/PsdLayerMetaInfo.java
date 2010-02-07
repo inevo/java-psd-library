@@ -1,8 +1,12 @@
 package psd.layer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
+import psd.PsdAnimationFrame;
 import psd.PsdInputStream;
 import psd.objects.PsdBoolean;
 import psd.objects.PsdDescriptor;
@@ -13,6 +17,8 @@ import psd.objects.PsdObject;
 public class PsdLayerMetaInfo {
 	
 	private HashMap<Integer, PsdLayerFrameInfo> framesInfo;
+	ArrayList<PsdLayerFrameInfo> framesInfoList;
+
 	
 	public PsdLayerMetaInfo(PsdInputStream stream) throws IOException {
 		
@@ -44,6 +50,7 @@ public class PsdLayerMetaInfo {
 		PsdDescriptor animDescriptor = new PsdDescriptor(stream);
 		PsdList list = (PsdList) animDescriptor.get("LaSt");
 		framesInfo = new HashMap<Integer, PsdLayerFrameInfo>();
+		framesInfoList = new ArrayList<PsdLayerFrameInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			PsdDescriptor desc = (PsdDescriptor) list.get(i);
 			PsdList framesList = (PsdList) desc.get("FrLs");
@@ -60,9 +67,16 @@ public class PsdLayerMetaInfo {
 					xOffset = ((PsdLong) ofst.get("Hrzn")).getValue();
 					yOffset = ((PsdLong) ofst.get("Vrtc")).getValue();
 				}
-				framesInfo.put(id, new PsdLayerFrameInfo(xOffset, yOffset, visible));
+				
+				PsdLayerFrameInfo info = new PsdLayerFrameInfo(id, xOffset, yOffset, visible);
+				framesInfo.put(id, info);
+				framesInfoList.add(info);
 			}
 		}
+		
 	}
-
+	
+	public List<PsdLayerFrameInfo> getLayerFramesInfo() {
+		return Collections.unmodifiableList(framesInfoList);
+	}
 }

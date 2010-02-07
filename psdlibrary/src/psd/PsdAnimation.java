@@ -33,8 +33,17 @@ public class PsdAnimation {
 		for (int i = 0; i < framesList.size(); i++) {
 			int frameId = ((PsdLong) framesList.get(i)).getValue();
 			Integer delay = delays.get(frameId);
-			frames.add(new PsdAnimationFrame(frameId, delay));
+			frames.add(new PsdAnimationFrame(frameId, i, delay));
 		}
+	}
+	
+	public PsdAnimationFrame getFrameById(int id) {
+		for (PsdAnimationFrame frame : frames) {
+			if (frame.getId() == id) {
+				return frame;
+			}
+		}
+		return null;
 	}
 
 	public List<PsdAnimationFrame> getFrames() {
