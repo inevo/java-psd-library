@@ -25,21 +25,19 @@ import psd.PsdInputStream;
  * @author Dmitry Belsky
  * 
  */
-public class PsdEnum extends PsdObject {
-	private final String typeId;
+public class PsdText extends PsdObject {
 	private final String value;
 
-	public PsdEnum(PsdInputStream stream) throws IOException {
-		
-		int enumSize = stream.readInt();
-		typeId = stream.readString(4);
-		int len = stream.readInt();
-		value = stream.readString(len == 0 ? 4 : len);
-		logger.finest("PsdEnum.typeId " + typeId + " PsdEnum.value: " + value + " enumSize: " + enumSize);
-	}
+	public PsdText(PsdInputStream stream) throws IOException {
+		int textSize = stream.readInt();
+		StringBuffer buffer = new StringBuffer(textSize);
+		for (int ti = 0; ti < textSize; ti++) {
+			char b = (char) stream.readShort();
+			buffer.append(b);
+		}
+		value = buffer.toString();
 
-	public String getTypeId() {
-		return typeId;
+		logger.finest("PsdText.value: " + value);
 	}
 
 	public String getValue() {
@@ -48,7 +46,7 @@ public class PsdEnum extends PsdObject {
 
 	@Override
 	public String toString() {
-		return "enum:<" + typeId + ":" + value + ">";
+		return "text: \"" + value + "\"";
 	}
 
 }

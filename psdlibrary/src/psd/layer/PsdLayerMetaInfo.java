@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import psd.PsdAnimationFrame;
 import psd.PsdInputStream;
 import psd.objects.PsdBoolean;
 import psd.objects.PsdDescriptor;

@@ -52,6 +52,8 @@ public class PsdObject {
 			return new PsdUnitFloat(stream);
 		} else if (type.equals("enum")) {
 			return new PsdEnum(stream);
+		} else if (type.equals("TEXT")) {
+			return new PsdText(stream);
 		} else {
 			throw new IOException("UNKNOWN TYPE <" + type + ">");
 		}
