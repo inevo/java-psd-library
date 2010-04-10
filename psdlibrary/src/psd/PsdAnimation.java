@@ -11,7 +11,7 @@ import psd.objects.PsdList;
 import psd.objects.PsdLong;
 
 public class PsdAnimation {
-	
+
 	private ArrayList<PsdAnimationFrame> frames;
 
 	public PsdAnimation(PsdInputStream st) throws IOException {
@@ -21,8 +21,13 @@ public class PsdAnimation {
 		HashMap<Integer, Integer> delays = new HashMap<Integer, Integer>();
 		for (Object o : delaysList) {
 			PsdDescriptor frDesc = (PsdDescriptor) o;
-			delays.put(((PsdLong) frDesc.get("FrID")).getValue(),
-					((PsdLong) frDesc.get("FrDl")).getValue());
+
+			int id = ((PsdLong) frDesc.get("FrID")).getValue();
+			int delay = 0;
+			if (frDesc.containsKey("FrDl")) {
+				delay = ((PsdLong) frDesc.get("FrDl")).getValue();
+			}
+			delays.put(id, delay);
 		}
 
 		PsdList framesSets = (PsdList) desc.get("FSts");
@@ -36,7 +41,7 @@ public class PsdAnimation {
 			frames.add(new PsdAnimationFrame(frameId, i, delay));
 		}
 	}
-	
+
 	public PsdAnimationFrame getFrameById(int id) {
 		for (PsdAnimationFrame frame : frames) {
 			if (frame.getId() == id) {
