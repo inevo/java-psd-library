@@ -17,7 +17,10 @@
 
 package psd;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +48,17 @@ public class PsdFile {
 
 	private PsdAnimation animation;
 
+	public PsdFile(File file) throws IOException {
+		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(file));
+		loadPsd(stream);
+		stream.close();
+	}
+	
 	public PsdFile(InputStream inputStream) throws IOException {
+		loadPsd(inputStream);
+	}
+
+	private void loadPsd(InputStream inputStream) throws IOException {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("Param inputStream must be not null.");
 		}
