@@ -23,8 +23,8 @@ import java.awt.Graphics;
 
 import javax.swing.JComponent;
 
-import psd.PsdFile;
-import psd.PsdLayer;
+import psd.*;
+import psd.layer.*;
 
 /**
  * @author Dmitry Belsky
@@ -39,15 +39,15 @@ public class PsdView extends JComponent {
 				synchronized (this) {
 					if (psdFile != null) {
 						repaint();
-						try {
-							Thread.sleep(psdFile.getFrameDelay(frame));
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						frame++;
-						if (frame >= psdFile.getFramesCount()) {
-							frame = 0;
-						}
+						// try {
+							//Thread.sleep(psdFile.getFrameDelay(frame));
+						// } catch (InterruptedException e) {
+						// 	e.printStackTrace();
+						// }
+						// frame++;
+						// if (frame >= psdFile.getFramesCount()) {
+						// 	frame = 0;
+						// }
 					}
 				}
 			}
@@ -62,7 +62,7 @@ public class PsdView extends JComponent {
 	public PsdView() {
 		psdFile = null;
 		setPreferredSize(new Dimension(400, 400));
-		new AnimationThread().start();
+		//new AnimationThread().start();
 	}
 
 	synchronized public void setPsdFile(PsdFile psdFile) {
@@ -77,11 +77,11 @@ public class PsdView extends JComponent {
 		if (psdFile != null) {
 			int x = (getWidth() - psdFile.getWidth()) / 2;
 			int y = (getHeight() - psdFile.getHeight()) / 2;
-			for (int i = 0; i < psdFile.getLayersCount(); i++) {
-				PsdLayer layer = psdFile.getLayer(i);
-				if (layer.isVisible(frame)) {
-					int drawX = layer.getX(frame) + x;
-					int drawY = layer.getY(frame) + y;
+			for (int i = 0; i < psdFile.getLayers().size(); i++) {
+				PsdLayer layer = psdFile.getLayers().get(i);
+				if (layer.isVisible()) {
+					int drawX = layer.getLeft() + x;
+					int drawY = layer.getTop() + y;
 					g.drawImage(layer.getImage(), drawX, drawY, null);
 				}
 			}
