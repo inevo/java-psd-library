@@ -171,6 +171,15 @@ public class PsdLayer {
 				+ " vis=" + visible + " [group=" + parent + "]";
 	}
 
+	private PsdChannelInfo getChannelInfoById(int id) {
+		for (PsdChannelInfo info : channelsInfo) {
+			if (info.getId() == id) {
+				return info;
+			}
+		}
+		throw new RuntimeException("channel info for id " + id + " not found.");
+	}
+
 	public void readImage(PsdInputStream input) throws IOException {
 		readImage(input, true, null);
 	}
@@ -198,8 +207,8 @@ public class PsdLayer {
 						needReadPlaneInfo, j);
 				break;
 			default:
-				readPlane(input, getWidth(), getHeight(), lineLengths,
-						needReadPlaneInfo, j);
+				// layer mask
+				input.skipBytes(getChannelInfoById(id).getDataLength());
 			}
 		}
 		int n = getWidth() * getHeight();
@@ -292,14 +301,15 @@ public class PsdLayer {
 			short[] lineLengths, boolean needReadPlaneInfo, int planeNum)
 			throws IOException {
 		// read a single color plane
-		byte[] b = null;
-		int size = w * h;
 		// get RLE compression info for channel
 
 		boolean rleEncoded;
 
 		if (needReadPlaneInfo) {
 			short encoding = input.readShort();
+			if (encoding != 0 && encoding != 1) {
+				throw new IOException("invalid encoding: " + encoding);
+			}
 			rleEncoded = encoding == 1;
 			if (rleEncoded) {
 				if (lineLengths == null) {
@@ -315,23 +325,23 @@ public class PsdLayer {
 		}
 
 		if (rleEncoded) {
-			b = readPlaneCompressed(input, w, h, lineLengths, planeNum);
+			return readPlaneCompressed(input, w, h, lineLengths, planeNum);
 		} else {
-			b = new byte[size];
+			int size = w * h;
+			byte[] b = new byte[size];
 			input.readBytes(b, size);
+			return b;
 		}
-
-		return b;
-
 	}
 
 	private byte[] readPlaneCompressed(PsdInputStream input, int w, int h,
-			short[] lineLengths, int planeNum) throws IOException {
+									   short[] lineLengths, int planeNum) throws IOException {
 
 		byte[] b = new byte[w * h];
 		byte[] s = new byte[w * 2];
 		int pos = 0;
 		int lineIndex = planeNum * h;
+		int max = 0;
 		for (int i = 0; i < h; i++) {
 			int len = lineLengths[lineIndex++];
 			input.readBytes(s, len);
@@ -387,14 +397,11 @@ public class PsdLayer {
 		int n = w * h;
 		int j = 0;
 		while (j < n) {
-			try {
-				int ac = a[j] & 0xff;
-				int rc = r[j] & 0xff;
-				int gc = g[j] & 0xff;
-				int bc = b[j] & 0xff;
-				data[j] = (((((ac << 8) | rc) << 8) | gc) << 8) | bc;
-			} catch (Exception e) {
-			}
+			int ac = a[j] & 0xff;
+			int rc = r[j] & 0xff;
+			int gc = g[j] & 0xff;
+			int bc = b[j] & 0xff;
+			data[j] = (((((ac << 8) | rc) << 8) | gc) << 8) | bc;
 			j++;
 		}
 		return im;

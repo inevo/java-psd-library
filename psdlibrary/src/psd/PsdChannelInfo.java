@@ -26,10 +26,11 @@ import java.io.IOException;
  */
 public class PsdChannelInfo {
 	private int id;
+	private int dataLength;
 
 	public PsdChannelInfo(PsdInputStream stream) throws IOException {
 		id = stream.readShort();
-		/* int dataLenght = */stream.readInt();
+		dataLength = stream.readInt();
 	}
 
 	public PsdChannelInfo(int id) {
@@ -38,6 +39,10 @@ public class PsdChannelInfo {
 
 	public int getId() {
 		return id;
+	}
+
+	public int getDataLength() {
+		return dataLength;
 	}
 
 }
