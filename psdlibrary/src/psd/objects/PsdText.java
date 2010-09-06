@@ -32,9 +32,19 @@ public class PsdText extends PsdObject {
 	public PsdText(PsdInputStream stream) throws IOException {
 		int textSize = stream.readInt();
 		StringBuffer buffer = new StringBuffer(textSize);
+		boolean stopReading = false;
 		for (int ti = 0; ti < textSize; ti++) {
 			char b = (char) stream.readShort();
-			buffer.append(b);
+			if (b == 0) {
+				stopReading = true;
+			}
+			if (!stopReading) {
+				if (b == 13 || b == 10) {
+					buffer.append('\n');
+				} else {
+					buffer.append(b);
+				}
+			}
 		}
 		value = buffer.toString();
 

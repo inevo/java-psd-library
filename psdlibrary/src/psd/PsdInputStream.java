@@ -103,6 +103,14 @@ public class PsdInputStream extends InputStream {
 		return new String(bytes, "ISO-8859-1");
 	}
 
+	public String readPsdString() throws IOException {
+		int size = readInt();
+		if (size == 0) {
+			size = 4;
+		}
+		return readString(size);
+	}
+
 	public int readBytes(byte[] bytes, int n) throws IOException {
 		// read multiple bytes from input
 		if (bytes == null)

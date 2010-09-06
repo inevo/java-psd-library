@@ -18,14 +18,13 @@
 
 package psd.layer;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.awt.image.*;
+import java.io.*;
+import java.util.*;
+import java.util.logging.*;
 
-import psd.PsdChannelInfo;
-import psd.PsdInputStream;
+import psd.*;
+
 
 /**
  * 
@@ -33,6 +32,9 @@ import psd.PsdInputStream;
  * 
  */
 public class PsdLayer {
+
+	private static Logger logger = Logger.getLogger("psd.layer");
+	
 	private int top;
 	private int left;
 	private int bottom;
@@ -55,9 +57,12 @@ public class PsdLayer {
 
 	private PsdLayer parent;
 	private PsdLayerMetaInfo metaInfo;
+	private TypeTool typeTool;
 
 	public PsdLayer(PsdInputStream stream) throws IOException {
 		parent = null;
+		typeTool = null;
+		metaInfo = null;
 		type = PsdLayerType.NORMAL;
 
 		top = stream.readInt();
@@ -165,6 +170,10 @@ public class PsdLayer {
 		this.parent = parent;
 	}
 
+	public TypeTool getTypeTool() {
+		return typeTool;
+	}
+
 	@Override
 	public String toString() {
 		return "Layer: name=" + name + " left=" + left + " top=" + top
@@ -255,6 +264,7 @@ public class PsdLayer {
 			}
 		}
 		name = new String(str, 0, strSize, "ISO-8859-1");
+		logger.fine("reading layer name: " + name);
 		int prevPos = stream.getPos();
 		while (stream.getPos() - extraPos < extraSize) {
 			tag = stream.readString(4);
@@ -272,7 +282,10 @@ public class PsdLayer {
 				metaInfo = new PsdLayerMetaInfo(stream);
 			} else if (tag.equals("lsct")) {
 				readLayerSectionDevider(stream);
+			} else if (tag.equals("TySh")) {
+				typeTool = new TypeTool(stream, size);
 			} else {
+				logger.warning("skipping tag:"  + tag);
 				stream.skipBytes(size);
 			}
 

@@ -32,11 +32,9 @@ public class PsdEnum extends PsdObject {
 
 	public PsdEnum(PsdInputStream stream) throws IOException {
 		
-		int enumSize = stream.readInt();
-		typeId = stream.readString(4);
-		int len = stream.readInt();
-		value = stream.readString(len == 0 ? 4 : len);
-		logger.finest("PsdEnum.typeId " + typeId + " PsdEnum.value: " + value + " enumSize: " + enumSize);
+		typeId = stream.readPsdString();
+		value = stream.readPsdString();
+		logger.finest("PsdEnum.typeId " + typeId + " PsdEnum.value: " + value);
 	}
 
 	public String getTypeId() {

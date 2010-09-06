@@ -64,16 +64,16 @@ public class PsdFile {
 			throw new IllegalArgumentException("Param inputStream must be not null.");
 		}
 		PsdInputStream stream = new PsdInputStream(inputStream);
-		logger.fine("PsdFile: parse header section");
+		logger.info("PsdFile: parse header section");
 		readHeaderSection(stream);
-		logger.fine("PsdFile: parse color mode section");
+		logger.info("PsdFile: parse color mode section");
 		readColorModeSection(stream);
-		logger.fine("PsdFile: parse image resource section");
+		logger.info("PsdFile: parse image resource section");
 		readImageResourceSection(stream);
-		logger.fine("PsdFile: parse layers section");
+		logger.info("PsdFile: parse layers section");
 		readLayersSection(stream);
 		setupLayersGroups();
-		logger.fine("PsdFile: parsing complete");
+		logger.info("PsdFile: parsing complete");
 	}
 
 	public List<PsdLayer> getLayers() {
@@ -227,7 +227,6 @@ public class PsdFile {
 		PsdLayer parentLayer = null;
 		for (int i = layers.size() - 1; i >= 0; i--) {
 			PsdLayer layer = layers.get(i);
-			// System.out.println("psdLanyer: " + layer.getName());
 
 			switch (layer.getType()) {
 			case NORMAL:

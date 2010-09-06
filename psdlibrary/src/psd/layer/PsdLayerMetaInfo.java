@@ -19,19 +19,15 @@
 package psd.layer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.logging.*;
 
-import psd.PsdInputStream;
-import psd.objects.PsdBoolean;
-import psd.objects.PsdDescriptor;
-import psd.objects.PsdList;
-import psd.objects.PsdLong;
-import psd.objects.PsdObject;
+import psd.*;
+import psd.objects.*;
 
 public class PsdLayerMetaInfo {
+
+	private Logger logger = Logger.getLogger("psd.layer");
 	
 	private HashMap<Integer, PsdLayerFrameInfo> framesInfo;
 	ArrayList<PsdLayerFrameInfo> framesInfoList;
@@ -54,7 +50,7 @@ public class PsdLayerMetaInfo {
 			if (key.equals("mlst")) {
 				readFramesInfo(stream);
 			} else {
-				System.out.println("UNKNOWN KEY: " + key + " size: " + len);
+				logger.warning("PsdLayerMetaInfo.UnknownKey: " + key + " size: " + len);
 			}
 
 			stream.skipBytes(len - (stream.getPos() - pos));

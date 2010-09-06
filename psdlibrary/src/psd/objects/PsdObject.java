@@ -55,6 +55,8 @@ public class PsdObject {
 			return new PsdEnum(stream);
 		} else if (type.equals("TEXT")) {
 			return new PsdText(stream);
+		} else if (type.equals("tdta")) {
+			return new PsdTextData(stream);
 		} else {
 			throw new IOException("UNKNOWN TYPE <" + type + ">");
 		}

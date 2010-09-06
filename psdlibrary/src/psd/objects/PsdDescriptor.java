@@ -19,7 +19,7 @@
 package psd.objects;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 import psd.PsdInputStream;
 
@@ -35,15 +35,13 @@ public class PsdDescriptor extends PsdObject {
 	public PsdDescriptor(PsdInputStream stream) throws IOException {
 		// Unicode string: name from classID
 		int nameLen = stream.readInt() * 2;
-		stream.skipBytes(nameLen); // unicode name
+		stream.skipBytes(nameLen);
 
-		int size = stream.readInt();
-		classId = stream.readString(size == 0 ? 4 : size);
+		classId = stream.readPsdString();
 		int itemsCount = stream.readInt();
 		logger.finest("PsdDescriptor.itemsCount: " + itemsCount);
 		for (int i = 0; i < itemsCount; i++) {
-			size = stream.readInt();
-			String key = stream.readString(size == 0 ? 4 : size);
+			String key = stream.readPsdString();
 			logger.finest("PsdDescriptor.key: " + key);
 			objects.put(key, PsdObject.loadPsdObject(stream));
 		}
@@ -51,6 +49,10 @@ public class PsdDescriptor extends PsdObject {
 
 	public String getClassId() {
 		return classId;
+	}
+
+	public Map<String, PsdObject> getObjects() {
+		return objects;
 	}
 
 	public PsdObject get(String key) {
