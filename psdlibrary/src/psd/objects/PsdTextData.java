@@ -164,4 +164,9 @@ public class PsdTextData extends PsdObject {
 			assert streamCh == string.charAt(i) : "char " + streamCh + " mustBe " + string.charAt(i);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return properties.toString();
+	}
 }

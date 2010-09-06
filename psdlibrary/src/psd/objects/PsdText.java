@@ -57,7 +57,7 @@ public class PsdText extends PsdObject {
 
 	@Override
 	public String toString() {
-		return "text: \"" + value + "\"";
+		return value;
 	}
 
 }

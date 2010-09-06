@@ -23,6 +23,7 @@ import psd.util.*;
 import psd.objects.*;
 import java.io.*;
 import java.util.logging.*;
+import java.util.*;
 
 public class TypeTool {
 
@@ -52,5 +53,9 @@ public class TypeTool {
 
 	public PsdObject get(String key) {
 		return descriptor.get(key);
+	}
+
+	public Map<String, PsdObject> getObjects() {
+		return descriptor.getObjects();
 	}
 }
