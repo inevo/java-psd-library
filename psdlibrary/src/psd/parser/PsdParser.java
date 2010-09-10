@@ -68,7 +68,6 @@ public class PsdParser {
 	/**
 	 * Parse header section.
 	 *
-	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred while reading the psd file.
 	 */
 	private void parseHeaderSection() throws IOException {
@@ -102,7 +101,6 @@ public class PsdParser {
 	/**
 	 * Parse color mode section.
 	 *
-	 * @param input the input
 	 * @throws IOException Signals that an I/O exception has occurred while reading the psd file.
 	 */
 	private void parseColorModeSection() throws IOException {
@@ -158,7 +156,6 @@ public class PsdParser {
 	/**
 	 * Parse layers section and store all layer data in this.layers.
 	 *
-	 * @param input the input
 	 * @throws IOException Signals that an I/O exception has occurred while reading the psd file.
 	 */
 	private void parseLayersSection() throws IOException {
