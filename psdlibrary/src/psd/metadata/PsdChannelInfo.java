@@ -16,41 +16,46 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.layer;
+package psd.metadata;
+
+import java.io.IOException;
+
+import psd.base.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdLayerFrameInfo.
+ * The Class PsdChannelInfo.
+ *
+ * @author Dmitry Belsky
  */
-public class PsdLayerFrameInfo {
-
+public class PsdChannelInfo {
+	
 	/** The id. */
 	private int id;
 	
-	/** The visible. */
-	private Boolean visible;
-	
-	/** The x offset. */
-	private Integer xOffset;
-	
-	/** The y offset. */
-	private Integer yOffset;
-	
+	/** The data length. */
+	private int dataLength;
+
 	/**
-	 * Instantiates a new psd layer frame info.
+	 * Instantiates a new psd channel info.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public PsdChannelInfo(PsdInputStream stream) throws IOException {
+		id = stream.readShort();
+		dataLength = stream.readInt();
+	}
+
+	/**
+	 * Instantiates a new psd channel info.
 	 *
 	 * @param id the id
-	 * @param xOffset the x offset
-	 * @param yOffset the y offset
-	 * @param visible the visible
 	 */
-	public PsdLayerFrameInfo(int id, Integer xOffset, Integer yOffset, Boolean visible) {
+	public PsdChannelInfo(int id) {
 		this.id = id;
-		this.visible = visible;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
 	}
-	
+
 	/**
 	 * Gets the id.
 	 *
@@ -59,31 +64,14 @@ public class PsdLayerFrameInfo {
 	public int getId() {
 		return id;
 	}
-	
+
 	/**
-	 * Checks if is visible.
+	 * Gets the data length.
 	 *
-	 * @return the boolean
+	 * @return the data length
 	 */
-	public Boolean isVisible() {
-		return visible;
+	public int getDataLength() {
+		return dataLength;
 	}
-	
-	/**
-	 * Gets the x offset.
-	 *
-	 * @return the x offset
-	 */
-	public Integer getXOffset() {
-		return xOffset;
-	}
-	
-	/**
-	 * Gets the y offset.
-	 *
-	 * @return the y offset
-	 */
-	public Integer getYOffset() {
-		return yOffset;
-	}
+
 }

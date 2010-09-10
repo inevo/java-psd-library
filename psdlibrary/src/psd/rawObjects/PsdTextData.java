@@ -16,17 +16,29 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.*;
 import java.util.*;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
-public class PsdTextData extends PsdObject {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PsdTextData.
+ */
+public class PsdTextData extends PsdObjectBase {
 
+	/** The properties. */
 	private Map<String, Object> properties;
 	
+	/**
+	 * Instantiates a new psd text data.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdTextData(PsdInputStream stream) throws IOException {
 		int size = stream.readInt();
 		int startPos = stream.getPos();
@@ -38,10 +50,23 @@ public class PsdTextData extends PsdObject {
 		properties = readMap(stream, 0);
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	public Map<String, Object> getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Read map.
+	 *
+	 * @param stream the stream
+	 * @param level the level
+	 * @return the map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private Map<String, Object> readMap(PsdInputStream stream, int level) throws IOException {
 		skipTabs(stream, level);
 		char c = (char) stream.readByte();
@@ -82,6 +107,14 @@ public class PsdTextData extends PsdObject {
 		}
 	}
 
+	/**
+	 * Read value.
+	 *
+	 * @param stream the stream
+	 * @param level the level
+	 * @return the object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private Object readValue(PsdInputStream stream, int level) throws IOException {
 		char c = (char) stream.readByte();
 		if (c == ']') {
@@ -146,6 +179,13 @@ public class PsdTextData extends PsdObject {
 		}
 	}
 
+	/**
+	 * Skip tabs.
+	 *
+	 * @param stream the stream
+	 * @param count the count
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void skipTabs(PsdInputStream stream, int count) throws IOException {
 		for (int i = 0; i < count; i++) {
 			byte tabCh = stream.readByte();
@@ -153,11 +193,24 @@ public class PsdTextData extends PsdObject {
 		}
 	}
 
+	/**
+	 * Skip end line.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void skipEndLine(PsdInputStream stream) throws IOException {
 		byte newLineCh = stream.readByte();
 		assert newLineCh == 10;
 	}
 
+	/**
+	 * Skip string.
+	 *
+	 * @param stream the stream
+	 * @param string the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void skipString(PsdInputStream stream, String string) throws IOException {
 		for (int i = 0; i < string.length(); i++) {
 			char streamCh = (char) stream.readByte();
@@ -165,6 +218,9 @@ public class PsdTextData extends PsdObject {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return properties.toString();

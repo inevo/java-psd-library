@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd;
+package psd.metadata;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,14 +24,26 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import psd.objects.PsdDescriptor;
-import psd.objects.PsdList;
-import psd.objects.PsdLong;
+import psd.base.PsdInputStream;
+import psd.rawObjects.PsdDescriptor;
+import psd.rawObjects.PsdList;
+import psd.rawObjects.PsdLong;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PsdAnimation.
+ */
 public class PsdAnimation {
 
+	/** The frames. */
 	private ArrayList<PsdAnimationFrame> frames;
 
+	/**
+	 * Instantiates a new psd animation.
+	 *
+	 * @param st the st
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdAnimation(PsdInputStream st) throws IOException {
 		st.skipBytes(12 + 12);
 		PsdDescriptor desc = new PsdDescriptor(st);
@@ -60,6 +72,12 @@ public class PsdAnimation {
 		}
 	}
 
+	/**
+	 * Gets the frame by id.
+	 *
+	 * @param id the id
+	 * @return the frame by id
+	 */
 	public PsdAnimationFrame getFrameById(int id) {
 		for (PsdAnimationFrame frame : frames) {
 			if (frame.getId() == id) {
@@ -69,6 +87,11 @@ public class PsdAnimation {
 		return null;
 	}
 
+	/**
+	 * Gets the frames.
+	 *
+	 * @return the frames
+	 */
 	public List<PsdAnimationFrame> getFrames() {
 		return Collections.unmodifiableList(frames);
 	}

@@ -18,44 +18,69 @@
 
 package psd.layer;
 
-import psd.*;
+import psd.rawObjects.*;
 import psd.util.*;
-import psd.objects.*;
+import psd.base.*;
 import java.io.*;
 import java.util.logging.*;
 import java.util.*;
 
-public class TypeTool {
+/**
+ * contains meta data of a text layer like font type, font size, raw text ...) 
+ */
+public class PsdTextLayerTypeTool {
 
+	/** The logger. */
 	private static Logger logger = Logger.getLogger("psd.layer");
 
+	/** The transformation matrix for the text. */
 	private Matrix transform;
+	
+	/** The descriptor. */
 	private PsdDescriptor descriptor;
 	
-	public TypeTool(PsdInputStream stream, int size) throws IOException {
+	/**
+	 * Instantiates a new type tool.
+	 *
+	 * @param stream the stream
+	 * @param size the size
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public PsdTextLayerTypeTool(PsdInputStream stream, int size) throws IOException {
 		byte[] data = new byte[size];
 		stream.readBytes(data, size);
 
 		PsdInputStream dataStream = new PsdInputStream(new ByteArrayInputStream(data));
 		int version = dataStream.readShort();
 		assert version == 1;
-		transform = new Matrix(dataStream);
+		this.transform = new Matrix(dataStream);
 		int descriptorVersion = dataStream.readShort();
 		logger.info("descriptorVersion: " + descriptorVersion);
 		if (descriptorVersion == 50) {
 			int xTextDescriptorVersion = dataStream.readInt();
 			logger.info("xTextDescriptorVersion: " + xTextDescriptorVersion);
-			descriptor = new PsdDescriptor(new PsdInputStream(dataStream));
+			this.descriptor = new PsdDescriptor(new PsdInputStream(dataStream));
 		} else {
 			assert false;
 		}
 	}
 
-	public PsdObject get(String key) {
-		return descriptor.get(key);
+	/**
+	 * Gets the.
+	 *
+	 * @param key the key
+	 * @return the psd object
+	 */
+	public PsdObjectBase get(String key) {
+		return this.descriptor.get(key);
 	}
 
-	public Map<String, PsdObject> getObjects() {
-		return descriptor.getObjects();
+	/**
+	 * Gets the objects.
+	 *
+	 * @return the objects
+	 */
+	public Map<String, PsdObjectBase> getObjects() {
+		return this.descriptor.getObjects();
 	}
 }

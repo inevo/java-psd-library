@@ -16,22 +16,33 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.IOException;
 import java.util.*;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
 /**
- * 
+ * The Class PsdDescriptor holds meta data of a layer.
+ *
  * @author Dmitry Belsky
  */
-public class PsdDescriptor extends PsdObject {
+public class PsdDescriptor extends PsdObjectBase {
 
+	/** The class id or layer type. */
 	private final String classId;
-	private final HashMap<String, PsdObject> objects = new HashMap<String, PsdObject>();
+	
+	/** a map containing all values of the descriptor */
+	private final HashMap<String, PsdObjectBase> objects = new HashMap<String, PsdObjectBase>();
 
+	/**
+	 * Instantiates a new psd descriptor.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdDescriptor(PsdInputStream stream) throws IOException {
 		// Unicode string: name from classID
 		int nameLen = stream.readInt() * 2;
@@ -43,26 +54,51 @@ public class PsdDescriptor extends PsdObject {
 		for (int i = 0; i < itemsCount; i++) {
 			String key = stream.readPsdString();
 			logger.finest("PsdDescriptor.key: " + key);
-			objects.put(key, PsdObject.loadPsdObject(stream));
+			objects.put(key, PsdObjectBase.loadPsdObject(stream));
 		}
 	}
 
+	/**
+	 * Gets the class id.
+	 *
+	 * @return the class id
+	 */
 	public String getClassId() {
 		return classId;
 	}
 
-	public Map<String, PsdObject> getObjects() {
+	/**
+	 * Gets the objects.
+	 *
+	 * @return the objects
+	 */
+	public Map<String, PsdObjectBase> getObjects() {
 		return objects;
 	}
 
-	public PsdObject get(String key) {
+	/**
+	 * Gets the.
+	 *
+	 * @param key the key
+	 * @return the psd object
+	 */
+	public PsdObjectBase get(String key) {
 		return objects.get(key);
 	}
 
+	/**
+	 * Contains key.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	public boolean containsKey(String key) {
 		return objects.containsKey(key);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Objc:" + objects.toString();

@@ -16,32 +16,50 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.IOException;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PsdDouble.
+ *
  * @author Dmitry Belsky
- * 
  */
-public class PsdLong extends PsdObject {
+public class PsdDouble extends PsdObjectBase {
 
-	private final int value;
+	/** The value. */
+	private final double value;
 
-	public PsdLong(PsdInputStream stream) throws IOException {
-		value = stream.readInt();
-		logger.finest("PsdLong.value: " + value);
+	/**
+	 * Instantiates a new psd double.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public PsdDouble(PsdInputStream stream) throws IOException {
+		value = stream.readDouble();
+		logger.finest("PsdDouble.value: " + value);
 	}
 
-	public int getValue() {
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
+	public double getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "long:" + value;
+		return "doub:" + value;
 	}
 
 }

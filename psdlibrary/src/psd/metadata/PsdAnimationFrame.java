@@ -16,33 +16,60 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd;
+package psd.metadata;
 
-import java.io.IOException;
-
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author Dmitry Belsky
+ * The Class PsdAnimationFrame.
  */
-public class PsdChannelInfo {
+public class PsdAnimationFrame {
+	
+	/** The delay. */
+	private int delay;
+	
+	/** The id. */
 	private int id;
-	private int dataLength;
-
-	public PsdChannelInfo(PsdInputStream stream) throws IOException {
-		id = stream.readShort();
-		dataLength = stream.readInt();
-	}
-
-	public PsdChannelInfo(int id) {
+	
+	/** The number. */
+	private int number;
+	
+	/**
+	 * Instantiates a new psd animation frame.
+	 *
+	 * @param id the id
+	 * @param number the number
+	 * @param delay the delay
+	 */
+	public PsdAnimationFrame(int id, int number, int delay) {
 		this.id = id;
+		this.number = number;
+		this.delay = delay;
 	}
-
+	
+	/**
+	 * Gets the number.
+	 *
+	 * @return the number
+	 */
+	public int getNumber() {
+		return number;
+	}
+	
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
-
-	public int getDataLength() {
-		return dataLength;
+	
+	/**
+	 * Gets the delay.
+	 *
+	 * @return the delay
+	 */
+	public int getDelay() {
+		return delay;
 	}
-
 }

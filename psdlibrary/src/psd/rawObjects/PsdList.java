@@ -16,44 +16,70 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
+ * The Class PsdList.
+ *
  * @author Dmitry Belsky
- * 
  */
-public class PsdList extends PsdObject implements Iterable<PsdObject> {
+public class PsdList extends PsdObjectBase implements Iterable<PsdObjectBase> {
 
-	private ArrayList<PsdObject> objects = new ArrayList<PsdObject>();
+	/** The objects. */
+	private ArrayList<PsdObjectBase> objects = new ArrayList<PsdObjectBase>();
 
+	/**
+	 * Instantiates a new psd list.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdList(PsdInputStream stream) throws IOException {
 		int itemsCount = stream.readInt();
 		logger.finest("PsdList.itemsCount: " + itemsCount);
 		for (int i = 0; i < itemsCount; i++) {
-			objects.add(PsdObject.loadPsdObject(stream));
+			objects.add(PsdObjectBase.loadPsdObject(stream));
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Iterable#iterator()
+	 */
 	@Override
-	public Iterator<PsdObject> iterator() {
+	public Iterator<PsdObjectBase> iterator() {
 		return objects.iterator();
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	public int size() {
 		return objects.size();
 	}
 
-	public PsdObject get(int i) {
+	/**
+	 * Gets the.
+	 *
+	 * @param i the i
+	 * @return the psd object
+	 */
+	public PsdObjectBase get(int i) {
 		return objects.get(i);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "VlLs:" + objects.toString();

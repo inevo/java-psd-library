@@ -22,17 +22,31 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.*;
 
-import psd.*;
-import psd.objects.*;
+import psd.base.*;
+import psd.rawObjects.*;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PsdLayerMetaInfo.
+ */
 public class PsdLayerMetaInfo {
 
+	/** The logger. */
 	private Logger logger = Logger.getLogger("psd.layer");
 	
+	/** The frames info. */
 	private HashMap<Integer, PsdLayerFrameInfo> framesInfo;
+	
+	/** The frames info list. */
 	ArrayList<PsdLayerFrameInfo> framesInfoList;
 
 	
+	/**
+	 * Instantiates a new psd layer meta info.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdLayerMetaInfo(PsdInputStream stream) throws IOException {
 		
 		int countOfMetaData = stream.readInt();
@@ -57,6 +71,12 @@ public class PsdLayerMetaInfo {
 		}
 	}
 
+	/**
+	 * Read frames info.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void readFramesInfo(PsdInputStream stream)
 			throws IOException {
 		stream.skipBytes(4); // ???
@@ -67,7 +87,7 @@ public class PsdLayerMetaInfo {
 		for (int i = 0; i < list.size(); i++) {
 			PsdDescriptor desc = (PsdDescriptor) list.get(i);
 			PsdList framesList = (PsdList) desc.get("FrLs");
-			for (PsdObject v : framesList) {
+			for (PsdObjectBase v : framesList) {
 				int id = ((PsdLong) v).getValue();
 				Boolean visible = null;
 				Integer xOffset = null;
@@ -89,6 +109,11 @@ public class PsdLayerMetaInfo {
 		
 	}
 	
+	/**
+	 * Gets the layer frames info.
+	 *
+	 * @return the layer frames info
+	 */
 	public List<PsdLayerFrameInfo> getLayerFramesInfo() {
 		return Collections.unmodifiableList(framesInfoList);
 	}

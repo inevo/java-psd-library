@@ -16,35 +16,60 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.IOException;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PsdUnitFloat.
+ *
  * @author Dmitry Belsky
- * 
  */
-public class PsdUnitFloat extends PsdObject {
+public class PsdUnitFloat extends PsdObjectBase {
 
+	/** The unit. */
 	private final String unit;
+	
+	/** The value. */
 	private final double value;
 
+	/**
+	 * Instantiates a new psd unit float.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdUnitFloat(PsdInputStream stream) throws IOException {
 		unit = stream.readString(4);
 		value = stream.readDouble();
 		logger.finest("PsdUnitFloat.unit: " + unit + " PsdUnitFloat.value: " + value );
 	}
 
+	/**
+	 * Gets the unit.
+	 *
+	 * @return the unit
+	 */
 	public String getUnit() {
 		return unit;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public double getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "UntF:<" + unit + ":" + value + ">";

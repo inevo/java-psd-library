@@ -23,43 +23,82 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-import psd.*;
+import psd.base.*;
+import psd.metadata.PsdChannelInfo;
 
 
 /**
- * 
+ * The Class PsdLayer contains all data of a layer.
+ *
  * @author Dmitry Belsky
- * 
  */
 public class PsdLayer {
 
+	/** The logger. */
 	private static Logger logger = Logger.getLogger("psd.layer");
 	
+	/** The top border (y1). */
 	private int top;
+	
+	/** The left border (x1). */
 	private int left;
+	
+	/** The bottom border (y2). */
 	private int bottom;
+	
+	/** The right border (x2). */
 	private int right;
+	
+	/** The width of the whole layer. */
 	private int width;
+	
+	/** The height of the whole layer. */
 	private int height;
+	
+	/** The number of channels of the layer. */
 	private int numberOfChannels;
+	
+	/** The channels info for all channels. */
 	private ArrayList<PsdChannelInfo> channelsInfo;
+	
+	/** The opacity value of the layer. */
 	private int opacity;
 
+	/** The clipping of the layer. */
 	private boolean clipping;
 
+	/** The visibility of the layer. */
 	private boolean visible;
+	
+	/** The name of the layer. */
 	private String name;
 
+	/** The image of the layer. */
 	private BufferedImage image;
+	
+	/** The layer id. */
 	private int layerId;
 
+	/** The type of the layer. */
 	private PsdLayerType type;
 
+	/** The parent layer of the layer. */
 	private PsdLayer parent;
+	
+	/** The meta info of the layer. */
 	private PsdLayerMetaInfo metaInfo;
-	private TypeTool typeTool;
+	
+	/** The type tool. */
+	private PsdTextLayerTypeTool typeTool;
 
+	/**
+	 * Instantiates a new psd layer by reading directly from file.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public PsdLayer(PsdInputStream stream) throws IOException {
+		logger.setLevel(Level.OFF);
 		parent = null;
 		typeTool = null;
 		metaInfo = null;
@@ -91,6 +130,13 @@ public class PsdLayer {
 		readExtraData(stream);
 	}
 
+	/**
+	 * Instantiates a new psd layer with given values.
+	 *
+	 * @param width the width
+	 * @param height the height
+	 * @param numberOfChannels the number of channels
+	 */
 	public PsdLayer(int width, int height, int numberOfChannels) {
 		parent = null;
 		type = PsdLayerType.NORMAL;
@@ -110,76 +156,165 @@ public class PsdLayer {
 		visible = true;
 	}
 
+	/**
+	 * Gets the meta info.
+	 *
+	 * @return the meta info
+	 */
 	public PsdLayerMetaInfo getMetaInfo() {
 		return metaInfo;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Gets the image.
+	 *
+	 * @return the image
+	 */
 	public BufferedImage getImage() {
 		return image;
 	}
 
+	/**
+	 * Checks if is visible.
+	 *
+	 * @return true, if is visible
+	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
+	/**
+	 * Gets the left.
+	 *
+	 * @return the left
+	 */
 	public int getLeft() {
 		return left;
 	}
 
+	/**
+	 * Gets the top.
+	 *
+	 * @return the top
+	 */
 	public int getTop() {
 		return top;
 	}
 
+	/**
+	 * Gets the width.
+	 *
+	 * @return the width
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * Gets the height.
+	 *
+	 * @return the height
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public PsdLayerType getType() {
 		return type;
 	}
 
+	/**
+	 * Gets the number of channels.
+	 *
+	 * @return the number of channels
+	 */
 	public int getNumberOfChannels() {
 		return numberOfChannels;
 	}
 
+	/**
+	 * Gets the opacity.
+	 *
+	 * @return the opacity
+	 */
 	public int getOpacity() {
 		return opacity;
 	}
 
+	/**
+	 * Gets the layer id.
+	 *
+	 * @return the layer id
+	 */
 	public int getLayerId() {
 		return layerId;
 	}
 
+	/**
+	 * Checks if is clipping.
+	 *
+	 * @return true, if is clipping
+	 */
 	public boolean isClipping() {
 		return clipping;
 	}
 
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public PsdLayer getParent() {
 		return parent;
 	}
 
+	/**
+	 * Sets the parent.
+	 *
+	 * @param parent the new parent
+	 */
 	public void setParent(PsdLayer parent) {
 		this.parent = parent;
 	}
 
-	public TypeTool getTypeTool() {
+	/**
+	 * Gets the type tool.
+	 *
+	 * @return the type tool
+	 */
+	public PsdTextLayerTypeTool getTypeTool() {
 		return typeTool;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Layer: name=" + name + " left=" + left + " top=" + top
 				+ " vis=" + visible + " [group=" + parent + "]";
 	}
 
+	/**
+	 * Gets the channel info by id.
+	 *
+	 * @param id the id
+	 * @return the channel info by id
+	 */
 	private PsdChannelInfo getChannelInfoById(int id) {
 		for (PsdChannelInfo info : channelsInfo) {
 			if (info.getId() == id) {
@@ -189,10 +324,24 @@ public class PsdLayer {
 		throw new RuntimeException("channel info for id " + id + " not found.");
 	}
 
+	/**
+	 * Read image.
+	 *
+	 * @param input the input
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void readImage(PsdInputStream input) throws IOException {
 		readImage(input, true, null);
 	}
 
+	/**
+	 * Read image from psd stream.
+	 *
+	 * @param input the input stream
+	 * @param needReadPlaneInfo says if method needs to read the plane info
+	 * @param lineLengths array of line lengths
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void readImage(PsdInputStream input, boolean needReadPlaneInfo,
 			short[] lineLengths) throws IOException {
 		byte[] r = null, g = null, b = null, a = null;
@@ -233,6 +382,13 @@ public class PsdLayer {
 		image = makeImage(getWidth(), getHeight(), r, g, b, a);
 	}
 
+	/**
+	 * Read extra data.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	private void readExtraData(PsdInputStream stream) throws IOException,
 			UnsupportedEncodingException {
 		String tag;
@@ -283,7 +439,7 @@ public class PsdLayer {
 			} else if (tag.equals("lsct")) {
 				readLayerSectionDevider(stream);
 			} else if (tag.equals("TySh")) {
-				typeTool = new TypeTool(stream, size);
+				typeTool = new PsdTextLayerTypeTool(stream, size);
 			} else {
 				logger.warning("skipping tag:"  + tag);
 				stream.skipBytes(size);
@@ -296,6 +452,12 @@ public class PsdLayer {
 
 	}
 
+	/**
+	 * Read layer section devider.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void readLayerSectionDevider(PsdInputStream stream)
 			throws IOException {
 		int dividerType = stream.readInt();
@@ -310,6 +472,18 @@ public class PsdLayer {
 		}
 	}
 
+	/**
+	 * Read plane.
+	 *
+	 * @param input the input
+	 * @param w the w
+	 * @param h the h
+	 * @param lineLengths the line lengths
+	 * @param needReadPlaneInfo the need read plane info
+	 * @param planeNum the plane num
+	 * @return the byte[]
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private byte[] readPlane(PsdInputStream input, int w, int h,
 			short[] lineLengths, boolean needReadPlaneInfo, int planeNum)
 			throws IOException {
@@ -338,7 +512,7 @@ public class PsdLayer {
 		}
 
 		if (rleEncoded) {
-			return readPlaneCompressed(input, w, h, lineLengths, planeNum);
+			return parsePlaneCompressed(input, w, h, lineLengths, planeNum);
 		} else {
 			int size = w * h;
 			byte[] b = new byte[size];
@@ -347,7 +521,18 @@ public class PsdLayer {
 		}
 	}
 
-	private byte[] readPlaneCompressed(PsdInputStream input, int w, int h,
+	/**
+	 * Read plane compressed.
+	 *
+	 * @param input the input
+	 * @param w the w
+	 * @param h the h
+	 * @param lineLengths the line lengths
+	 * @param planeNum the plane num
+	 * @return the byte[]
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	private byte[] parsePlaneCompressed(PsdInputStream input, int w, int h,
 									   short[] lineLengths, int planeNum) throws IOException {
 
 		byte[] b = new byte[w * h];
@@ -364,6 +549,16 @@ public class PsdLayer {
 		return b;
 	}
 
+	/**
+	 * Decode rle.
+	 *
+	 * @param src the src
+	 * @param sindex the sindex
+	 * @param slen the slen
+	 * @param dst the dst
+	 * @param dindex the dindex
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void decodeRLE(byte[] src, int sindex, int slen, byte[] dst,
 			int dindex) throws IOException {
 		try {
@@ -389,6 +584,13 @@ public class PsdLayer {
 		}
 	}
 
+	/**
+	 * Fill bytes.
+	 *
+	 * @param size the size
+	 * @param value the value
+	 * @return the byte[]
+	 */
 	private byte[] fillBytes(int size, int value) {
 		byte[] b = new byte[size];
 		if (value != 0) {
@@ -400,6 +602,17 @@ public class PsdLayer {
 		return b;
 	}
 
+	/**
+	 * Make image.
+	 *
+	 * @param w the w
+	 * @param h the h
+	 * @param r the r
+	 * @param g the g
+	 * @param b the b
+	 * @param a the a
+	 * @return the buffered image
+	 */
 	private BufferedImage makeImage(int w, int h, byte[] r, byte[] g, byte[] b,
 			byte[] a) {
 		if (w == 0 || h == 0) {

@@ -16,23 +16,35 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd;
+package psd.metadata;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
+ * The Enum PsdColorMode.
+ *
  * @author Dmitry Belsky
- * 
  */
 public enum PsdColorMode {
+	
+	/** The BITMAP. */
 	BITMAP, // 0
-	GRAYSCALE, // 1
-	INDEXED, // 2
-	RGB, // 3
-	CMYK, // 4
-	UNKNOWN_5, // 5,
-	UNKNOWN_6, // 6
-	MULTICHANNEL, // 7
-	DUOTONE, // 8
-	LAB, // 9
+	/** The GRAYSCALE. */
+ GRAYSCALE, // 1
+	/** The INDEXED. */
+ INDEXED, // 2
+	/** The RGB. */
+ RGB, // 3
+	/** The CMYK. */
+ CMYK, // 4
+	/** The UNKNOW n_5. */
+ UNKNOWN_5, // 5,
+	/** The UNKNOW n_6. */
+ UNKNOWN_6, // 6
+	/** The MULTICHANNEL. */
+ MULTICHANNEL, // 7
+	/** The DUOTONE. */
+ DUOTONE, // 8
+	/** The LAB. */
+ LAB, // 9
 
 }

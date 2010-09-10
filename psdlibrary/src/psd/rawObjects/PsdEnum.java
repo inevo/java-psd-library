@@ -16,48 +16,64 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.IOException;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PsdEnum.
+ *
  * @author Dmitry Belsky
- * 
  */
-public class PsdText extends PsdObject {
+public class PsdEnum extends PsdObjectBase {
+	
+	/** The type id. */
+	private final String typeId;
+	
+	/** The value. */
 	private final String value;
 
-	public PsdText(PsdInputStream stream) throws IOException {
-		int textSize = stream.readInt();
-		StringBuffer buffer = new StringBuffer(textSize);
-		boolean stopReading = false;
-		for (int ti = 0; ti < textSize; ti++) {
-			char b = (char) stream.readShort();
-			if (b == 0) {
-				stopReading = true;
-			}
-			if (!stopReading) {
-				if (b == 13 || b == 10) {
-					buffer.append('\n');
-				} else {
-					buffer.append(b);
-				}
-			}
-		}
-		value = buffer.toString();
-
-		logger.finest("PsdText.value: " + value);
+	/**
+	 * Instantiates a new psd enum.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public PsdEnum(PsdInputStream stream) throws IOException {
+		
+		typeId = stream.readPsdString();
+		value = stream.readPsdString();
+		logger.finest("PsdEnum.typeId " + typeId + " PsdEnum.value: " + value);
 	}
 
+	/**
+	 * Gets the type id.
+	 *
+	 * @return the type id
+	 */
+	public String getTypeId() {
+		return typeId;
+	}
+
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return value;
+		return "enum:<" + typeId + ":" + value + ">";
 	}
 
 }

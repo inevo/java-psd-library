@@ -16,25 +16,47 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.base;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import psd.PsdInputStream;
+import psd.rawObjects.PsdBoolean;
+import psd.rawObjects.PsdDescriptor;
+import psd.rawObjects.PsdDouble;
+import psd.rawObjects.PsdEnum;
+import psd.rawObjects.PsdList;
+import psd.rawObjects.PsdLong;
+import psd.rawObjects.PsdText;
+import psd.rawObjects.PsdTextData;
+import psd.rawObjects.PsdUnitFloat;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PsdObject.
+ *
  * @author Dmitry Belsky
- * 
  */
-public class PsdObject {
+public class PsdObjectBase {
+	
+	/** The Constant logger. */
 	protected static final Logger logger = Logger.getLogger("psd.objects");
 
-	public PsdObject() {
+	/**
+	 * Instantiates a new psd object.
+	 */
+	public PsdObjectBase() {
 
 	}
 
-	public static PsdObject loadPsdObject(PsdInputStream stream)
+	/**
+	 * Load psd object.
+	 *
+	 * @param stream the stream
+	 * @return the psd object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static PsdObjectBase loadPsdObject(PsdInputStream stream)
 			throws IOException {
 
 		String type = stream.readString(4);

@@ -16,31 +16,50 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.objects;
+package psd.rawObjects;
 
 import java.io.IOException;
 
-import psd.PsdInputStream;
+import psd.base.PsdInputStream;
+import psd.base.PsdObjectBase;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PsdBoolean.
+ *
  * @author Dmitry Belsky
  */
-public class PsdDouble extends PsdObject {
+public class PsdBoolean extends PsdObjectBase {
 
-	private final double value;
+	/** The value. */
+	private final boolean value;
 
-	public PsdDouble(PsdInputStream stream) throws IOException {
-		value = stream.readDouble();
-		logger.finest("PsdDouble.value: " + value);
+	/**
+	 * Instantiates a new psd boolean.
+	 *
+	 * @param stream the stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public PsdBoolean(PsdInputStream stream) throws IOException {
+		value = stream.readBoolean();
+		logger.finest("PsdBoolean.value: " + value );
 	}
 
-	public double getValue() {
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
+	public boolean getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "doub:" + value;
+		return "bool:" + value;
 	}
 
 }
