@@ -23,8 +23,8 @@ import java.awt.Graphics;
 
 import javax.swing.JComponent;
 
-import psd.*;
-import psd.layer.*;
+import psd.base.PsdImage;
+import psd.layer.PsdLayer;
 
 /**
  * @author Dmitry Belsky
@@ -56,7 +56,7 @@ public class PsdView extends JComponent {
 
 	private static final long serialVersionUID = 1L;
 
-	private PsdFile psdFile;
+	private PsdImage psdFile;
 	private int frame;
 
 	public PsdView() {
@@ -65,9 +65,9 @@ public class PsdView extends JComponent {
 		//new AnimationThread().start();
 	}
 
-	synchronized public void setPsdFile(PsdFile psdFile) {
+	synchronized public void setPsdFile(PsdImage psdImage) {
 		frame = 0;
-		this.psdFile = psdFile;
+		this.psdFile = psdImage;
 	}
 
 	@Override

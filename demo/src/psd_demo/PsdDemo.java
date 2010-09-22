@@ -23,11 +23,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -37,7 +34,8 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import psd.PsdFile;
+import psd.base.PsdImage;
+
 
 /**
  * 
@@ -53,8 +51,9 @@ public class PsdDemo extends JFrame {
 				try {
 					File file = fileChooser.getSelectedFile();
 					FileInputStream stream = new FileInputStream(file);
-					PsdFile psdFile = new PsdFile(stream);
+					PsdImage psdFile = new PsdImage(stream);
 					view.setPsdFile(psdFile);
+					view.repaint();
 					stream.close();
 				} catch (IOException ex) {
 					logger.log(Level.SEVERE, "can't load psd-file", ex);
