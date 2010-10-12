@@ -92,6 +92,10 @@ public class PsdImage {
 	 * @return the layers
 	 */
 	public List<PsdLayer> getLayers() {
+		if(this.layers == null){
+			this.layers = new ArrayList<PsdLayer>();
+			layers.add(this.baseLayer);
+		}
 		return Collections.unmodifiableList(layers);
 	}
 	
