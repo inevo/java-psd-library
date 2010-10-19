@@ -52,7 +52,7 @@ public class PsdDescriptor extends PsdObjectBase {
 		int itemsCount = stream.readInt();
 		logger.finest("PsdDescriptor.itemsCount: " + itemsCount);
 		for (int i = 0; i < itemsCount; i++) {
-			String key = stream.readPsdString();
+			String key = stream.readPsdString().trim();
 			logger.finest("PsdDescriptor.key: " + key);
 			objects.put(key, PsdObjectBase.loadPsdObject(stream));
 		}
