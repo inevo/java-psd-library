@@ -1,13 +1,23 @@
 package analizer;
 
-import psd.*;
-import psd.layer.*;
-import psd.objects.*;
-import java.io.*;
-import javax.imageio.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
-import java.util.*;
-import java.util.logging.*;
+import javax.imageio.ImageIO;
+
+import psd.base.PsdImage;
+import psd.layer.PsdLayer;
+import psd.layer.PsdLayerType;
+import psd.layer.PsdTextLayerTypeTool;
+import psd.rawObjects.PsdTextData;
 
 public class PsdAnalizer {
 	private static Logger logger = Logger.getLogger("app");
@@ -50,7 +60,7 @@ public class PsdAnalizer {
 	}
 
 	private static void processPsd(File inputFile, File outputDir) throws IOException {
-		PsdFile psdFile = new PsdFile(inputFile);
+		PsdImage psdFile = new PsdImage(inputFile);
 		outputDir.mkdirs();
 
 		int num = 0;
@@ -62,7 +72,7 @@ public class PsdAnalizer {
 		}
 	}
 	
-	private static void writeLayer(PsdFile psd, PsdLayer layer, File baseDir) throws IOException {
+	private static void writeLayer(PsdImage psd, PsdLayer layer, File baseDir) throws IOException {
 		if (layer.getType() == PsdLayerType.NORMAL) {
 			String path = getPath(layer);
 			File outFile = new File(baseDir, path + ".png");
@@ -94,7 +104,7 @@ public class PsdAnalizer {
 		}		
 	}
 
-	private static void writeTypeTool(BufferedWriter writer, TypeTool typeTool) throws IOException {
+	private static void writeTypeTool(BufferedWriter writer, PsdTextLayerTypeTool typeTool) throws IOException {
 		writer.newLine();
 		writer.newLine();
 		writer.write("-*- text layer -*-");
