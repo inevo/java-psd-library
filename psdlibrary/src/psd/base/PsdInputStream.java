@@ -33,6 +33,9 @@ public class PsdInputStream extends InputStream {
 	/** The pos. */
 	private int pos;
 	
+	/** The marked position. */
+	private int markPos;
+	
 	/** The in. */
 	private final InputStream in;
 
@@ -44,6 +47,7 @@ public class PsdInputStream extends InputStream {
 	public PsdInputStream(InputStream in) {
 		this.in = in;
 		pos = 0;
+		markPos = 0;
 	}
 
 	/* (non-Javadoc)
@@ -68,6 +72,7 @@ public class PsdInputStream extends InputStream {
 	@Override
 	public synchronized void mark(int readlimit) {
 		in.mark(readlimit);
+		markPos = pos;
 	}
 
 	/* (non-Javadoc)
@@ -76,6 +81,7 @@ public class PsdInputStream extends InputStream {
 	@Override
 	public synchronized void reset() throws IOException {
 		in.reset();
+		pos = markPos;
 	}
 
 	/* (non-Javadoc)
