@@ -36,7 +36,6 @@ import javax.swing.SwingUtilities;
 
 import psd.base.PsdImage;
 
-
 /**
  * 
  * @author Dmitry Belsky
@@ -53,7 +52,6 @@ public class PsdDemo extends JFrame {
 					FileInputStream stream = new FileInputStream(file);
 					PsdImage psdFile = new PsdImage(stream);
 					view.setPsdFile(psdFile);
-					view.repaint();
 					stream.close();
 				} catch (IOException ex) {
 					logger.log(Level.SEVERE, "can't load psd-file", ex);
@@ -64,7 +62,7 @@ public class PsdDemo extends JFrame {
 
 	private final class ExitAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			setVisible(false);
+			PsdDemo.this.dispose();
 		}
 	}
 
@@ -77,6 +75,7 @@ public class PsdDemo extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setJMenuBar(createMenu());
+		
 		getContentPane().add(view);
 		pack();
 	}
