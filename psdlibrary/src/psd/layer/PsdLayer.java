@@ -363,6 +363,12 @@ public class PsdLayer {
 			case -1:
 				a = readPlane(input, getWidth(), getHeight(), lineLengths,
 						needReadPlaneInfo, j);
+				if (this.opacity != -1) {
+					double opacity = (this.opacity & 0xff)/256d;
+					for (int i = 0; i<a.length; i++) {
+						a[i] = (byte) ((a[i] & 0xff)*opacity);
+					}
+				}
 				break;
 			default:
 				// layer mask
@@ -539,7 +545,6 @@ public class PsdLayer {
 		byte[] s = new byte[w * 2];
 		int pos = 0;
 		int lineIndex = planeNum * h;
-		int max = 0;
 		for (int i = 0; i < h; i++) {
 			int len = lineLengths[lineIndex++];
 			input.readBytes(s, len);
