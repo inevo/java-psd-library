@@ -638,4 +638,7 @@ public class PsdLayer {
 		return im;
 	}
 
+	private void setVisible(boolean value){
+		this.visible=true;
+	}
 }
