@@ -20,18 +20,13 @@ package psd.rawObjects;
 
 import java.io.*;
 import java.util.*;
+import psd.base.*;
 
-import psd.base.PsdInputStream;
-import psd.base.PsdObjectBase;
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class PsdTextData.
- */
 public class PsdTextData extends PsdObjectBase {
 
-	/** The properties. */
 	private Map<String, Object> properties;
+	private int cachedByte = -1;
+	private boolean useCachedByte;
 	
 	/**
 	 * Instantiates a new psd text data.
@@ -43,11 +38,31 @@ public class PsdTextData extends PsdObjectBase {
 		int size = stream.readInt();
 		int startPos = stream.getPos();
 
-		for (int i = 0; i < 2; i++) {
-			byte ch = stream.readByte();
-			assert ch == 10;
+		if (true) {
+			byte[] array = new byte[size];
+			stream.read(array, 0, size);
+			ByteArrayInputStream byteStream = new ByteArrayInputStream(array);
+			stream = new PsdInputStream(byteStream);
+
+			for (int i = 0; i < size; i++) {
+				int b = array[i];
+				if (b == 13 || b == 10) {
+					System.out.println();
+				} else if (b == ' ') {
+					System.out.print("'");
+				} else if (b == 9) {
+					System.out.print('\t');
+				}
+				else if (b < 32) {
+					System.out.print(b);
+				} else {
+					System.out.print((char) b);
+				}
+			}
+			System.out.println();
 		}
-		properties = readMap(stream, 0);
+
+		properties = readMap(stream);
 	}
 
 	/**
@@ -59,80 +74,65 @@ public class PsdTextData extends PsdObjectBase {
 		return properties;
 	}
 
-	/**
-	 * Read map.
-	 *
-	 * @param stream the stream
-	 * @param level the level
-	 * @return the map
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private Map<String, Object> readMap(PsdInputStream stream, int level) throws IOException {
-		skipTabs(stream, level);
-		char c = (char) stream.readByte();
+	private Map<String, Object> readMap(PsdInputStream stream) throws IOException {
+		skipWhitespaces(stream);
+		char c = (char) readByte(stream);
+
 		if (c == ']') {
 			return null;
 		} else if (c == '<') {
 			skipString(stream, "<");
 		}
-		skipEndLine(stream);
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		while (true) {
-			skipTabs(stream, level);
-			c = (char) stream.readByte();
+			skipWhitespaces(stream);
+			c = (char) readByte(stream);
 			if (c == '>') {
 				skipString(stream, ">");
 				return map;
 			} else {
-				assert c == 9;
-				c = (char) stream.readByte();
-				assert c == '/' : "unknown char: " + c + " on level: " + level;
-				String name = "";
-				while (true) {
-					c = (char) stream.readByte();
-					if (c == ' ' || c == 10) {
-						break;
-					}
-					name += c;
-				}
-				if (c == 10) {
-					map.put(name, readMap(stream, level + 1));
-					skipEndLine(stream);
-				} else if (c == ' ') {
-					map.put(name, readValue(stream, level + 1));
+				assert c == '/' : "unknown char: " + c + ", byte: " + (byte) c;
+				String name = readName(stream);
+				skipWhitespaces(stream);
+				c = (char) lookForwardByte(stream);
+				if (c == '<') {
+					map.put(name, readMap(stream));
 				} else {
-					assert false;
+					map.put(name, readValue(stream));
 				}
 			}
 		}
 	}
 
-	/**
-	 * Read value.
-	 *
-	 * @param stream the stream
-	 * @param level the level
-	 * @return the object
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private Object readValue(PsdInputStream stream, int level) throws IOException {
-		char c = (char) stream.readByte();
+	private String readName(PsdInputStream stream) throws IOException {
+		String name = "";
+		while (true) {
+			char c = (char) readByte(stream);
+			if (c == ' ' || c == 10) {
+				break;
+			}
+			name += c;
+		}
+		return name;
+	}
+
+	private Object readValue(PsdInputStream stream) throws IOException {
+		char c = (char) readByte(stream);
 		if (c == ']') {
 			return null;
 		} else if (c == '(') {
 			// unicode string
 			String string = "";
-			int stringSignature = stream.readShort() & 0xFFFF;
+			int stringSignature = readShort(stream) & 0xFFFF;
 			assert stringSignature == 0xFEFF;
 			while (true) {
-				byte b1 = stream.readByte();
+				byte b1 = readByte(stream);
 				if (b1 == ')') {
-					skipEndLine(stream);
 					return string;
 				}
-				byte b2 = stream.readByte();
+				byte b2 = readByte(stream);
 				if (b2 == '\\') {
-					b2 = stream.readByte();
+					b2 = readByte(stream);
 				}
 				if (b2 == 13) {
 					string += '\n';
@@ -143,33 +143,31 @@ public class PsdTextData extends PsdObjectBase {
 		} else if (c == '[') {
 			ArrayList<Object> list = new ArrayList<Object>();
 			// array
-			c = (char) stream.readByte();
+			c = (char) readByte(stream);
 			while (true) {
-				if (c == ' ') {
-					Object val = readValue(stream, level);
-					if (val == null) {
-						skipEndLine(stream);
-						return list;
-					} else {
-						list.add(val);
-					}
-				} else if (c == 10) {
-					Object val = readMap(stream, level);
-					skipEndLine(stream);
+				skipWhitespaces(stream);
+				c = (char) lookForwardByte(stream);
+				if (c == '<') {
+					Object val = readMap(stream);
 					if (val == null) {
 						return list;
 					} else {
 						list.add(val);
 					}
 				} else {
-					assert false;
+					Object val = readValue(stream);
+					if (val == null) {
+						return list;
+					} else {
+						list.add(val);
+					}
 				}
 			}
 		} else {
 			String val = "";
 			do {
 				val += c;
-				c = (char) stream.readByte();
+				c = (char) readByte(stream);
 			} while (c != 10 && c != ' ');
 			if (val.equals("true") || val.equals("false")) {
 				return Boolean.valueOf(val);
@@ -179,41 +177,17 @@ public class PsdTextData extends PsdObjectBase {
 		}
 	}
 
-	/**
-	 * Skip tabs.
-	 *
-	 * @param stream the stream
-	 * @param count the count
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void skipTabs(PsdInputStream stream, int count) throws IOException {
-		for (int i = 0; i < count; i++) {
-			byte tabCh = stream.readByte();
-			assert tabCh == 9 : "must be tab: " + tabCh;
-		}
+	private void skipWhitespaces(PsdInputStream stream) throws IOException {
+		byte b;
+		do {
+			b = readByte(stream);
+		} while (b == ' ' || b == 10 || b == 9);
+		putBack();
 	}
 
-	/**
-	 * Skip end line.
-	 *
-	 * @param stream the stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void skipEndLine(PsdInputStream stream) throws IOException {
-		byte newLineCh = stream.readByte();
-		assert newLineCh == 10;
-	}
-
-	/**
-	 * Skip string.
-	 *
-	 * @param stream the stream
-	 * @param string the string
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
 	private void skipString(PsdInputStream stream, String string) throws IOException {
 		for (int i = 0; i < string.length(); i++) {
-			char streamCh = (char) stream.readByte();
+			char streamCh = (char) readByte(stream);
 			assert streamCh == string.charAt(i) : "char " + streamCh + " mustBe " + string.charAt(i);
 		}
 	}
@@ -224,5 +198,34 @@ public class PsdTextData extends PsdObjectBase {
 	@Override
 	public String toString() {
 		return properties.toString();
+	}
+
+	private byte readByte(PsdInputStream stream) throws IOException {
+		if (useCachedByte) {
+			assert cachedByte != -1;
+			useCachedByte = false;
+			return (byte) cachedByte;
+		} else {
+			cachedByte = stream.read();
+			return (byte) cachedByte;
+		}
+	}
+
+	private short readShort(PsdInputStream stream) throws IOException {
+		cachedByte = -1;
+		useCachedByte = false;
+		return stream.readShort();
+	}
+
+	private void putBack() {
+		assert cachedByte != -1;
+		assert !useCachedByte;
+		useCachedByte = true;
+	}
+
+	private byte lookForwardByte(PsdInputStream stream) throws IOException {
+		byte b = readByte(stream);
+		putBack();
+		return b;
 	}
 }
