@@ -49,10 +49,8 @@ public class PsdDemo extends JFrame {
 			if (fileChooser.showOpenDialog(PsdDemo.this) == JFileChooser.APPROVE_OPTION) {
 				try {
 					File file = fileChooser.getSelectedFile();
-					FileInputStream stream = new FileInputStream(file);
-					PsdImage psdFile = new PsdImage(stream);
+					PsdImage psdFile = new PsdImage(file);
 					view.setPsdFile(psdFile);
-					stream.close();
 				} catch (IOException ex) {
 					logger.log(Level.SEVERE, "can't load psd-file", ex);
 				}
