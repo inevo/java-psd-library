@@ -1,4 +1,4 @@
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
 

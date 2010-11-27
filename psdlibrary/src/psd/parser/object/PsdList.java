@@ -16,58 +16,64 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdText.
+ * The Class PsdList.
  *
  * @author Dmitry Belsky
  */
-public class PsdText extends PsdObject {
-	
-	/** The value. */
-	private final String value;
+public class PsdList extends PsdObject implements Iterable<PsdObject> {
+
+	/** The objects. */
+	private ArrayList<PsdObject> objects = new ArrayList<PsdObject>();
 
 	/**
-	 * Instantiates a new psd text.
+	 * Instantiates a new psd list.
 	 *
 	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PsdText(PsdInputStream stream) throws IOException {
-		int textSize = stream.readInt();
-		StringBuffer buffer = new StringBuffer(textSize);
-		boolean stopReading = false;
-		for (int ti = 0; ti < textSize; ti++) {
-			char b = (char) stream.readShort();
-			if (b == 0) {
-				stopReading = true;
-			}
-			if (!stopReading) {
-				if (b == 13 || b == 10) {
-					buffer.append('\n');
-				} else {
-					buffer.append(b);
-				}
-			}
+	public PsdList(PsdInputStream stream) throws IOException {
+		int itemsCount = stream.readInt();
+		logger.finest("PsdList.itemsCount: " + itemsCount);
+		for (int i = 0; i < itemsCount; i++) {
+			objects.add(PsdObjectFactory.loadPsdObject(stream));
 		}
-		value = buffer.toString();
+	}
 
-		logger.finest("PsdText.value: " + value);
+	/* (non-Javadoc)
+	 * @see java.lang.Iterable#iterator()
+	 */
+	@Override
+	public Iterator<PsdObject> iterator() {
+		return objects.iterator();
 	}
 
 	/**
-	 * Gets the value.
+	 * Size.
 	 *
-	 * @return the value
+	 * @return the int
 	 */
-	public String getValue() {
-		return value;
+	public int size() {
+		return objects.size();
+	}
+
+	/**
+	 * Gets the.
+	 *
+	 * @param i the i
+	 * @return the psd object
+	 */
+	public PsdObject get(int i) {
+		return objects.get(i);
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +81,7 @@ public class PsdText extends PsdObject {
 	 */
 	@Override
 	public String toString() {
-		return value;
+		return "VlLs:" + objects.toString();
 	}
 
 }

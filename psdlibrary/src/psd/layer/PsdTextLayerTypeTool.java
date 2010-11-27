@@ -19,7 +19,7 @@
 package psd.layer;
 
 import psd.parser.PsdInputStream;
-import psd.rawObjects.*;
+import psd.parser.object.*;
 import psd.util.*;
 import psd.base.*;
 import java.io.*;

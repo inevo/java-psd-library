@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import psd.parser.PsdInputStream;
-import psd.rawObjects.PsdDescriptor;
-import psd.rawObjects.PsdList;
-import psd.rawObjects.PsdLong;
+import psd.parser.object.PsdDescriptor;
+import psd.parser.object.PsdList;
+import psd.parser.object.PsdLong;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
 

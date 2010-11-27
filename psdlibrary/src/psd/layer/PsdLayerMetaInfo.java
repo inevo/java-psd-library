@@ -24,7 +24,7 @@ import java.util.logging.*;
 
 import psd.base.*;
 import psd.parser.PsdInputStream;
-import psd.rawObjects.*;
+import psd.parser.object.*;
 
 // TODO: Auto-generated Javadoc
 /**

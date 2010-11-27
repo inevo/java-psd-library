@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
 
@@ -24,24 +24,41 @@ import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdLong.
+ * The Class PsdText.
  *
  * @author Dmitry Belsky
  */
-public class PsdLong extends PsdObject {
-
+public class PsdText extends PsdObject {
+	
 	/** The value. */
-	private final int value;
+	private final String value;
 
 	/**
-	 * Instantiates a new psd long.
+	 * Instantiates a new psd text.
 	 *
 	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PsdLong(PsdInputStream stream) throws IOException {
-		value = stream.readInt();
-		logger.finest("PsdLong.value: " + value);
+	public PsdText(PsdInputStream stream) throws IOException {
+		int textSize = stream.readInt();
+		StringBuffer buffer = new StringBuffer(textSize);
+		boolean stopReading = false;
+		for (int ti = 0; ti < textSize; ti++) {
+			char b = (char) stream.readShort();
+			if (b == 0) {
+				stopReading = true;
+			}
+			if (!stopReading) {
+				if (b == 13 || b == 10) {
+					buffer.append('\n');
+				} else {
+					buffer.append(b);
+				}
+			}
+		}
+		value = buffer.toString();
+
+		logger.finest("PsdText.value: " + value);
 	}
 
 	/**
@@ -49,7 +66,7 @@ public class PsdLong extends PsdObject {
 	 *
 	 * @return the value
 	 */
-	public int getValue() {
+	public String getValue() {
 		return value;
 	}
 
@@ -58,7 +75,7 @@ public class PsdLong extends PsdObject {
 	 */
 	@Override
 	public String toString() {
-		return "long:" + value;
+		return value;
 	}
 
 }

@@ -16,64 +16,41 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdList.
+ * The Class PsdBoolean.
  *
  * @author Dmitry Belsky
  */
-public class PsdList extends PsdObject implements Iterable<PsdObject> {
+public class PsdBoolean extends PsdObject {
 
-	/** The objects. */
-	private ArrayList<PsdObject> objects = new ArrayList<PsdObject>();
+	/** The value. */
+	private final boolean value;
 
 	/**
-	 * Instantiates a new psd list.
+	 * Instantiates a new psd boolean.
 	 *
 	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PsdList(PsdInputStream stream) throws IOException {
-		int itemsCount = stream.readInt();
-		logger.finest("PsdList.itemsCount: " + itemsCount);
-		for (int i = 0; i < itemsCount; i++) {
-			objects.add(PsdObjectFactory.loadPsdObject(stream));
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<PsdObject> iterator() {
-		return objects.iterator();
+	public PsdBoolean(PsdInputStream stream) throws IOException {
+		value = stream.readBoolean();
+		logger.finest("PsdBoolean.value: " + value );
 	}
 
 	/**
-	 * Size.
+	 * Gets the value.
 	 *
-	 * @return the int
+	 * @return the value
 	 */
-	public int size() {
-		return objects.size();
-	}
-
-	/**
-	 * Gets the.
-	 *
-	 * @param i the i
-	 * @return the psd object
-	 */
-	public PsdObject get(int i) {
-		return objects.get(i);
+	public boolean getValue() {
+		return value;
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +58,7 @@ public class PsdList extends PsdObject implements Iterable<PsdObject> {
 	 */
 	@Override
 	public String toString() {
-		return "VlLs:" + objects.toString();
+		return "bool:" + value;
 	}
 
 }

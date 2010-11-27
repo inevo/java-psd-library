@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
 
@@ -24,24 +24,38 @@ import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdBoolean.
+ * The Class PsdEnum.
  *
  * @author Dmitry Belsky
  */
-public class PsdBoolean extends PsdObject {
-
+public class PsdEnum extends PsdObject {
+	
+	/** The type id. */
+	private final String typeId;
+	
 	/** The value. */
-	private final boolean value;
+	private final String value;
 
 	/**
-	 * Instantiates a new psd boolean.
+	 * Instantiates a new psd enum.
 	 *
 	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PsdBoolean(PsdInputStream stream) throws IOException {
-		value = stream.readBoolean();
-		logger.finest("PsdBoolean.value: " + value );
+	public PsdEnum(PsdInputStream stream) throws IOException {
+		
+		typeId = stream.readPsdString();
+		value = stream.readPsdString();
+		logger.finest("PsdEnum.typeId " + typeId + " PsdEnum.value: " + value);
+	}
+
+	/**
+	 * Gets the type id.
+	 *
+	 * @return the type id
+	 */
+	public String getTypeId() {
+		return typeId;
 	}
 
 	/**
@@ -49,7 +63,7 @@ public class PsdBoolean extends PsdObject {
 	 *
 	 * @return the value
 	 */
-	public boolean getValue() {
+	public String getValue() {
 		return value;
 	}
 
@@ -58,7 +72,7 @@ public class PsdBoolean extends PsdObject {
 	 */
 	@Override
 	public String toString() {
-		return "bool:" + value;
+		return "enum:<" + typeId + ":" + value + ">";
 	}
 
 }

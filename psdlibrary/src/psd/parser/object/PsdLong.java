@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
 
@@ -24,24 +24,24 @@ import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdDouble.
+ * The Class PsdLong.
  *
  * @author Dmitry Belsky
  */
-public class PsdDouble extends PsdObject {
+public class PsdLong extends PsdObject {
 
 	/** The value. */
-	private final double value;
+	private final int value;
 
 	/**
-	 * Instantiates a new psd double.
+	 * Instantiates a new psd long.
 	 *
 	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PsdDouble(PsdInputStream stream) throws IOException {
-		value = stream.readDouble();
-		logger.finest("PsdDouble.value: " + value);
+	public PsdLong(PsdInputStream stream) throws IOException {
+		value = stream.readInt();
+		logger.finest("PsdLong.value: " + value);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class PsdDouble extends PsdObject {
 	 *
 	 * @return the value
 	 */
-	public double getValue() {
+	public int getValue() {
 		return value;
 	}
 
@@ -58,7 +58,7 @@ public class PsdDouble extends PsdObject {
 	 */
 	@Override
 	public String toString() {
-		return "doub:" + value;
+		return "long:" + value;
 	}
 
 }

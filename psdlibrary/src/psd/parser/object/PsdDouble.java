@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.rawObjects;
+package psd.parser.object;
 
 import java.io.IOException;
 
@@ -24,38 +24,24 @@ import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class PsdEnum.
+ * The Class PsdDouble.
  *
  * @author Dmitry Belsky
  */
-public class PsdEnum extends PsdObject {
-	
-	/** The type id. */
-	private final String typeId;
-	
+public class PsdDouble extends PsdObject {
+
 	/** The value. */
-	private final String value;
+	private final double value;
 
 	/**
-	 * Instantiates a new psd enum.
+	 * Instantiates a new psd double.
 	 *
 	 * @param stream the stream
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PsdEnum(PsdInputStream stream) throws IOException {
-		
-		typeId = stream.readPsdString();
-		value = stream.readPsdString();
-		logger.finest("PsdEnum.typeId " + typeId + " PsdEnum.value: " + value);
-	}
-
-	/**
-	 * Gets the type id.
-	 *
-	 * @return the type id
-	 */
-	public String getTypeId() {
-		return typeId;
+	public PsdDouble(PsdInputStream stream) throws IOException {
+		value = stream.readDouble();
+		logger.finest("PsdDouble.value: " + value);
 	}
 
 	/**
@@ -63,7 +49,7 @@ public class PsdEnum extends PsdObject {
 	 *
 	 * @return the value
 	 */
-	public String getValue() {
+	public double getValue() {
 		return value;
 	}
 
@@ -72,7 +58,7 @@ public class PsdEnum extends PsdObject {
 	 */
 	@Override
 	public String toString() {
-		return "enum:<" + typeId + ":" + value + ">";
+		return "doub:" + value;
 	}
 
 }
