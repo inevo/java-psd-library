@@ -21,8 +21,7 @@ package psd.rawObjects;
 import java.io.IOException;
 import java.util.*;
 
-import psd.base.PsdInputStream;
-import psd.base.PsdObjectBase;
+import psd.parser.PsdInputStream;
 
 /**
  * The Class PsdDescriptor holds meta data of a layer.

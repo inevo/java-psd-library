@@ -21,6 +21,7 @@ package psd.rawObjects;
 import java.io.*;
 import java.util.*;
 import psd.base.*;
+import psd.parser.PsdInputStream;
 
 public class PsdTextData extends PsdObjectBase {
 

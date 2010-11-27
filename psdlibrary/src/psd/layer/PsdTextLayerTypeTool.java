@@ -18,6 +18,7 @@
 
 package psd.layer;
 
+import psd.parser.PsdInputStream;
 import psd.rawObjects.*;
 import psd.util.*;
 import psd.base.*;

@@ -20,7 +20,7 @@ package psd.metadata;
 
 import java.io.IOException;
 
-import psd.base.PsdInputStream;
+import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**

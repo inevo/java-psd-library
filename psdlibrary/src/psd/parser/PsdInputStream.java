@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.base;
+package psd.parser;
 
 import java.io.EOFException;
 import java.io.IOException;

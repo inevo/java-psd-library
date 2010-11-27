@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import psd.base.PsdInputStream;
-import psd.base.PsdObjectBase;
+import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -16,20 +16,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.base;
+package psd.rawObjects;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import psd.rawObjects.PsdBoolean;
-import psd.rawObjects.PsdDescriptor;
-import psd.rawObjects.PsdDouble;
-import psd.rawObjects.PsdEnum;
-import psd.rawObjects.PsdList;
-import psd.rawObjects.PsdLong;
-import psd.rawObjects.PsdText;
-import psd.rawObjects.PsdTextData;
-import psd.rawObjects.PsdUnitFloat;
+import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**

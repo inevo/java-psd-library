@@ -25,6 +25,7 @@ import java.util.logging.*;
 
 import psd.base.*;
 import psd.metadata.PsdChannelInfo;
+import psd.parser.PsdInputStream;
 
 
 /**

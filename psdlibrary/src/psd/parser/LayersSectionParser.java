@@ -3,7 +3,6 @@ package psd.parser;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import psd.base.PsdInputStream;
 import psd.layer.PsdLayer;
 
 public class LayersSectionParser {

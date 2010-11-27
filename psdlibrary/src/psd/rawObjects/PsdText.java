@@ -20,8 +20,7 @@ package psd.rawObjects;
 
 import java.io.IOException;
 
-import psd.base.PsdInputStream;
-import psd.base.PsdObjectBase;
+import psd.parser.PsdInputStream;
 
 // TODO: Auto-generated Javadoc
 /**

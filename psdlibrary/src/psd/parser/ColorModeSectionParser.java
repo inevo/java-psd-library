@@ -2,7 +2,6 @@ package psd.parser;
 
 import java.io.IOException;
 
-import psd.base.PsdInputStream;
 
 public class ColorModeSectionParser {
 	

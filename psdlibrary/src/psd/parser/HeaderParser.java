@@ -2,7 +2,6 @@ package psd.parser;
 
 import java.io.IOException;
 
-import psd.base.PsdInputStream;
 import psd.metadata.PsdColorMode;
 
 public class HeaderParser {

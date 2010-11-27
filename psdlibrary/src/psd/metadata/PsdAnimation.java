@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import psd.base.PsdInputStream;
+import psd.parser.PsdInputStream;
 import psd.rawObjects.PsdDescriptor;
 import psd.rawObjects.PsdList;
 import psd.rawObjects.PsdLong;
