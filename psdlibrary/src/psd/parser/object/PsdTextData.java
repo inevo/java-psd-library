@@ -20,7 +20,6 @@ package psd.parser.object;
 
 import java.io.*;
 import java.util.*;
-import psd.base.*;
 import psd.parser.PsdInputStream;
 
 public class PsdTextData extends PsdObject {
@@ -29,41 +28,11 @@ public class PsdTextData extends PsdObject {
 	private int cachedByte = -1;
 	private boolean useCachedByte;
 	
-	/**
-	 * Instantiates a new psd text data.
-	 *
-	 * @param stream the stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
 	public PsdTextData(PsdInputStream stream) throws IOException {
 		int size = stream.readInt();
 		int startPos = stream.getPos();
-
-		if (true) {
-			byte[] array = new byte[size];
-			stream.read(array, 0, size);
-			ByteArrayInputStream byteStream = new ByteArrayInputStream(array);
-			stream = new PsdInputStream(byteStream);
-
-			for (int i = 0; i < size; i++) {
-				int b = array[i];
-				if (b == 13 || b == 10) {
-					System.out.println();
-				} else if (b == ' ') {
-					System.out.print("'");
-				} else if (b == 9) {
-					System.out.print('\t');
-				}
-				else if (b < 32) {
-					System.out.print(b);
-				} else {
-					System.out.print((char) b);
-				}
-			}
-			System.out.println();
-		}
-
 		properties = readMap(stream);
+		assert startPos + size == stream.getPos();
 	}
 
 	/**
