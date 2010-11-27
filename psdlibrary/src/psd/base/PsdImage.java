@@ -24,6 +24,8 @@ import java.util.*;
 import psd.layer.PsdLayer;
 import psd.metadata.*;
 import psd.parser.*;
+import psd.parser.header.Header;
+import psd.parser.header.HeaderHandler;
 
 public class PsdImage {
 	private Header header;

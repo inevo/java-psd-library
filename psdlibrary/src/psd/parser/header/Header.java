@@ -1,4 +1,6 @@
-package psd.parser;
+package psd.parser.header;
+
+import psd.parser.ColorMode;
 
 
 public class Header {

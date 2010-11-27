@@ -1,6 +1,10 @@
-package psd.parser;
+package psd.parser.header;
 
 import java.io.IOException;
+
+import psd.parser.ColorMode;
+import psd.parser.Parser;
+import psd.parser.PsdInputStream;
 
 public class HeaderParser implements Parser {
 
