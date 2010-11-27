@@ -2,22 +2,23 @@ package psd.parser;
 
 import java.io.*;
 
-import psd.parser.header.HeaderParser;
+import psd.parser.header.HeaderSectionParser;
+import psd.parser.layer.LayersSectionParser;
 
 public class PsdFileParser {
-	private HeaderParser headerParser;
+	private HeaderSectionParser headerParser;
 	private ColorModeSectionParser colorModeSectionParser;
 	private ImageResourceSectionParser imageResourceSectionParser;
 	private LayersSectionParser layersSectionParser;
 	
 	public PsdFileParser() {
-		headerParser = new HeaderParser();
+		headerParser = new HeaderSectionParser();
 		colorModeSectionParser = new ColorModeSectionParser();
 		imageResourceSectionParser = new ImageResourceSectionParser();
 		layersSectionParser = new LayersSectionParser();
 	}
 	
-	public HeaderParser getHeaderParser() {
+	public HeaderSectionParser getHeaderParser() {
 		return headerParser;
 	}
 	

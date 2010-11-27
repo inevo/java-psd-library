@@ -6,14 +6,14 @@ import psd.parser.ColorMode;
 import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 
-public class HeaderParser implements Parser {
+public class HeaderSectionParser implements Parser {
 
 	private static final String FILE_SIGNATURE = "8BPS";
 	private static final int FILE_VERSION = 1;
 
 	private HeaderHandler handler;
 
-	public HeaderParser() {
+	public HeaderSectionParser() {
 	}
 
 	public void setHandler(HeaderHandler handler) {

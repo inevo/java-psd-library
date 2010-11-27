@@ -1,9 +1,12 @@
-package psd.parser;
+package psd.parser.layer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import psd.layer.PsdLayer;
+import psd.parser.Parser;
+import psd.parser.PsdHandler;
+import psd.parser.PsdInputStream;
 
 public class LayersSectionParser implements Parser {
 	

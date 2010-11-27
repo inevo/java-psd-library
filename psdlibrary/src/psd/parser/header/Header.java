@@ -2,7 +2,6 @@ package psd.parser.header;
 
 import psd.parser.ColorMode;
 
-
 public class Header {
 	int channelsCount;
 	int width;
