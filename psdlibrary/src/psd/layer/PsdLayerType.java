@@ -18,18 +18,8 @@
 
 package psd.layer;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Enum PsdLayerType.
- *
- * @author Dmitry Belsky
- */
 public enum PsdLayerType {
-	
-	/** The NORMAL. */
-	NORMAL, 
- /** The FOLDER. */
- FOLDER, 
- /** The HIDDEN. */
- HIDDEN
+	NORMAL,
+	FOLDER,
+	HIDDEN
 }

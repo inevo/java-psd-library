@@ -18,79 +18,79 @@
 
 package psd.base;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 import psd.layer.PsdLayer;
-import psd.metadata.PsdAnimation;
-import psd.metadata.PsdColorMode;
-import psd.parser.PsdParser;
+import psd.metadata.*;
+import psd.parser.*;
 
-/**
- * Loads a PSD file and holds all data of the loaded PSD file.
- * @author Dmitry Belsky
- */
 public class PsdImage {
-
-	
-	/** The number of channels. */
 	private int numberOfChannels;
-	
-	/** The width of the whole PSD. */
 	private int width;
-	
-	/** The height of the whole PSD. */
 	private int height;
-	
-	/** The used color depth. */
 	private int depth;
-	
-	/** The used color mode. */
 	private PsdColorMode colorMode;
-	
-	/** The layers of the PSD file. */
 	private ArrayList<PsdLayer> layers;
-	
-	/** The base layer. */
 	private PsdLayer baseLayer;
 
-	/** The animation generated from the layer list. */
 	private PsdAnimation animation;
 
-	/**
-	 * Instantiates a new PsdFile class.
-	 *
-	 * @param file the psd file handle
-	 * @throws IOException Signals that an I/O exception has occurred while reading the psd file.
-	 */
-	public PsdImage(File file) throws IOException {
-		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(file));
-		new PsdParser(this, stream).loadPsd();
+	public PsdImage(File psdFile) throws IOException {
+		Parser parser = new Parser();
+		parser.setPsdHandler(new PsdHandler() {
+			
+			@Override
+			public void headerLoaded(PsdHeader header) {
+				numberOfChannels = header.getChannelsCount();
+				width = header.getWidth();
+				height = header.getHeight();
+				depth = header.getDepth();
+				colorMode = header.getColorMode();
+			}
+
+			@Override
+			public void setAnimation(PsdAnimation animation) {
+				PsdImage.this.animation = animation;
+			}
+
+			@Override
+			public void setLayers(List<PsdLayer> layers) {
+				PsdImage.this.layers = new ArrayList<PsdLayer>(layers);
+				
+			}
+
+			@Override
+			public void setBaseLayer(PsdLayer baseLayer) {
+				PsdImage.this.baseLayer = baseLayer;
+			}
+		});
+		
+		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(psdFile));
+		parser.parse(stream);
 		stream.close();
+		
+		PsdLayer parentLayer = null;
+		for (int i = getLayers().size() - 1; i >= 0; i--) {
+			PsdLayer layer = getLayer(i);
+
+			switch (layer.getType()) {
+			case NORMAL:
+				layer.setParent(parentLayer);
+				break;
+			case FOLDER:
+				layer.setParent(parentLayer);
+				parentLayer = layer;
+				break;
+			case HIDDEN:
+				if (parentLayer != null) {
+					parentLayer = parentLayer.getParent();
+				}
+				break;
+			}
+		}
 	}
 	
-	/**
-	 * Instantiates a new psd file directly from an InputStream.
-	 *
-	 * @param inputStream the psd file input stream
-	 * @throws IOException Signals that an I/O exception has occurred while reading the psd file.
-	 */
-	public PsdImage(InputStream inputStream) throws IOException {
-		new PsdParser(this, inputStream).loadPsd();
-	}
-
-
-	/**
-	 * Gets all the layers as an unmodifiable list to provide consistency.
-	 *
-	 * @return the layers
-	 */
 	public List<PsdLayer> getLayers() {
 		if(this.layers == null){
 			this.layers = new ArrayList<PsdLayer>();
@@ -99,155 +99,36 @@ public class PsdImage {
 		return Collections.unmodifiableList(layers);
 	}
 	
-	/**
-	 * Gets one specific layer
-	 *
-	 * @return the layers
-	 */
 	public PsdLayer getLayer(int index) {
 		return layers.get(index);
 	}
 
-	/**
-	 * Gets the animation.
-	 *
-	 * @return the animation
-	 */
 	public PsdAnimation getAnimation() {
 		return animation;
 	}
 
-	/**
-	 * Gets the width of the psd.
-	 *
-	 * @return the width
-	 */
 	public int getWidth() {
 		return width;
 	}
 
-	/**
-	 * Gets the height of the psd.
-	 *
-	 * @return the height
-	 */
 	public int getHeight() {
 		return height;
 	}
 
-	/**
-	 * Gets the color mode of the psd.
-	 *
-	 * @return the color mode
-	 */
 	public PsdColorMode getColorMode() {
 		return colorMode;
 	}
 
-	/**
-	 * Gets the depth of the psd.
-	 *
-	 * @return the depth
-	 */
 	public int getDepth() {
 		return depth;
 	}
 
-	/**
-	 * Gets the number of channels in the psd.
-	 *
-	 * @return the number of channels
-	 */
 	public int getNumberOfChannels() {
 		return numberOfChannels;
 	}
 
-	/**
-	 * Gets the base layer.
-	 *
-	 * @return the base layer
-	 */
 	public PsdLayer getBaseLayer() {
 		return baseLayer;
 	}
 
-	/**
-	 * Sets the base layer.
-	 *
-	 * @param baseLayer the new base layer
-	 */
-	public void setBaseLayer(PsdLayer baseLayer) {
-		this.baseLayer = baseLayer;
-	}
-
-	/**
-	 * Sets the number of channels.
-	 *
-	 * @param numberOfChannels the new number of channels
-	 */
-	public void setNumberOfChannels(int numberOfChannels) {
-		this.numberOfChannels = numberOfChannels;
-	}
-
-	/**
-	 * Sets the width.
-	 *
-	 * @param width the new width
-	 */
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	/**
-	 * Sets the height.
-	 *
-	 * @param height the new height
-	 */
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	/**
-	 * Sets the depth.
-	 *
-	 * @param depth the new depth
-	 */
-	public void setDepth(int depth) {
-		this.depth = depth;
-	}
-
-	/**
-	 * Sets the color mode.
-	 *
-	 * @param colorMode the new color mode
-	 */
-	public void setColorMode(PsdColorMode colorMode) {
-		this.colorMode = colorMode;
-	}
-
-	/**
-	 * Sets the layers.
-	 *
-	 * @param layers the new layers
-	 */
-	public void setLayers(ArrayList<PsdLayer> layers) {
-		this.layers = layers;
-	}
-
-	/**
-	 * Sets the animation.
-	 *
-	 * @param animation the new animation
-	 */
-	public void setAnimation(PsdAnimation animation) {
-		this.animation = animation;
-	}
-
-	/**
-	 * adds a layer to the layer list
-	 * @param layer layer to add
-	 */
-	public void addLayer(PsdLayer layer) {
-		this.layers.add(layer);
-	}
 }
