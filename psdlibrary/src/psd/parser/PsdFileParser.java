@@ -15,8 +15,11 @@ public class PsdFileParser {
 		layersSectionParser = new LayersSectionParser();
 	}
 	
+	public HeaderParser getHeaderParser() {
+		return headerParser;
+	}
+	
 	public void setPsdHandler(PsdHandler handler) {
-		headerParser.setHandler(handler);
 		imageResourceSectionParser.setHandler(handler);
 		layersSectionParser.setHandler(handler);
 	}

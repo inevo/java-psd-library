@@ -34,13 +34,15 @@ public class PsdImage {
 
 	public PsdImage(File psdFile) throws IOException {
 		PsdFileParser parser = new PsdFileParser();
-		parser.setPsdHandler(new PsdHandler() {
-			
+		parser.getHeaderParser().setHandler(new HeaderHandler() {
 			@Override
 			public void headerLoaded(Header header) {
 				PsdImage.this.header = header;
 			}
+		});
 
+		parser.setPsdHandler(new PsdHandler() {
+			
 			@Override
 			public void setAnimation(PsdAnimation animation) {
 				PsdImage.this.animation = animation;

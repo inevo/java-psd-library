@@ -2,21 +2,20 @@ package psd.parser;
 
 import java.io.IOException;
 
-
 public class HeaderParser implements Parser {
-	
+
 	private static final String FILE_SIGNATURE = "8BPS";
 	private static final int FILE_VERSION = 1;
-	
-	private PsdHandler handler;
+
+	private HeaderHandler handler;
 
 	public HeaderParser() {
 	}
-	
-	public void setHandler(PsdHandler handler) {
+
+	public void setHandler(HeaderHandler handler) {
 		this.handler = handler;
 	}
-	
+
 	@Override
 	public void parse(PsdInputStream psdStream) throws IOException {
 		String fileSignature = psdStream.readString(4);
@@ -31,15 +30,16 @@ public class HeaderParser implements Parser {
 
 		psdStream.skipBytes(6); // reserved
 		Header header = new Header();
-		
+
 		header.channelsCount = psdStream.readShort();
 		header.height = psdStream.readInt();
 		header.width = psdStream.readInt();
 		header.depth = psdStream.readShort();
 		int colorModeIndex = psdStream.readShort();
 		header.colorMode = ColorMode.values()[colorModeIndex];
-		handler.headerLoaded(header);
+		if (handler != null) {
+			handler.headerLoaded(header);
+		}
 	}
-	
-	
+
 }

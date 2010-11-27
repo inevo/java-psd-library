@@ -66,30 +66,6 @@ public class PsdLayer {
 		metaInfo = null;
 		type = PsdLayerType.NORMAL;
 
-		top = stream.readInt();
-		left = stream.readInt();
-		bottom = stream.readInt();
-		right = stream.readInt();
-		width = right - left;
-		height = bottom - top;
-
-		numberOfChannels = stream.readShort();
-
-		channelsInfo = new ArrayList<ChannelInfo>(numberOfChannels);
-		for (int j = 0; j < numberOfChannels; j++) {
-			channelsInfo.add(new ChannelInfo(stream));
-		}
-		String tag = stream.readString(4);
-		if (!tag.equals("8BIM")) {
-			throw new IOException("format error");
-		}
-		stream.skipBytes(4); // blend mode
-		opacity = stream.readByte();
-		clipping = stream.readBoolean();
-		int flags = stream.readByte();
-		visible = ((flags >> 1) & 0x01) == 0;
-		stream.readByte(); // filler. must be zero
-		readExtraData(stream);
 	}
 
 	/**
@@ -245,89 +221,6 @@ public class PsdLayer {
 			a = fillBytes(n, 255);
 
 		image = makeImage(getWidth(), getHeight(), r, g, b, a);
-	}
-
-	private void readExtraData(PsdInputStream stream) throws IOException,
-			UnsupportedEncodingException {
-		String tag;
-		int extraSize = stream.readInt();
-		int extraPos = stream.getPos();
-		int size;
-
-		// LAYER MASK / ADJUSTMENT LAYER DATA
-		// Size of the data: 36, 20, or 0. If zero, the following fields are not
-		// present
-		size = stream.readInt();
-		stream.skipBytes(size);
-
-		// LAYER BLENDING RANGES DATA
-		// Length of layer blending ranges data
-		size = stream.readInt();
-		stream.skipBytes(size);
-
-		// Layer name: Pascal string, padded to a multiple of 4 bytes.
-		size = stream.readByte() & 0xFF;
-		size = ((size + 1 + 3) & ~0x03) - 1;
-		byte[] str = new byte[size];
-		int strSize = str.length;
-		stream.read(str);
-		for (int i = 0; i < str.length; i++) {
-			if (str[i] == 0) {
-				strSize = i;
-				break;
-			}
-		}
-		name = new String(str, 0, strSize, "ISO-8859-1");
-		logger.fine("reading layer name: " + name);
-		int prevPos = stream.getPos();
-		while (stream.getPos() - extraPos < extraSize) {
-			tag = stream.readString(4);
-			if (!tag.equals("8BIM")) {
-				throw new IOException("layer information signature error");
-			}
-			tag = stream.readString(4);
-
-			size = stream.readInt();
-			size = (size + 1) & ~0x01;
-			prevPos = stream.getPos();
-			if (tag.equals("lyid")) {
-				layerId = stream.readInt();
-			} else if (tag.equals("shmd")) {
-				metaInfo = new PsdLayerMetaInfo(stream);
-			} else if (tag.equals("lsct")) {
-				readLayerSectionDevider(stream);
-			} else if (tag.equals("TySh")) {
-				typeTool = new PsdTextLayerTypeTool(stream, size);
-			} else if (tag.equals("luni")) {
-				int len = stream.readInt();
-				name = "";
-				for (int i = 0; i < len; i++) {
-					name += (char) stream.readShort();
-				}
-			} else {
-				logger.warning("skipping tag:"  + tag);
-				stream.skipBytes(size);
-			}
-
-			stream.skipBytes(prevPos + size - stream.getPos());
-		}
-
-		stream.skipBytes(extraSize - (stream.getPos() - extraPos));
-
-	}
-
-	private void readLayerSectionDevider(PsdInputStream stream)
-			throws IOException {
-		int dividerType = stream.readInt();
-		switch (dividerType) {
-		case 1:
-		case 2:
-			type = PsdLayerType.FOLDER;
-			break;
-		case 3:
-			type = PsdLayerType.HIDDEN;
-			break;
-		}
 	}
 
 	private byte[] readPlane(PsdInputStream input, int w, int h,
