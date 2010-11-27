@@ -28,7 +28,7 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdUnitFloat extends PsdObjectBase {
+public class PsdUnitFloat extends PsdObject {
 
 	/** The unit. */
 	private final String unit;

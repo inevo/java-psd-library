@@ -88,7 +88,7 @@ public class PsdLayerMetaInfo {
 		for (int i = 0; i < list.size(); i++) {
 			PsdDescriptor desc = (PsdDescriptor) list.get(i);
 			PsdList framesList = (PsdList) desc.get("FrLs");
-			for (PsdObjectBase v : framesList) {
+			for (PsdObject v : framesList) {
 				int id = ((PsdLong) v).getValue();
 				Boolean visible = null;
 				Integer xOffset = null;

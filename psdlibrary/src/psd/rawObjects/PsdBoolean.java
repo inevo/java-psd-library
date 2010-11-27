@@ -28,7 +28,7 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdBoolean extends PsdObjectBase {
+public class PsdBoolean extends PsdObject {
 
 	/** The value. */
 	private final boolean value;

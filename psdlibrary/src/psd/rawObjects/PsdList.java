@@ -30,10 +30,10 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdList extends PsdObjectBase implements Iterable<PsdObjectBase> {
+public class PsdList extends PsdObject implements Iterable<PsdObject> {
 
 	/** The objects. */
-	private ArrayList<PsdObjectBase> objects = new ArrayList<PsdObjectBase>();
+	private ArrayList<PsdObject> objects = new ArrayList<PsdObject>();
 
 	/**
 	 * Instantiates a new psd list.
@@ -45,7 +45,7 @@ public class PsdList extends PsdObjectBase implements Iterable<PsdObjectBase> {
 		int itemsCount = stream.readInt();
 		logger.finest("PsdList.itemsCount: " + itemsCount);
 		for (int i = 0; i < itemsCount; i++) {
-			objects.add(PsdObjectBase.loadPsdObject(stream));
+			objects.add(PsdObjectFactory.loadPsdObject(stream));
 		}
 	}
 
@@ -53,7 +53,7 @@ public class PsdList extends PsdObjectBase implements Iterable<PsdObjectBase> {
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
-	public Iterator<PsdObjectBase> iterator() {
+	public Iterator<PsdObject> iterator() {
 		return objects.iterator();
 	}
 
@@ -72,7 +72,7 @@ public class PsdList extends PsdObjectBase implements Iterable<PsdObjectBase> {
 	 * @param i the i
 	 * @return the psd object
 	 */
-	public PsdObjectBase get(int i) {
+	public PsdObject get(int i) {
 		return objects.get(i);
 	}
 

@@ -28,13 +28,13 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdDescriptor extends PsdObjectBase {
+public class PsdDescriptor extends PsdObject {
 
 	/** The class id or layer type. */
 	private final String classId;
 	
 	/** a map containing all values of the descriptor */
-	private final HashMap<String, PsdObjectBase> objects = new HashMap<String, PsdObjectBase>();
+	private final HashMap<String, PsdObject> objects = new HashMap<String, PsdObject>();
 
 	/**
 	 * Instantiates a new psd descriptor.
@@ -53,7 +53,7 @@ public class PsdDescriptor extends PsdObjectBase {
 		for (int i = 0; i < itemsCount; i++) {
 			String key = stream.readPsdString().trim();
 			logger.finest("PsdDescriptor.key: " + key);
-			objects.put(key, PsdObjectBase.loadPsdObject(stream));
+			objects.put(key, PsdObjectFactory.loadPsdObject(stream));
 		}
 	}
 
@@ -71,7 +71,7 @@ public class PsdDescriptor extends PsdObjectBase {
 	 *
 	 * @return the objects
 	 */
-	public Map<String, PsdObjectBase> getObjects() {
+	public Map<String, PsdObject> getObjects() {
 		return objects;
 	}
 
@@ -81,7 +81,7 @@ public class PsdDescriptor extends PsdObjectBase {
 	 * @param key the key
 	 * @return the psd object
 	 */
-	public PsdObjectBase get(String key) {
+	public PsdObject get(String key) {
 		return objects.get(key);
 	}
 

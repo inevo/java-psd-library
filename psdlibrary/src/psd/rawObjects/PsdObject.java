@@ -18,47 +18,15 @@
 
 package psd.rawObjects;
 
-import java.io.IOException;
+import java.util.logging.Logger;
 
-import psd.parser.PsdInputStream;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PsdLong.
- *
- * @author Dmitry Belsky
- */
-public class PsdLong extends PsdObject {
+public class PsdObject {
+	
+	/** The Constant logger. */
+	protected static final Logger logger = Logger.getLogger("psd.objects");
 
-	/** The value. */
-	private final int value;
-
-	/**
-	 * Instantiates a new psd long.
-	 *
-	 * @param stream the stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public PsdLong(PsdInputStream stream) throws IOException {
-		value = stream.readInt();
-		logger.finest("PsdLong.value: " + value);
-	}
-
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
-	 */
-	public int getValue() {
-		return value;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "long:" + value;
+	protected PsdObject() {
 	}
 
 }

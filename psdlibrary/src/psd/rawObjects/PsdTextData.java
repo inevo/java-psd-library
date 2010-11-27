@@ -23,7 +23,7 @@ import java.util.*;
 import psd.base.*;
 import psd.parser.PsdInputStream;
 
-public class PsdTextData extends PsdObjectBase {
+public class PsdTextData extends PsdObject {
 
 	private Map<String, Object> properties;
 	private int cachedByte = -1;

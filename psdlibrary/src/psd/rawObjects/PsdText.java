@@ -28,7 +28,7 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdText extends PsdObjectBase {
+public class PsdText extends PsdObject {
 	
 	/** The value. */
 	private final String value;

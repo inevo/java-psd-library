@@ -28,7 +28,7 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdEnum extends PsdObjectBase {
+public class PsdEnum extends PsdObject {
 	
 	/** The type id. */
 	private final String typeId;

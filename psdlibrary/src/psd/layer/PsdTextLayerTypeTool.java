@@ -72,7 +72,7 @@ public class PsdTextLayerTypeTool {
 	 * @param key the key
 	 * @return the psd object
 	 */
-	public PsdObjectBase get(String key) {
+	public PsdObject get(String key) {
 		return this.descriptor.get(key);
 	}
 
@@ -81,7 +81,7 @@ public class PsdTextLayerTypeTool {
 	 *
 	 * @return the objects
 	 */
-	public Map<String, PsdObjectBase> getObjects() {
+	public Map<String, PsdObject> getObjects() {
 		return this.descriptor.getObjects();
 	}
 }

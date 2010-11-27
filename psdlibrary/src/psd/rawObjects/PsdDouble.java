@@ -28,7 +28,7 @@ import psd.parser.PsdInputStream;
  *
  * @author Dmitry Belsky
  */
-public class PsdDouble extends PsdObjectBase {
+public class PsdDouble extends PsdObject {
 
 	/** The value. */
 	private final double value;
