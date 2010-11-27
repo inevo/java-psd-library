@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.metadata;
+package psd.parser;
 
 public enum PsdColorMode {
 	BITMAP, // 0

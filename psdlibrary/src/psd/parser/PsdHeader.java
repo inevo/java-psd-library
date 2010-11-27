@@ -1,6 +1,5 @@
 package psd.parser;
 
-import psd.metadata.PsdColorMode;
 
 public class PsdHeader {
 	int channelsCount;

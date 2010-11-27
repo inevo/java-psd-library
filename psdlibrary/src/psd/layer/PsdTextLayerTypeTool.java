@@ -20,8 +20,6 @@ package psd.layer;
 
 import psd.parser.PsdInputStream;
 import psd.parser.object.*;
-import psd.util.*;
-import psd.base.*;
 import java.io.*;
 import java.util.logging.*;
 import java.util.*;
