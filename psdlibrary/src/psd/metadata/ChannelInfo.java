@@ -22,37 +22,17 @@ import java.io.IOException;
 
 import psd.parser.PsdInputStream;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PsdChannelInfo.
- *
- * @author Dmitry Belsky
- */
-public class PsdChannelInfo {
+public class ChannelInfo {
 	
-	/** The id. */
 	private int id;
-	
-	/** The data length. */
 	private int dataLength;
 
-	/**
-	 * Instantiates a new psd channel info.
-	 *
-	 * @param stream the stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public PsdChannelInfo(PsdInputStream stream) throws IOException {
+	public ChannelInfo(PsdInputStream stream) throws IOException {
 		id = stream.readShort();
 		dataLength = stream.readInt();
 	}
 
-	/**
-	 * Instantiates a new psd channel info.
-	 *
-	 * @param id the id
-	 */
-	public PsdChannelInfo(int id) {
+	public ChannelInfo(int id) {
 		this.id = id;
 	}
 

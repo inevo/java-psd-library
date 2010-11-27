@@ -23,7 +23,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-import psd.metadata.PsdChannelInfo;
+import psd.metadata.ChannelInfo;
 import psd.parser.PsdInputStream;
 
 public class PsdLayer {
@@ -39,7 +39,7 @@ public class PsdLayer {
 	
 	private int numberOfChannels;
 	
-	private ArrayList<PsdChannelInfo> channelsInfo;
+	private ArrayList<ChannelInfo> channelsInfo;
 	
 	private int opacity;
 	private boolean clipping;
@@ -61,7 +61,6 @@ public class PsdLayer {
 	private PsdTextLayerTypeTool typeTool;
 
 	public PsdLayer(PsdInputStream stream) throws IOException {
-		logger.setLevel(Level.OFF);
 		parent = null;
 		typeTool = null;
 		metaInfo = null;
@@ -76,9 +75,9 @@ public class PsdLayer {
 
 		numberOfChannels = stream.readShort();
 
-		channelsInfo = new ArrayList<PsdChannelInfo>(numberOfChannels);
+		channelsInfo = new ArrayList<ChannelInfo>(numberOfChannels);
 		for (int j = 0; j < numberOfChannels; j++) {
-			channelsInfo.add(new PsdChannelInfo(stream));
+			channelsInfo.add(new ChannelInfo(stream));
 		}
 		String tag = stream.readString(4);
 		if (!tag.equals("8BIM")) {
@@ -112,9 +111,9 @@ public class PsdLayer {
 		bottom = top + height;
 		this.numberOfChannels = numberOfChannels;
 
-		channelsInfo = new ArrayList<PsdChannelInfo>(numberOfChannels);
+		channelsInfo = new ArrayList<ChannelInfo>(numberOfChannels);
 		for (int j = 0; j < numberOfChannels; j++) {
-			channelsInfo.add(new PsdChannelInfo(j == 3 ? -1 : j));
+			channelsInfo.add(new ChannelInfo(j == 3 ? -1 : j));
 		}
 		visible = true;
 	}
@@ -189,8 +188,8 @@ public class PsdLayer {
 				+ " vis=" + visible + " [group=" + parent + "]";
 	}
 
-	private PsdChannelInfo getChannelInfoById(int id) {
-		for (PsdChannelInfo info : channelsInfo) {
+	private ChannelInfo getChannelInfoById(int id) {
+		for (ChannelInfo info : channelsInfo) {
 			if (info.getId() == id) {
 				return info;
 			}
