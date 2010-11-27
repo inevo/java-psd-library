@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import psd.metadata.PsdAnimation;
 
-public class ImageResourceSectionParser {
+public class ImageResourceSectionParser implements Parser {
 	private static final String PSD_TAG = "8BIM";
 	private PsdHandler handler;
 	
@@ -13,6 +13,7 @@ public class ImageResourceSectionParser {
 		this.handler = handler;
 	}
 
+	@Override
 	public void parse(PsdInputStream stream) throws IOException {
 		int length = stream.readInt();
 		int pos = stream.getPos();

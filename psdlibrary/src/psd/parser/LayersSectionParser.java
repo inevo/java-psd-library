@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import psd.layer.PsdLayer;
 
-public class LayersSectionParser {
+public class LayersSectionParser implements Parser {
 	
 	private PsdHandler handler;
 	private int psdWidth;
@@ -28,6 +28,7 @@ public class LayersSectionParser {
 		this.channelsCount = channelsCount;
 	}
 	
+	@Override
 	public void parse(PsdInputStream psdStream) throws IOException {
 		// read layer header info
 		int length = psdStream.readInt();

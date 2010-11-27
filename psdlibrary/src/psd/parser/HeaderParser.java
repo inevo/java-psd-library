@@ -3,7 +3,7 @@ package psd.parser;
 import java.io.IOException;
 
 
-public class HeaderParser {
+public class HeaderParser implements Parser {
 	
 	private static final String FILE_SIGNATURE = "8BPS";
 	private static final int FILE_VERSION = 1;
@@ -17,6 +17,7 @@ public class HeaderParser {
 		this.handler = handler;
 	}
 	
+	@Override
 	public void parse(PsdInputStream psdStream) throws IOException {
 		String fileSignature = psdStream.readString(4);
 		if (!fileSignature.equals(FILE_SIGNATURE)) {

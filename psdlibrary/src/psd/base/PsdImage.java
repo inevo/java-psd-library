@@ -33,7 +33,7 @@ public class PsdImage {
 	private PsdAnimation animation;
 
 	public PsdImage(File psdFile) throws IOException {
-		PsdParser parser = new PsdParser();
+		PsdFileParser parser = new PsdFileParser();
 		parser.setPsdHandler(new PsdHandler() {
 			
 			@Override
