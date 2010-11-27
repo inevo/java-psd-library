@@ -2,8 +2,6 @@ package psd.parser;
 
 import java.io.*;
 
-import psd.base.*;
-
 public class Parser {
 	private HeaderParser headerParser;
 	private ColorModeSectionParser colorModeSectionParser;

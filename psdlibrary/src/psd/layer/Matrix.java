@@ -1,4 +1,4 @@
-package psd.util;
+package psd.layer;
 
 import java.io.*;
 

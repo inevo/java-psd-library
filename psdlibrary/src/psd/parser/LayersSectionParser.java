@@ -10,7 +10,6 @@ public class LayersSectionParser {
 	private PsdHandler handler;
 	private int psdWidth;
 	private int psdHeight;
-	private int psdChannelsCount;
 	private int channelsCount;
 	
 	public void setHandler(PsdHandler handler) {
