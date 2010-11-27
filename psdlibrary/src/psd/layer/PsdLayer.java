@@ -446,6 +446,12 @@ public class PsdLayer {
 				readLayerSectionDevider(stream);
 			} else if (tag.equals("TySh")) {
 				typeTool = new PsdTextLayerTypeTool(stream, size);
+			} else if (tag.equals("luni")) {
+				int len = stream.readInt();
+				name = "";
+				for (int i = 0; i < len; i++) {
+					name += (char) stream.readShort();
+				}
 			} else {
 				logger.warning("skipping tag:"  + tag);
 				stream.skipBytes(size);
