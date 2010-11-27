@@ -1,12 +1,12 @@
 package psd.parser;
 
 
-public class PsdHeader {
+public class Header {
 	int channelsCount;
 	int width;
 	int height;
 	int depth;
-	PsdColorMode colorMode;
+	ColorMode colorMode;
 	
 	public int getChannelsCount() {
 		return channelsCount;
@@ -24,7 +24,7 @@ public class PsdHeader {
 		return depth;
 	}
 	
-	public PsdColorMode getColorMode() {
+	public ColorMode getColorMode() {
 		return colorMode;
 	}
 }

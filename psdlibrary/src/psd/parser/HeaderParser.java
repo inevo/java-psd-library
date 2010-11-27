@@ -29,14 +29,14 @@ public class HeaderParser {
 		}
 
 		psdStream.skipBytes(6); // reserved
-		PsdHeader header = new PsdHeader();
+		Header header = new Header();
 		
 		header.channelsCount = psdStream.readShort();
 		header.height = psdStream.readInt();
 		header.width = psdStream.readInt();
 		header.depth = psdStream.readShort();
 		int colorModeIndex = psdStream.readShort();
-		header.colorMode = PsdColorMode.values()[colorModeIndex];
+		header.colorMode = ColorMode.values()[colorModeIndex];
 		handler.headerLoaded(header);
 	}
 	

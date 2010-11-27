@@ -18,7 +18,7 @@
 
 package psd.parser;
 
-public enum PsdColorMode {
+public enum ColorMode {
 	BITMAP, // 0
 	GRAYSCALE, // 1
 	INDEXED, // 2

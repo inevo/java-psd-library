@@ -26,11 +26,7 @@ import psd.metadata.*;
 import psd.parser.*;
 
 public class PsdImage {
-	private int numberOfChannels;
-	private int width;
-	private int height;
-	private int depth;
-	private PsdColorMode colorMode;
+	private Header header;
 	private ArrayList<PsdLayer> layers;
 	private PsdLayer baseLayer;
 
@@ -41,12 +37,8 @@ public class PsdImage {
 		parser.setPsdHandler(new PsdHandler() {
 			
 			@Override
-			public void headerLoaded(PsdHeader header) {
-				numberOfChannels = header.getChannelsCount();
-				width = header.getWidth();
-				height = header.getHeight();
-				depth = header.getDepth();
-				colorMode = header.getColorMode();
+			public void headerLoaded(Header header) {
+				PsdImage.this.header = header;
 			}
 
 			@Override
@@ -108,23 +100,23 @@ public class PsdImage {
 	}
 
 	public int getWidth() {
-		return width;
+		return header.getWidth();
 	}
 
 	public int getHeight() {
-		return height;
+		return header.getHeight();
 	}
 
-	public PsdColorMode getColorMode() {
-		return colorMode;
+	public ColorMode getColorMode() {
+		return header.getColorMode();
 	}
 
 	public int getDepth() {
-		return depth;
+		return header.getDepth();
 	}
 
-	public int getNumberOfChannels() {
-		return numberOfChannels;
+	public int getChannelsCount() {
+		return header.getChannelsCount();
 	}
 
 	public PsdLayer getBaseLayer() {
