@@ -19,17 +19,14 @@
 package psd.image;
 
 import java.awt.image.*;
-import java.io.*;
 import java.util.*;
-import java.util.logging.*;
 
-import psd.layer.PsdLayerMetaInfo;
-import psd.layer.PsdLayerType;
-import psd.layer.PsdTextLayerTypeTool;
-import psd.parser.PsdInputStream;
 import psd.parser.layer.ChannelInfo;
 import psd.parser.layer.LayerHandler;
 import psd.parser.layer.LayerParser;
+import psd.parser.layer.additional.PsdLayerMetaInfo;
+import psd.parser.layer.additional.PsdLayerType;
+import psd.parser.layer.additional.PsdTextLayerTypeTool;
 
 public class Layer implements LayerHandler {
 	private int top;
@@ -39,7 +36,7 @@ public class Layer implements LayerHandler {
 	
 	private int numberOfChannels;
 	
-	private ArrayList<ChannelInfo> channelsInfo;
+	private List<ChannelInfo> channelsInfo;
 	
 	private int opacity;
 	private boolean clipping;
@@ -151,6 +148,36 @@ public class Layer implements LayerHandler {
 		this.top = top;
 		this.right = right;
 		this.bottom = bottom;
+	}
+
+	@Override
+	public void channelsInfoLoaded(List<ChannelInfo> channelsInfo) {
+		this.channelsInfo = channelsInfo;
+	}
+
+	@Override
+	public void blendModeLoaded(String blendMode) {
+		System.out.println("blendMode: " + blendMode);
+	}
+
+	@Override
+	public void opacityLoaded(int opacity) {
+		this.opacity = opacity;
+	}
+
+	@Override
+	public void clippingLoaded(boolean clipping) {
+		this.clipping = clipping;
+	}
+
+	@Override
+	public void visibleLoaded(boolean visible) {
+		this.visible = visible;
+	}
+
+	@Override
+	public void nameLoaded(String name) {
+		this.name = name;
 	}
 
 }

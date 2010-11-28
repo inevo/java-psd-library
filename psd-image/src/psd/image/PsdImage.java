@@ -28,6 +28,7 @@ import psd.parser.header.HeaderSectionHandler;
 import psd.parser.imageresource.ImageResourceSectionHandler;
 import psd.parser.layer.LayerParser;
 import psd.parser.layer.LayersSectionHandler;
+import psd.parser.layer.additional.LayerIdParser;
 
 public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, ImageResourceSectionHandler {
 	private Header header;
@@ -114,6 +115,7 @@ public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, Ima
 
 	@Override
 	public void createLayer(LayerParser parser) {
+		parser.putAdditionalInformationParser("lyid", new LayerIdParser());
 		Layer layer = new Layer();
 		layers.add(layer);
 		parser.setHandler(layer);
