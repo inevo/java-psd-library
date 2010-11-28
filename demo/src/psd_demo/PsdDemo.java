@@ -21,7 +21,6 @@ package psd_demo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import psd.base.PsdImage;
+import psd.image.PsdImage;
 
 /**
  * 
@@ -44,6 +43,8 @@ import psd.base.PsdImage;
 public class PsdDemo extends JFrame {
 
 	private final class OpenAction implements ActionListener {
+		
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fileChooser = new JFileChooser();
 			if (fileChooser.showOpenDialog(PsdDemo.this) == JFileChooser.APPROVE_OPTION) {
@@ -59,6 +60,8 @@ public class PsdDemo extends JFrame {
 	}
 
 	private final class ExitAction implements ActionListener {
+
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			PsdDemo.this.dispose();
 		}
@@ -100,6 +103,8 @@ public class PsdDemo extends JFrame {
 	public static void main(String[] args) {
 		Logger.getLogger("psd").setLevel(Level.FINE);
 		Runnable startupRunnable = new Runnable() {
+
+			@Override
 			public void run() {
 				PsdDemo psdDemo = new PsdDemo();
 				psdDemo.setVisible(true);

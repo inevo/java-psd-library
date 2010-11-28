@@ -38,8 +38,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import psd.base.PsdImage;
-import psd.layer.PsdLayer;
+import psd.image.PsdImage;
+import psd.image.Layer;
 import psd.layer.PsdLayerType;
 
 /**
@@ -88,7 +88,7 @@ public class PsdView extends JPanel {
 		this.psdFile = psdFile;
 		this.layers.setModel(this.createTreeModel(psdFile.getLayers()));
 		
-		List<PsdLayer> baseLayer = new LinkedList<PsdLayer>();
+		List<Layer> baseLayer = new LinkedList<Layer>();
 		baseLayer.add(this.psdFile.getBaseLayer());
 		this.origRenderer.setPsd(psdFile.getWidth(), psdFile.getHeight(), baseLayer);
 		this.origRenderer.revalidate();
@@ -97,10 +97,10 @@ public class PsdView extends JPanel {
 		this.renderer.revalidate();
 	}
 	
-	private TreeModel createTreeModel(List<PsdLayer> layers) {
+	private TreeModel createTreeModel(List<Layer> layers) {
 		NamedVector<Object> currLevel = new NamedVector<Object>();
 		Queue<NamedVector<Object>> levelQueue = new LinkedList<NamedVector<Object>>();
-		for (PsdLayer l : layers) {
+		for (Layer l : layers) {
 			if (l.getType() == PsdLayerType.HIDDEN) {
 				levelQueue.add(currLevel);
 				currLevel = new NamedVector<Object>();
@@ -124,7 +124,7 @@ public class PsdView extends JPanel {
 		
 		private static final long serialVersionUID = 1L;
 
-		List<PsdLayer> layers;
+		List<Layer> layers;
 		
 		private boolean[] selection;
 		
@@ -136,7 +136,7 @@ public class PsdView extends JPanel {
 			this.clear();
 		}
 		
-		public void setPsd(int witdh, int height, List<PsdLayer> layers) {
+		public void setPsd(int witdh, int height, List<Layer> layers) {
 			this.layers = layers;
 			this.selection = new boolean[layers.size()];
 			this.width = witdh;
@@ -165,7 +165,7 @@ public class PsdView extends JPanel {
 					int x = (getWidth() - width) / 2;
 					int y = (getHeight() - height) / 2;
 					for (int i = 0; i < layers.size(); i++) {
-						PsdLayer layer = layers.get(i);
+						Layer layer = layers.get(i);
 						if (layer.isVisible()) {
 							int drawX = layer.getLeft() + x;
 							int drawY = layer.getTop() + y;
@@ -175,7 +175,7 @@ public class PsdView extends JPanel {
 					g.setColor(Color.RED);
 					for (int i = 0; i < layers.size(); i++) {
 						if (selection[i]) {
-							PsdLayer layer = layers.get(i);
+							Layer layer = layers.get(i);
 							int drawX = layer.getLeft() + x;
 							int drawY = layer.getTop() + y;
 							g.drawRect(drawX, drawY, layer.getWidth(), layer.getHeight());

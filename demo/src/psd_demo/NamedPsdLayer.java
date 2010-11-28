@@ -1,14 +1,14 @@
 package psd_demo;
 
-import psd.layer.PsdLayer;
+import psd.image.Layer;
 
 public class NamedPsdLayer {
 
-	private final PsdLayer layer;
+	private final Layer layer;
 	
 	private String name;
 	
-	public NamedPsdLayer(PsdLayer layer) {
+	public NamedPsdLayer(Layer layer) {
 		this.layer = layer;
 	}
 	
@@ -29,7 +29,7 @@ public class NamedPsdLayer {
 	/**
 	 * @return the layer
 	 */
-	public PsdLayer getLayer() {
+	public Layer getLayer() {
 		return layer;
 	}
 
