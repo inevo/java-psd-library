@@ -114,9 +114,10 @@ public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, Ima
 
 	@Override
 	public void createLayer(LayerParser parser) {
-		parser.putAdditionalInformationParser("lyid", new LayerIdParser());
-		parser.putAdditionalInformationParser("lsct", new LayerSectionDeviderParser());
-		parser.putAdditionalInformationParser("luni", new LayerUnicodeNameParser());
+		parser.putAdditionalInformationParser(LayerIdParser.TAG, new LayerIdParser());
+		parser.putAdditionalInformationParser(LayerSectionDeviderParser.TAG, new LayerSectionDeviderParser());
+		parser.putAdditionalInformationParser(LayerUnicodeNameParser.TAG, new LayerUnicodeNameParser());
+		parser.putAdditionalInformationParser(LayerTypeToolParser.TAG, new LayerTypeToolParser());
 		
 		Layer layer = new Layer();
 		layers.add(layer);

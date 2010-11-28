@@ -25,7 +25,7 @@ import psd.parser.layer.ChannelInfo;
 import psd.parser.layer.LayerHandler;
 import psd.parser.layer.LayerType;
 import psd.parser.layer.additional.PsdLayerMetaInfo;
-import psd.parser.layer.additional.PsdTextLayerTypeTool;
+import psd.parser.layer.additional.LayerTypeToolParser;
 
 public class Layer implements LayerHandler {
 	private int top;
@@ -54,7 +54,7 @@ public class Layer implements LayerHandler {
 	
 	private PsdLayerMetaInfo metaInfo;
 	
-	private PsdTextLayerTypeTool typeTool;
+	private LayerTypeToolParser typeTool;
 
 	public Layer() {
 		left = 0;
@@ -131,7 +131,7 @@ public class Layer implements LayerHandler {
 		this.parent = parent;
 	}
 
-	public PsdTextLayerTypeTool getTypeTool() {
+	public LayerTypeToolParser getTypeTool() {
 		return typeTool;
 	}
 
