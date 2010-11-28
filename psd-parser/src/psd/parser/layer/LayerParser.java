@@ -89,21 +89,6 @@ public class LayerParser implements Parser {
 		handler.visibleLoaded(visible);
 	}
 
-	private LayerType readLayerSectionDevider(PsdInputStream stream) throws IOException {
-		int dividerType = stream.readInt();
-		LayerType type = LayerType.NORMAL;
-		switch (dividerType) {
-		case 1:
-		case 2:
-			type = LayerType.FOLDER;
-			break;
-		case 3:
-			type = LayerType.HIDDEN;
-			break;
-		}
-		return type;
-	}
-
 	private void parseExtraData(PsdInputStream stream) throws IOException {
 		int extraSize = stream.readInt();
 		int extraPos = stream.getPos();
@@ -169,18 +154,8 @@ public class LayerParser implements Parser {
 	private void parseAdditionalLayerInformation(PsdInputStream stream, String tag, int size) throws IOException {
 		if (tag.equals("shmd")) {
 			PsdLayerMetaInfo metaInfo = new PsdLayerMetaInfo(stream);
-		} else if (tag.equals("lsct")) {
-			readLayerSectionDevider(stream);
 		} else if (tag.equals("TySh")) {
 			PsdTextLayerTypeTool typeTool = new PsdTextLayerTypeTool(stream, size);
-		} else if (tag.equals("luni")) {
-			int len = stream.readInt();
-			String name2 = "";
-			for (int i = 0; i < len; i++) {
-				name2 += (char) stream.readShort();
-			}
-		} else {
-			stream.skipBytes(size);
 		}
 	}
 
