@@ -19,67 +19,34 @@
 package psd.parser.layer.additional;
 
 import psd.parser.PsdInputStream;
+import psd.parser.layer.LayerAdditionalInformationParser;
 import psd.parser.object.*;
 import java.io.*;
-import java.util.logging.*;
-import java.util.*;
 
 /**
  * contains meta data of a text layer like font type, font size, raw text ...) 
  */
-public class PsdTextLayerTypeTool {
-
-	/** The logger. */
-	private static Logger logger = Logger.getLogger("psd.layer");
-
-	/** The transformation matrix for the text. */
-	private Matrix transform;
+public class LayerTypeToolParser implements LayerAdditionalInformationParser {
 	
-	/** The descriptor. */
-	private PsdDescriptor descriptor;
+	public static final String TAG = "TySh";
 	
-	/**
-	 * Instantiates a new type tool.
-	 *
-	 * @param stream the stream
-	 * @param size the size
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public PsdTextLayerTypeTool(PsdInputStream stream, int size) throws IOException {
+	@Override
+	public void parse(PsdInputStream stream, String tag, int size) throws IOException {
 		byte[] data = new byte[size];
 		stream.readBytes(data, size);
 
 		PsdInputStream dataStream = new PsdInputStream(new ByteArrayInputStream(data));
 		int version = dataStream.readShort();
 		assert version == 1;
-		this.transform = new Matrix(dataStream);
+		Matrix transform = new Matrix(dataStream);
+		// TODO handle transform
 		int descriptorVersion = dataStream.readShort();
-		logger.info("descriptorVersion: " + descriptorVersion);
 		if (descriptorVersion == 50) {
 			int xTextDescriptorVersion = dataStream.readInt();
-			logger.info("xTextDescriptorVersion: " + xTextDescriptorVersion);
-			this.descriptor = new PsdDescriptor(new PsdInputStream(dataStream));
+			PsdDescriptor descriptor = new PsdDescriptor(new PsdInputStream(dataStream));
+			// TODO handle descritpor
 		} else {
 			assert false;
 		}
-	}
-
-	/**
-	 * Gets the.
-	 *
-	 * @param key the key
-	 * @return the psd object
-	 */
-	public PsdObject get(String key) {
-		return this.descriptor.get(key);
-	}
-
-	/**
-	 * Gets the objects.
-	 *
-	 * @return the objects
-	 */
-	public Map<String, PsdObject> getObjects() {
-		return this.descriptor.getObjects();
 	}
 }

@@ -6,7 +6,9 @@ import psd.parser.PsdInputStream;
 import psd.parser.layer.LayerAdditionalInformationParser;
 
 public class LayerUnicodeNameParser implements LayerAdditionalInformationParser {
-
+	
+	public static final String TAG = "luni";
+	
 	@Override
 	public void parse(PsdInputStream stream, String tag, int size) throws IOException {
 		int len = stream.readInt();

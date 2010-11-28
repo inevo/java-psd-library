@@ -8,6 +8,8 @@ import psd.parser.layer.LayerType;
 
 public class LayerSectionDeviderParser implements LayerAdditionalInformationParser {
 
+	public static final String TAG = "lsct";
+	
 	@Override
 	public void parse(PsdInputStream stream, String tag, int size) throws IOException {
 		int dividerType = stream.readInt();

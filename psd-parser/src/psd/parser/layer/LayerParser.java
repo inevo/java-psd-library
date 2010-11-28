@@ -6,7 +6,7 @@ import java.util.*;
 import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 import psd.parser.layer.additional.PsdLayerMetaInfo;
-import psd.parser.layer.additional.PsdTextLayerTypeTool;
+import psd.parser.layer.additional.LayerTypeToolParser;
 
 public class LayerParser implements Parser {
 
@@ -154,8 +154,6 @@ public class LayerParser implements Parser {
 	private void parseAdditionalLayerInformation(PsdInputStream stream, String tag, int size) throws IOException {
 		if (tag.equals("shmd")) {
 			PsdLayerMetaInfo metaInfo = new PsdLayerMetaInfo(stream);
-		} else if (tag.equals("TySh")) {
-			PsdTextLayerTypeTool typeTool = new PsdTextLayerTypeTool(stream, size);
 		}
 	}
 
