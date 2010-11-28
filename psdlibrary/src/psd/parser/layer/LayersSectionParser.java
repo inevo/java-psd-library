@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import psd.base.PsdLayer;
-import psd.parser.Parser;
-import psd.parser.PsdInputStream;
+import psd.parser.*;
 
 public class LayersSectionParser implements Parser {
 	
@@ -36,9 +34,7 @@ public class LayersSectionParser implements Parser {
 		// read layer header info
 		int length = psdStream.readInt();
 		int pos = psdStream.getPos();
-		ArrayList<PsdLayer> tmpLayers=null;
-		PsdLayer tmpBaseLayer;
-		
+
 		if (length > 0) {
 
 			int size = psdStream.readInt();

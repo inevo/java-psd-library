@@ -29,9 +29,7 @@ import psd.layer.PsdTextLayerTypeTool;
 import psd.metadata.ChannelInfo;
 import psd.parser.PsdInputStream;
 
-public class PsdLayer {
-	private static Logger logger = Logger.getLogger("psd.layer");
-	
+public class Layer {
 	private int top;
 	private int left;
 	private int bottom;
@@ -57,20 +55,20 @@ public class PsdLayer {
 
 	private PsdLayerType type;
 
-	private PsdLayer parent;
+	private Layer parent;
 	
 	private PsdLayerMetaInfo metaInfo;
 	
 	private PsdTextLayerTypeTool typeTool;
 
-	public PsdLayer(PsdInputStream stream) throws IOException {
+	public Layer(PsdInputStream stream) throws IOException {
 		parent = null;
 		typeTool = null;
 		metaInfo = null;
 		type = PsdLayerType.NORMAL;
 	}
 
-	public PsdLayer(int width, int height, int numberOfChannels) {
+	public Layer(int width, int height, int numberOfChannels) {
 		parent = null;
 		type = PsdLayerType.NORMAL;
 
@@ -141,11 +139,11 @@ public class PsdLayer {
 		return clipping;
 	}
 
-	public PsdLayer getParent() {
+	public Layer getParent() {
 		return parent;
 	}
 
-	public void setParent(PsdLayer parent) {
+	public void setParent(Layer parent) {
 		this.parent = parent;
 	}
 

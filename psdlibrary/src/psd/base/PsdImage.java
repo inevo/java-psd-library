@@ -31,8 +31,8 @@ import psd.parser.layer.LayerSectionHandler;
 
 public class PsdImage {
 	private Header header;
-	private ArrayList<PsdLayer> layers;
-	private PsdLayer baseLayer;
+	private ArrayList<Layer> layers;
+	private Layer baseLayer;
 
 	private PsdAnimation animation;
 
@@ -69,9 +69,9 @@ public class PsdImage {
 		parser.parse(stream);
 		stream.close();
 		
-		PsdLayer parentLayer = null;
+		Layer parentLayer = null;
 		for (int i = getLayers().size() - 1; i >= 0; i--) {
-			PsdLayer layer = getLayer(i);
+			Layer layer = getLayer(i);
 
 			switch (layer.getType()) {
 			case NORMAL:
@@ -90,15 +90,15 @@ public class PsdImage {
 		}
 	}
 	
-	public List<PsdLayer> getLayers() {
+	public List<Layer> getLayers() {
 		if(this.layers == null){
-			this.layers = new ArrayList<PsdLayer>();
+			this.layers = new ArrayList<Layer>();
 			layers.add(this.baseLayer);
 		}
 		return Collections.unmodifiableList(layers);
 	}
 	
-	public PsdLayer getLayer(int index) {
+	public Layer getLayer(int index) {
 		return layers.get(index);
 	}
 
@@ -126,7 +126,7 @@ public class PsdImage {
 		return header.getChannelsCount();
 	}
 
-	public PsdLayer getBaseLayer() {
+	public Layer getBaseLayer() {
 		return baseLayer;
 	}
 
