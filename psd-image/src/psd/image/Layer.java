@@ -23,9 +23,8 @@ import java.util.*;
 
 import psd.parser.layer.ChannelInfo;
 import psd.parser.layer.LayerHandler;
-import psd.parser.layer.LayerParser;
+import psd.parser.layer.LayerType;
 import psd.parser.layer.additional.PsdLayerMetaInfo;
-import psd.parser.layer.additional.PsdLayerType;
 import psd.parser.layer.additional.PsdTextLayerTypeTool;
 
 public class Layer implements LayerHandler {
@@ -49,7 +48,7 @@ public class Layer implements LayerHandler {
 	
 	private int layerId;
 
-	private PsdLayerType type;
+	private LayerType type;
 
 	private Layer parent;
 	
@@ -64,7 +63,7 @@ public class Layer implements LayerHandler {
 		bottom = 0;
 		visible = true;
 		opacity = -1;
-		type = PsdLayerType.NORMAL;
+		type = LayerType.NORMAL;
 
 		parent = null;
 		typeTool = null;
@@ -104,7 +103,7 @@ public class Layer implements LayerHandler {
 		return bottom - top;
 	}
 
-	public PsdLayerType getType() {
+	public LayerType getType() {
 		return type;
 	}
 
