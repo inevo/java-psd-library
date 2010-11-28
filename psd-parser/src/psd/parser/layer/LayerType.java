@@ -16,9 +16,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.parser.layer.additional;
+package psd.parser.layer;
 
-public enum PsdLayerType {
+public enum LayerType {
 	NORMAL,
 	FOLDER,
 	HIDDEN

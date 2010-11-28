@@ -6,7 +6,6 @@ import java.util.*;
 import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 import psd.parser.layer.additional.PsdLayerMetaInfo;
-import psd.parser.layer.additional.PsdLayerType;
 import psd.parser.layer.additional.PsdTextLayerTypeTool;
 
 public class LayerParser implements Parser {
@@ -90,16 +89,16 @@ public class LayerParser implements Parser {
 		handler.visibleLoaded(visible);
 	}
 
-	private PsdLayerType readLayerSectionDevider(PsdInputStream stream) throws IOException {
+	private LayerType readLayerSectionDevider(PsdInputStream stream) throws IOException {
 		int dividerType = stream.readInt();
-		PsdLayerType type = PsdLayerType.NORMAL;
+		LayerType type = LayerType.NORMAL;
 		switch (dividerType) {
 		case 1:
 		case 2:
-			type = PsdLayerType.FOLDER;
+			type = LayerType.FOLDER;
 			break;
 		case 3:
-			type = PsdLayerType.HIDDEN;
+			type = LayerType.HIDDEN;
 			break;
 		}
 		return type;
