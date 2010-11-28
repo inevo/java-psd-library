@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.*;
 
-import psd.base.*;
 import psd.parser.PsdInputStream;
 import psd.parser.object.*;
 
