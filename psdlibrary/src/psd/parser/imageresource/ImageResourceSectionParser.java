@@ -1,15 +1,17 @@
-package psd.parser;
+package psd.parser.imageresource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import psd.metadata.PsdAnimation;
+import psd.parser.Parser;
+import psd.parser.PsdInputStream;
 
 public class ImageResourceSectionParser implements Parser {
 	private static final String PSD_TAG = "8BIM";
-	private PsdHandler handler;
+	private ImageResourceSectionHandler handler;
 	
-	public void setHandler(PsdHandler handler) {
+	public void setHandler(ImageResourceSectionHandler handler) {
 		this.handler = handler;
 	}
 
@@ -45,7 +47,7 @@ public class ImageResourceSectionParser implements Parser {
 				PsdInputStream st = new PsdInputStream(new ByteArrayInputStream(data));
 				String key = st.readString(4);
 				if (key.equals("mani")) {
-					handler.setAnimation(new PsdAnimation(st));
+					handler.animationLoaded(new PsdAnimation(st));
 				}
 			}
 			stream.skipBytes(sizeOfData - (stream.getPos() - storePos));

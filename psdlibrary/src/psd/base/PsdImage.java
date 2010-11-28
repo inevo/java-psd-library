@@ -25,6 +25,7 @@ import psd.metadata.*;
 import psd.parser.*;
 import psd.parser.header.Header;
 import psd.parser.header.HeaderSectionHandler;
+import psd.parser.imageresource.ImageResourceSectionHandler;
 import psd.parser.layer.LayerParser;
 import psd.parser.layer.LayersSectionHandler;
 
@@ -53,11 +54,9 @@ public class PsdImage {
 			}
 		});
 
-		parser.setPsdHandler(new PsdHandler() {
-			
+		parser.getImageResourceSectionParser().setHandler(new ImageResourceSectionHandler() {
 			@Override
-			public void setAnimation(PsdAnimation animation) {
-				PsdImage.this.animation = animation;
+			public void animationLoaded(PsdAnimation animation) {
 			}
 		});
 		
