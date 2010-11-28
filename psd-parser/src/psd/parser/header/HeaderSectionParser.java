@@ -3,10 +3,9 @@ package psd.parser.header;
 import java.io.IOException;
 
 import psd.parser.ColorMode;
-import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 
-public class HeaderSectionParser implements Parser {
+public class HeaderSectionParser {
 
 	private static final String FILE_SIGNATURE = "8BPS";
 	private static final int FILE_VERSION = 1;
@@ -20,7 +19,6 @@ public class HeaderSectionParser implements Parser {
 		this.handler = handler;
 	}
 
-	@Override
 	public void parse(PsdInputStream psdStream) throws IOException {
 		String fileSignature = psdStream.readString(4);
 		if (!fileSignature.equals(FILE_SIGNATURE)) {

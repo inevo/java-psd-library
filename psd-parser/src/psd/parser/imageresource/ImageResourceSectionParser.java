@@ -4,10 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import psd.metadata.PsdAnimation;
-import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 
-public class ImageResourceSectionParser implements Parser {
+public class ImageResourceSectionParser {
 	private static final String PSD_TAG = "8BIM";
 	private ImageResourceSectionHandler handler;
 	
@@ -15,7 +14,6 @@ public class ImageResourceSectionParser implements Parser {
 		this.handler = handler;
 	}
 
-	@Override
 	public void parse(PsdInputStream stream) throws IOException {
 		int length = stream.readInt();
 		int pos = stream.getPos();

@@ -3,12 +3,10 @@ package psd.parser.layer;
 import java.io.IOException;
 import java.util.*;
 
-import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 import psd.parser.layer.additional.PsdLayerMetaInfo;
-import psd.parser.layer.additional.LayerTypeToolParser;
 
-public class LayerParser implements Parser {
+public class LayerParser {
 
 	private LayerHandler handler;
 	private Map<String, LayerAdditionalInformationParser> additionalInformationParsers;
@@ -32,7 +30,6 @@ public class LayerParser implements Parser {
 		this.handler = handler;
 	}
 
-	@Override
 	public void parse(PsdInputStream stream) throws IOException {
 		parseBounds(stream);
 		parseChannelsInfo(stream);
