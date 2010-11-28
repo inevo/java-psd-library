@@ -2,20 +2,20 @@ package psd.parser.layer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import psd.layer.PsdLayer;
 import psd.parser.Parser;
-import psd.parser.PsdHandler;
 import psd.parser.PsdInputStream;
 
 public class LayersSectionParser implements Parser {
 	
-	private PsdHandler handler;
+	private LayerSectionHandler handler;
 	private int psdWidth;
 	private int psdHeight;
 	private int channelsCount;
 	
-	public void setHandler(PsdHandler handler) {
+	public void setHandler(LayerSectionHandler handler) {
 		this.handler = handler;
 	}
 	
@@ -51,16 +51,17 @@ public class LayersSectionParser implements Parser {
 					layersCount = -layersCount;
 				}
 				
-				tmpLayers=new ArrayList<PsdLayer>(layersCount);
+				List<LayerParser> parsers = new ArrayList<LayerParser>(layersCount);
 				for (int i = 0; i < layersCount; i++) {
-					PsdLayer layer = new PsdLayer(psdStream);
-					tmpLayers.add(layer);
+					LayerParser layerParser = new LayerParser();
+					parsers.add(layerParser);
+					handler.createLayer(layerParser);
+					layerParser.parse(psdStream);
 				}
 				
-				for (PsdLayer layer : tmpLayers) {
-					layer.readImage(psdStream);
+				for (LayerParser parser : parsers) {
+					parser.parseImageSection(psdStream);
 				}
-				handler.setLayers(tmpLayers);
 			}
 
 			int maskSize = length - (psdStream.getPos() - pos);
@@ -79,15 +80,15 @@ public class LayersSectionParser implements Parser {
 				lineLengths[i] = psdStream.readShort();
 			}
 			
-			tmpBaseLayer.readImage(psdStream, false, lineLengths);
+			// TODO tmpBaseLayer.readImage(psdStream, false, lineLengths);
 		} else {
-			tmpBaseLayer.readImage(psdStream, false, null);
+			// TODO tmpBaseLayer.readImage(psdStream, false, null);
 		}
 
 		if (tmpLayers == null) {
 			tmpLayers = new ArrayList<PsdLayer>(1);
 			tmpLayers.add(tmpBaseLayer);
 		}
-		handler.setBaseLayer(tmpBaseLayer);
+		// TODO handler.setBaseLayer(tmpBaseLayer);
 	}
 }

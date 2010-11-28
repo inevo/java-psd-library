@@ -1,5 +1,7 @@
 package psd.parser.layer;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -13,14 +15,19 @@ import psd.parser.PsdInputStream;
 
 public class LayerParser implements Parser {
 
+	private LayerHandler handler;
+	
+	public void setHandler(LayerHandler handler) {
+		this.handler = handler;
+	}
+	
 	@Override
 	public void parse(PsdInputStream stream) throws IOException {
 		int top = stream.readInt();
 		int left = stream.readInt();
 		int bottom = stream.readInt();
 		int right = stream.readInt();
-		int width = right - left;
-		int height = bottom - top;
+		handler.boundsLoaded(left, top, right, bottom);
 
 		int numberOfChannels = stream.readShort();
 		List<ChannelInfo> channelsInfo = new ArrayList<ChannelInfo>(numberOfChannels);
@@ -122,5 +129,9 @@ public class LayerParser implements Parser {
 		}
 		return type;
 	}
+
+	public void parseImageSection(PsdInputStream psdStream) throws IOException {
+	}
+
 
 }

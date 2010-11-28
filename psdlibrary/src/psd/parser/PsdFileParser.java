@@ -18,13 +18,16 @@ public class PsdFileParser {
 		layersSectionParser = new LayersSectionParser();
 	}
 	
-	public HeaderSectionParser getHeaderParser() {
+	public HeaderSectionParser getHeaderSectionParser() {
 		return headerParser;
+	}
+	
+	public LayersSectionParser getLayersSectionParser() {
+		return layersSectionParser;
 	}
 	
 	public void setPsdHandler(PsdHandler handler) {
 		imageResourceSectionParser.setHandler(handler);
-		layersSectionParser.setHandler(handler);
 	}
 
 	public void parse(InputStream inputStream) throws IOException {

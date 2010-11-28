@@ -25,7 +25,10 @@ import psd.layer.PsdLayer;
 import psd.metadata.*;
 import psd.parser.*;
 import psd.parser.header.Header;
-import psd.parser.header.HeaderHandler;
+import psd.parser.header.HeaderSectionHandler;
+import psd.parser.layer.LayerHandler;
+import psd.parser.layer.LayerParser;
+import psd.parser.layer.LayerSectionHandler;
 
 public class PsdImage {
 	private Header header;
@@ -36,10 +39,22 @@ public class PsdImage {
 
 	public PsdImage(File psdFile) throws IOException {
 		PsdFileParser parser = new PsdFileParser();
-		parser.getHeaderParser().setHandler(new HeaderHandler() {
+		parser.getHeaderSectionParser().setHandler(new HeaderSectionHandler() {
 			@Override
 			public void headerLoaded(Header header) {
 				PsdImage.this.header = header;
+			}
+		});
+		
+		parser.getLayersSectionParser().setHandler(new LayerSectionHandler() {
+			@Override
+			public void createLayer(LayerParser parser) {
+				parser.setHandler(new LayerHandler() {
+
+					@Override
+					public void boundsLoaded(int left, int top, int right, int bottom) {
+					}
+				});
 			}
 		});
 
@@ -48,17 +63,6 @@ public class PsdImage {
 			@Override
 			public void setAnimation(PsdAnimation animation) {
 				PsdImage.this.animation = animation;
-			}
-
-			@Override
-			public void setLayers(List<PsdLayer> layers) {
-				PsdImage.this.layers = new ArrayList<PsdLayer>(layers);
-				
-			}
-
-			@Override
-			public void setBaseLayer(PsdLayer baseLayer) {
-				PsdImage.this.baseLayer = baseLayer;
 			}
 		});
 		

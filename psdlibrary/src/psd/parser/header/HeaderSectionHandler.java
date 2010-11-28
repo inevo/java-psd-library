@@ -1,5 +1,5 @@
 package psd.parser.header;
 
-public interface HeaderHandler {
+public interface HeaderSectionHandler {
 	public void headerLoaded(Header header);
 }

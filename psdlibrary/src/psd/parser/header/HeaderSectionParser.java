@@ -11,12 +11,12 @@ public class HeaderSectionParser implements Parser {
 	private static final String FILE_SIGNATURE = "8BPS";
 	private static final int FILE_VERSION = 1;
 
-	private HeaderHandler handler;
+	private HeaderSectionHandler handler;
 
 	public HeaderSectionParser() {
 	}
 
-	public void setHandler(HeaderHandler handler) {
+	public void setHandler(HeaderSectionHandler handler) {
 		this.handler = handler;
 	}
 
