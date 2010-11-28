@@ -65,6 +65,12 @@ public class LayersSectionParser implements Parser {
 		}
 		
 //		tmpBaseLayer = new PsdLayer(psdWidth, psdHeight, channelsCount);
+//		this.numberOfChannels = numberOfChannels;
+//
+//		channelsInfo = new ArrayList<ChannelInfo>(numberOfChannels);
+//		for (int j = 0; j < numberOfChannels; j++) {
+//			channelsInfo.add(new ChannelInfo(j == 3 ? -1 : j));
+//		}
 //		
 //		//run-length-encoding
 //		boolean rle = psdStream.readShort() == 1;

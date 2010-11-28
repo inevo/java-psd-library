@@ -5,7 +5,6 @@ import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.util.List;
 
-import psd.metadata.ChannelInfo;
 import psd.parser.PsdInputStream;
 
 public class ImageReader {

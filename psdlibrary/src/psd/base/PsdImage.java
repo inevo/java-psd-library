@@ -25,7 +25,6 @@ import psd.metadata.*;
 import psd.parser.*;
 import psd.parser.header.Header;
 import psd.parser.header.HeaderSectionHandler;
-import psd.parser.layer.LayerHandler;
 import psd.parser.layer.LayerParser;
 import psd.parser.layer.LayerSectionHandler;
 
@@ -48,12 +47,9 @@ public class PsdImage {
 		parser.getLayersSectionParser().setHandler(new LayerSectionHandler() {
 			@Override
 			public void createLayer(LayerParser parser) {
-				parser.setHandler(new LayerHandler() {
-
-					@Override
-					public void boundsLoaded(int left, int top, int right, int bottom) {
-					}
-				});
+				Layer layer = new Layer();
+				layers.add(layer);
+				parser.setHandler(layer);
 			}
 		});
 

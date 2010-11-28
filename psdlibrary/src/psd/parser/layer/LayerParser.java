@@ -1,7 +1,5 @@
 package psd.parser.layer;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -9,7 +7,6 @@ import java.util.*;
 import psd.layer.PsdLayerMetaInfo;
 import psd.layer.PsdLayerType;
 import psd.layer.PsdTextLayerTypeTool;
-import psd.metadata.ChannelInfo;
 import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 

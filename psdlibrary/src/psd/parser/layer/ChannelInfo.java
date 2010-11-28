@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.metadata;
+package psd.parser.layer;
 
 import java.io.IOException;
 
@@ -36,20 +36,10 @@ public class ChannelInfo {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * Gets the data length.
-	 *
-	 * @return the data length
-	 */
 	public int getDataLength() {
 		return dataLength;
 	}

@@ -26,17 +26,16 @@ import java.util.logging.*;
 import psd.layer.PsdLayerMetaInfo;
 import psd.layer.PsdLayerType;
 import psd.layer.PsdTextLayerTypeTool;
-import psd.metadata.ChannelInfo;
 import psd.parser.PsdInputStream;
+import psd.parser.layer.ChannelInfo;
+import psd.parser.layer.LayerHandler;
+import psd.parser.layer.LayerParser;
 
-public class Layer {
+public class Layer implements LayerHandler {
 	private int top;
 	private int left;
 	private int bottom;
 	private int right;
-	
-	private int width;
-	private int height;
 	
 	private int numberOfChannels;
 	
@@ -61,30 +60,19 @@ public class Layer {
 	
 	private PsdTextLayerTypeTool typeTool;
 
-	public Layer(PsdInputStream stream) throws IOException {
+	public Layer() {
+		left = 0;
+		top = 0;
+		right = 0;
+		bottom = 0;
+		visible = true;
+		opacity = -1;
+		type = PsdLayerType.NORMAL;
+
 		parent = null;
 		typeTool = null;
 		metaInfo = null;
-		type = PsdLayerType.NORMAL;
-	}
-
-	public Layer(int width, int height, int numberOfChannels) {
 		parent = null;
-		type = PsdLayerType.NORMAL;
-
-		left = 0;
-		top = 0;
-		this.width = width;
-		this.height = height;
-		right = left + width;
-		bottom = top + height;
-		this.numberOfChannels = numberOfChannels;
-
-		channelsInfo = new ArrayList<ChannelInfo>(numberOfChannels);
-		for (int j = 0; j < numberOfChannels; j++) {
-			channelsInfo.add(new ChannelInfo(j == 3 ? -1 : j));
-		}
-		visible = true;
 	}
 
 	public PsdLayerMetaInfo getMetaInfo() {
@@ -112,11 +100,11 @@ public class Layer {
 	}
 
 	public int getWidth() {
-		return width;
+		return right - left;
 	}
 
 	public int getHeight() {
-		return height;
+		return bottom - top;
 	}
 
 	public PsdLayerType getType() {
@@ -156,8 +144,13 @@ public class Layer {
 		return "Layer: name=" + name + " left=" + left + " top=" + top
 				+ " vis=" + visible + " [group=" + parent + "]";
 	}
-
-	public void setVisible(boolean value){
-		this.visible=true;
+	
+	@Override
+	public void boundsLoaded(int left, int top, int right, int bottom) {
+		this.left = left;
+		this.top = top;
+		this.right = right;
+		this.bottom = bottom;
 	}
+
 }
