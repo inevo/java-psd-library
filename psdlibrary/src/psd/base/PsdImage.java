@@ -29,7 +29,7 @@ import psd.parser.imageresource.ImageResourceSectionHandler;
 import psd.parser.layer.LayerParser;
 import psd.parser.layer.LayersSectionHandler;
 
-public class PsdImage {
+public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, ImageResourceSectionHandler {
 	private Header header;
 	private ArrayList<Layer> layers;
 	private Layer baseLayer;
@@ -38,32 +38,14 @@ public class PsdImage {
 
 	public PsdImage(File psdFile) throws IOException {
 		PsdFileParser parser = new PsdFileParser();
-		parser.getHeaderSectionParser().setHandler(new HeaderSectionHandler() {
-			@Override
-			public void headerLoaded(Header header) {
-				PsdImage.this.header = header;
-			}
-		});
-		
-		parser.getLayersSectionParser().setHandler(new LayersSectionHandler() {
-			@Override
-			public void createLayer(LayerParser parser) {
-				Layer layer = new Layer();
-				layers.add(layer);
-				parser.setHandler(layer);
-			}
-		});
+		parser.getHeaderSectionParser().setHandler(this);
+		parser.getImageResourceSectionParser().setHandler(this);
+		parser.getLayersSectionParser().setHandler(this);
 
-		parser.getImageResourceSectionParser().setHandler(new ImageResourceSectionHandler() {
-			@Override
-			public void animationLoaded(PsdAnimation animation) {
-			}
-		});
-		
 		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(psdFile));
 		parser.parse(stream);
 		stream.close();
-		
+
 		Layer parentLayer = null;
 		for (int i = getLayers().size() - 1; i >= 0; i--) {
 			Layer layer = getLayer(i);
@@ -84,15 +66,15 @@ public class PsdImage {
 			}
 		}
 	}
-	
+
 	public List<Layer> getLayers() {
-		if(this.layers == null){
+		if (this.layers == null) {
 			this.layers = new ArrayList<Layer>();
 			layers.add(this.baseLayer);
 		}
 		return Collections.unmodifiableList(layers);
 	}
-	
+
 	public Layer getLayer(int index) {
 		return layers.get(index);
 	}
@@ -123,6 +105,22 @@ public class PsdImage {
 
 	public Layer getBaseLayer() {
 		return baseLayer;
+	}
+
+	@Override
+	public void headerLoaded(Header header) {
+		this.header = header;
+	}
+
+	@Override
+	public void createLayer(LayerParser parser) {
+		Layer layer = new Layer();
+		layers.add(layer);
+		parser.setHandler(layer);
+	}
+
+	@Override
+	public void animationLoaded(PsdAnimation animation) {
 	}
 
 }
