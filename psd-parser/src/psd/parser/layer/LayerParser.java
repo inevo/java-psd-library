@@ -3,11 +3,11 @@ package psd.parser.layer;
 import java.io.IOException;
 import java.util.*;
 
-import psd.layer.PsdLayerMetaInfo;
-import psd.layer.PsdLayerType;
-import psd.layer.PsdTextLayerTypeTool;
 import psd.parser.Parser;
 import psd.parser.PsdInputStream;
+import psd.parser.layer.additional.PsdLayerMetaInfo;
+import psd.parser.layer.additional.PsdLayerType;
+import psd.parser.layer.additional.PsdTextLayerTypeTool;
 
 public class LayerParser implements Parser {
 
@@ -168,9 +168,7 @@ public class LayerParser implements Parser {
 	}
 
 	private void parseAdditionalLayerInformation(PsdInputStream stream, String tag, int size) throws IOException {
-		if (tag.equals("lyid")) {
-			int layerId = stream.readInt();
-		} else if (tag.equals("shmd")) {
+		if (tag.equals("shmd")) {
 			PsdLayerMetaInfo metaInfo = new PsdLayerMetaInfo(stream);
 		} else if (tag.equals("lsct")) {
 			readLayerSectionDevider(stream);

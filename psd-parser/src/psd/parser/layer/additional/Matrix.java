@@ -1,4 +1,4 @@
-package psd.layer;
+package psd.parser.layer.additional;
 
 import java.io.*;
 

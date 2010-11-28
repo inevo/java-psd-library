@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.layer;
+package psd.parser.layer.additional;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.layer;
+package psd.parser.layer.additional;
 
 import java.io.IOException;
 import java.util.*;
