@@ -16,13 +16,16 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.layer;
+package psd.base;
 
 import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
+import psd.layer.PsdLayerMetaInfo;
+import psd.layer.PsdLayerType;
+import psd.layer.PsdTextLayerTypeTool;
 import psd.metadata.ChannelInfo;
 import psd.parser.PsdInputStream;
 

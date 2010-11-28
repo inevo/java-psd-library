@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import psd.layer.PsdLayer;
+import psd.base.PsdLayer;
 import psd.parser.Parser;
 import psd.parser.PsdInputStream;
 
@@ -68,27 +68,27 @@ public class LayersSectionParser implements Parser {
 			psdStream.skipBytes(maskSize);
 		}
 		
-		tmpBaseLayer = new PsdLayer(psdWidth, psdHeight, channelsCount);
-		
-		//run-length-encoding
-		boolean rle = psdStream.readShort() == 1;
-		if (rle) {
-			int nLines = tmpBaseLayer.getHeight() * tmpBaseLayer.getNumberOfChannels();
-			short[] lineLengths = new short[nLines];
-			
-			for (int i = 0; i < nLines; i++) {
-				lineLengths[i] = psdStream.readShort();
-			}
-			
-			// TODO tmpBaseLayer.readImage(psdStream, false, lineLengths);
-		} else {
-			// TODO tmpBaseLayer.readImage(psdStream, false, null);
-		}
-
-		if (tmpLayers == null) {
-			tmpLayers = new ArrayList<PsdLayer>(1);
-			tmpLayers.add(tmpBaseLayer);
-		}
-		// TODO handler.setBaseLayer(tmpBaseLayer);
+//		tmpBaseLayer = new PsdLayer(psdWidth, psdHeight, channelsCount);
+//		
+//		//run-length-encoding
+//		boolean rle = psdStream.readShort() == 1;
+//		if (rle) {
+//			int nLines = tmpBaseLayer.getHeight() * tmpBaseLayer.getNumberOfChannels();
+//			short[] lineLengths = new short[nLines];
+//			
+//			for (int i = 0; i < nLines; i++) {
+//				lineLengths[i] = psdStream.readShort();
+//			}
+//			
+//			// TODO tmpBaseLayer.readImage(psdStream, false, lineLengths);
+//		} else {
+//			// TODO tmpBaseLayer.readImage(psdStream, false, null);
+//		}
+//
+//		if (tmpLayers == null) {
+//			tmpLayers = new ArrayList<PsdLayer>(1);
+//			tmpLayers.add(tmpBaseLayer);
+//		}
+//		// TODO handler.setBaseLayer(tmpBaseLayer);
 	}
 }
