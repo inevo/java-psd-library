@@ -40,7 +40,7 @@ import javax.swing.tree.TreeModel;
 
 import psd.image.PsdImage;
 import psd.image.Layer;
-import psd.layer.PsdLayerType;
+import psd.parser.layer.LayerType;
 
 /**
  * @author Dmitry Belsky, Boris Suska
@@ -101,11 +101,11 @@ public class PsdView extends JPanel {
 		NamedVector<Object> currLevel = new NamedVector<Object>();
 		Queue<NamedVector<Object>> levelQueue = new LinkedList<NamedVector<Object>>();
 		for (Layer l : layers) {
-			if (l.getType() == PsdLayerType.HIDDEN) {
+			if (l.getType() == LayerType.HIDDEN) {
 				levelQueue.add(currLevel);
 				currLevel = new NamedVector<Object>();
 			}
-			else if (l.getType() == PsdLayerType.FOLDER) {
+			else if (l.getType() == LayerType.FOLDER) {
 				currLevel.setName(l.getName());
 				Vector<Object> prevLevel = currLevel;
 				currLevel = levelQueue.remove();
