@@ -1,5 +1,5 @@
 package psd.parser.layer;
 
-public interface LayerSectionHandler {
+public interface LayersSectionHandler {
 	public void createLayer(LayerParser parser);
 }

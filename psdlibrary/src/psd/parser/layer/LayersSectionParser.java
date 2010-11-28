@@ -8,12 +8,12 @@ import psd.parser.*;
 
 public class LayersSectionParser implements Parser {
 	
-	private LayerSectionHandler handler;
+	private LayersSectionHandler handler;
 	private int psdWidth;
 	private int psdHeight;
 	private int channelsCount;
 	
-	public void setHandler(LayerSectionHandler handler) {
+	public void setHandler(LayersSectionHandler handler) {
 		this.handler = handler;
 	}
 	

@@ -26,7 +26,7 @@ import psd.parser.*;
 import psd.parser.header.Header;
 import psd.parser.header.HeaderSectionHandler;
 import psd.parser.layer.LayerParser;
-import psd.parser.layer.LayerSectionHandler;
+import psd.parser.layer.LayersSectionHandler;
 
 public class PsdImage {
 	private Header header;
@@ -44,7 +44,7 @@ public class PsdImage {
 			}
 		});
 		
-		parser.getLayersSectionParser().setHandler(new LayerSectionHandler() {
+		parser.getLayersSectionParser().setHandler(new LayersSectionHandler() {
 			@Override
 			public void createLayer(LayerParser parser) {
 				Layer layer = new Layer();
