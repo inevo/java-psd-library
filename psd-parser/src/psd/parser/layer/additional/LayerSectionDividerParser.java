@@ -6,9 +6,15 @@ import psd.parser.PsdInputStream;
 import psd.parser.layer.LayerAdditionalInformationParser;
 import psd.parser.layer.LayerType;
 
-public class LayerSectionDeviderParser implements LayerAdditionalInformationParser {
+public class LayerSectionDividerParser implements LayerAdditionalInformationParser {
 
 	public static final String TAG = "lsct";
+
+	private final LayerSectionDividerHandler handler;
+	
+	public LayerSectionDividerParser(LayerSectionDividerHandler handler) {
+		this.handler = handler;
+	}
 	
 	@Override
 	public void parse(PsdInputStream stream, String tag, int size) throws IOException {
@@ -23,6 +29,7 @@ public class LayerSectionDeviderParser implements LayerAdditionalInformationPars
 			type = LayerType.HIDDEN;
 			break;
 		}
+		handler.sectionDividerParsed(type);
 	}
 
 }
