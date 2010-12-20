@@ -16,5 +16,7 @@ public interface LayerHandler {
 	public void visibleLoaded(boolean visible);
 
 	public void nameLoaded(String name);
+
+	public void loaingImage(ImageParser reader);
 	
 }

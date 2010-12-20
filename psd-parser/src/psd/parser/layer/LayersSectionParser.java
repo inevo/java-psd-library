@@ -54,8 +54,8 @@ public class LayersSectionParser {
 					layerParser.parse(psdStream);
 				}
 				
-				for (LayerParser parser : parsers) {
-					parser.parseImageSection(psdStream);
+				for (LayerParser layerParser : parsers) {
+					layerParser.parseImageSection(psdStream);
 				}
 			}
 

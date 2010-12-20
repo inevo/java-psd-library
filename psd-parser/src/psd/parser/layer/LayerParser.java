@@ -155,6 +155,8 @@ public class LayerParser {
 	}
 
 	public void parseImageSection(PsdInputStream psdStream) throws IOException {
+		ImageParser reader = new ImageParser(psdStream);
+		handler.loaingImage(reader);
 	}
 
 }

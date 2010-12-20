@@ -7,28 +7,40 @@ import java.util.List;
 
 import psd.parser.PsdInputStream;
 
-public class ImageReader {
+public class ImageParser {
 
-//	public void readImage(PsdInputStream input) throws IOException {
-//		readImage(input, true, null);
-//	}
+	private final PsdInputStream stream;
 
-	public BufferedImage readImage(PsdInputStream input, List<ChannelInfo> channelInfos, int w, int h, int opacity, boolean needReadPlaneInfo, short[] lineLengths) throws IOException {
+	public ImageParser(PsdInputStream stream) {
+		this.stream = stream;
+	}
+
+	public void skipImage() {
+
+	}
+
+	public BufferedImage readImage(List<ChannelInfo> channelInfos, int w, int h, int opacity) throws IOException {
+		return readImage(channelInfos, w, h, opacity, true, null);
+	}
+
+	public BufferedImage readImage(List<ChannelInfo> channelInfos, int w, int h, int opacity,
+			boolean needReadPlaneInfo, short[] lineLengths) throws IOException {
 		byte[] r = null, g = null, b = null, a = null;
 		int planeNum = 0;
-		for (ChannelInfo info : channelInfos) {
-			switch (info.getId()) {
+		for (ChannelInfo channel : channelInfos) {
+			System.out.println("channel: " + channel.getId());
+			switch (channel.getId()) {
 			case 0:
-				r = readPlane(input, w, h, lineLengths, needReadPlaneInfo, planeNum);
+				r = readPlane(w, h, lineLengths, needReadPlaneInfo, planeNum);
 				break;
 			case 1:
-				g = readPlane(input, w, h, lineLengths, needReadPlaneInfo, planeNum);
+				g = readPlane(w, h, lineLengths, needReadPlaneInfo, planeNum);
 				break;
 			case 2:
-				b = readPlane(input, w, h, lineLengths, needReadPlaneInfo, planeNum);
+				b = readPlane(w, h, lineLengths, needReadPlaneInfo, planeNum);
 				break;
 			case -1:
-				a = readPlane(input, w, h, lineLengths, needReadPlaneInfo, planeNum);
+				a = readPlane(w, h, lineLengths, needReadPlaneInfo, planeNum);
 				if (opacity != -1) {
 					double o = (opacity & 0xff) / 256.0;
 					for (int i = 0; i < a.length; i++) {
@@ -37,10 +49,13 @@ public class ImageReader {
 				}
 				break;
 			default:
-				input.skipBytes(info.getDataLength());
+				stream.skipBytes(channel.getDataLength());
 				// layer mask
 			}
 			planeNum++;
+		}
+		if (w == 0 || h == 0) {
+			return null;
 		}
 		int n = w * h;
 		if (r == null)
@@ -55,15 +70,15 @@ public class ImageReader {
 		return makeImage(w, h, r, g, b, a);
 	}
 
-	private byte[] readPlane(PsdInputStream input, int w, int h, short[] lineLengths, boolean needReadPlaneInfo,
-			int planeNum) throws IOException {
+	private byte[] readPlane(int w, int h, short[] lineLengths, boolean needReadPlaneInfo, int planeNum)
+			throws IOException {
 		// read a single color plane
 		// get RLE compression info for channel
 
 		boolean rleEncoded;
 
 		if (needReadPlaneInfo) {
-			short encoding = input.readShort();
+			short encoding = stream.readShort();
 			if (encoding != 0 && encoding != 1) {
 				throw new IOException("invalid encoding: " + encoding);
 			}
@@ -72,7 +87,7 @@ public class ImageReader {
 				if (lineLengths == null) {
 					lineLengths = new short[h];
 					for (int i = 0; i < h; i++) {
-						lineLengths[i] = input.readShort();
+						lineLengths[i] = stream.readShort();
 					}
 				}
 			}
@@ -82,17 +97,16 @@ public class ImageReader {
 		}
 
 		if (rleEncoded) {
-			return parsePlaneCompressed(input, w, h, lineLengths, planeNum);
+			return parsePlaneCompressed(w, h, lineLengths, planeNum);
 		} else {
 			int size = w * h;
 			byte[] b = new byte[size];
-			input.readBytes(b, size);
+			stream.readBytes(b, size);
 			return b;
 		}
 	}
 
-	private byte[] parsePlaneCompressed(PsdInputStream input, int w, int h, short[] lineLengths, int planeNum)
-			throws IOException {
+	private byte[] parsePlaneCompressed(int w, int h, short[] lineLengths, int planeNum) throws IOException {
 
 		byte[] b = new byte[w * h];
 		byte[] s = new byte[w * 2];
@@ -100,30 +114,32 @@ public class ImageReader {
 		int lineIndex = planeNum * h;
 		for (int i = 0; i < h; i++) {
 			int len = lineLengths[lineIndex++];
-			input.readBytes(s, len);
+			stream.readBytes(s, len);
 			decodeRLE(s, 0, len, b, pos);
 			pos += w;
 		}
 		return b;
 	}
 
-	private void decodeRLE(byte[] src, int sindex, int slen, byte[] dst, int dindex) throws IOException {
+	private void decodeRLE(byte[] src, int srcIndex, int slen, byte[] dst, int dstIndex) throws IOException {
+		int sIndex = srcIndex;
+		int dIndex = dstIndex;
 		try {
-			int max = sindex + slen;
-			while (sindex < max) {
-				byte b = src[sindex++];
+			int max = sIndex + slen;
+			while (sIndex < max) {
+				byte b = src[sIndex++];
 				int n = (int) b;
 				if (n < 0) {
 					n = 1 - n;
-					b = src[sindex++];
+					b = src[sIndex++];
 					for (int i = 0; i < n; i++) {
-						dst[dindex++] = b;
+						dst[dIndex++] = b;
 					}
 				} else {
 					n = n + 1;
-					System.arraycopy(src, sindex, dst, dindex, n);
-					dindex += n;
-					sindex += n;
+					System.arraycopy(src, sIndex, dst, dIndex, n);
+					dIndex += n;
+					sIndex += n;
 				}
 			}
 		} catch (Exception e) {
