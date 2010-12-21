@@ -8,9 +8,12 @@ import psd.parser.layer.additional.PsdLayerMetaInfo;
 
 public class LayerParser {
 
+	private ArrayList<Channel> channels;
 	private LayerHandler handler;
 	private Map<String, LayerAdditionalInformationParser> additionalInformationParsers;
 	private LayerAdditionalInformationParser defaultAdditionalInformationParser;
+	private int width = -1;
+	private int height = -1;
 
 	public LayerParser() {
 		handler = null;
@@ -47,43 +50,65 @@ public class LayerParser {
 		parseExtraData(stream);
 	}
 
+	public void fireBoundsChanged(int left, int top, int right, int bottom) {
+		if (handler != null) {
+			handler.boundsLoaded(left, top, right, bottom);
+		}
+	}
+
+	public void fireChannelsLoaded(List<Channel> channels) {
+		if (handler != null) {
+			handler.channelsLoaded(channels);
+		}
+	}
+
 	private void parseBounds(PsdInputStream stream) throws IOException {
 		int top = stream.readInt();
 		int left = stream.readInt();
 		int bottom = stream.readInt();
 		int right = stream.readInt();
-		handler.boundsLoaded(left, top, right, bottom);
+		width = right - left;
+		height = bottom - top;
+		if (handler != null) {
+			handler.boundsLoaded(left, top, right, bottom);
+		}
 	}
 
 	private void parseChannelsInfo(PsdInputStream stream) throws IOException {
 		int channelsCount = stream.readShort();
-		List<ChannelInfo> channelsInfo = new ArrayList<ChannelInfo>(channelsCount);
+		channels = new ArrayList<Channel>();
 		for (int j = 0; j < channelsCount; j++) {
-			channelsInfo.add(new ChannelInfo(stream));
+			channels.add(new Channel(stream));
 		}
-		handler.channelsInfoLoaded(channelsInfo);
 	}
 
 	private void parseBlendMode(PsdInputStream stream) throws IOException {
 		String blendMode = stream.readString(4);
-		handler.blendModeLoaded(blendMode);
-
+		if (handler != null) {
+			handler.blendModeLoaded(blendMode);
+		}
 	}
 
 	private void parseOpacity(PsdInputStream stream) throws IOException {
 		int opacity = stream.readByte();
-		handler.opacityLoaded(opacity);
+		if (handler != null) {
+			handler.opacityLoaded(opacity);
+		}
 	}
 
 	private void parseClipping(PsdInputStream stream) throws IOException {
 		boolean clipping = stream.readBoolean();
-		handler.clippingLoaded(clipping);
+		if (handler != null) {
+			handler.clippingLoaded(clipping);
+		}
 	}
 
 	private void parseVisibility(PsdInputStream stream) throws IOException {
 		int flags = stream.readByte();
 		boolean visible = ((flags >> 1) & 0x01) == 0;
-		handler.visibleLoaded(visible);
+		if (handler != null) {
+			handler.visibleLoaded(visible);
+		}
 	}
 
 	private void parseExtraData(PsdInputStream stream) throws IOException {
@@ -116,13 +141,13 @@ public class LayerParser {
 			size = (size + 1) & ~0x01;
 			prevPos = stream.getPos();
 
-			LayerAdditionalInformationParser parser = additionalInformationParsers.get(tag);
-			if (parser == null) {
-				parser = defaultAdditionalInformationParser;
+			LayerAdditionalInformationParser additionalParser = additionalInformationParsers.get(tag);
+			if (additionalParser == null) {
+				additionalParser = defaultAdditionalInformationParser;
 			}
-			
-			if (parser != null) {
-				parser.parse(stream, tag, size);
+
+			if (additionalParser != null) {
+				additionalParser.parse(stream, tag, size);
 			}
 
 			stream.skipBytes(prevPos + size - stream.getPos());
@@ -145,7 +170,9 @@ public class LayerParser {
 			}
 		}
 		String name = new String(str, 0, strSize, "ISO-8859-1");
-		handler.nameLoaded(name);
+		if (handler != null) {
+			handler.nameLoaded(name);
+		}
 	}
 
 	private void parseAdditionalLayerInformation(PsdInputStream stream, String tag, int size) throws IOException {
@@ -154,9 +181,25 @@ public class LayerParser {
 		}
 	}
 
-	public void parseImageSection(PsdInputStream psdStream) throws IOException {
-		ImageParser reader = new ImageParser(psdStream);
-		handler.loaingImage(reader);
+	public void parseImageSection(PsdInputStream stream) throws IOException {
+		ImagePlaneParser planeParser = new ImagePlaneParser(stream);
+		int planeNum = 0;
+		for (Channel channel : channels) {
+			switch (channel.getId()) {
+			case Channel.ALPHA:
+			case Channel.RED:
+			case Channel.GREEN:
+			case Channel.BLUE:
+				channel.setData(planeParser.readPlane(width, height));
+				break;
+			default:
+				stream.skipBytes(channel.getDataLength());
+				// layer mask
+			}
+			planeNum++;
+		}
+		if (handler != null) {
+			handler.channelsLoaded(channels);
+		}
 	}
-
 }

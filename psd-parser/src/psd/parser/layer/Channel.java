@@ -22,17 +22,22 @@ import java.io.IOException;
 
 import psd.parser.PsdInputStream;
 
-public class ChannelInfo {
-	
+public class Channel {
+	public static final int ALPHA = -1;
+	public static final int RED = 0;
+	public static final int GREEN = 1;
+	public static final int BLUE = 2;
+
 	private int id;
 	private int dataLength;
+	private byte[] data;
 
-	public ChannelInfo(PsdInputStream stream) throws IOException {
+	public Channel(PsdInputStream stream) throws IOException {
 		id = stream.readShort();
 		dataLength = stream.readInt();
 	}
 
-	public ChannelInfo(int id) {
+	public Channel(int id) {
 		this.id = id;
 	}
 
@@ -42,6 +47,14 @@ public class ChannelInfo {
 
 	public int getDataLength() {
 		return dataLength;
+	}
+	
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+	
+	public byte[] getData() {
+		return data;
 	}
 
 }

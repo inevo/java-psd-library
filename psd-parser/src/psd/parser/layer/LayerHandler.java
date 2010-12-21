@@ -5,8 +5,6 @@ import java.util.List;
 public interface LayerHandler {
 	public void boundsLoaded(int left, int top, int right, int bottom);
 
-	public void channelsInfoLoaded(List<ChannelInfo> channelsInfo);
-
 	public void blendModeLoaded(String blendMode);
 
 	public void opacityLoaded(int opacity);
@@ -16,7 +14,6 @@ public interface LayerHandler {
 	public void visibleLoaded(boolean visible);
 
 	public void nameLoaded(String name);
-
-	public void loaingImage(ImageParser reader);
 	
+	public void channelsLoaded(List<Channel> channels);
 }

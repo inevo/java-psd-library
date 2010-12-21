@@ -11,9 +11,7 @@ public class HeaderSectionParser {
 	private static final int FILE_VERSION = 1;
 
 	private HeaderSectionHandler handler;
-
-	public HeaderSectionParser() {
-	}
+	private Header header = new Header();
 
 	public void setHandler(HeaderSectionHandler handler) {
 		this.handler = handler;
@@ -31,7 +29,6 @@ public class HeaderSectionParser {
 		}
 
 		psdStream.skipBytes(6); // reserved
-		Header header = new Header();
 
 		header.channelsCount = psdStream.readShort();
 		header.height = psdStream.readInt();
@@ -44,4 +41,7 @@ public class HeaderSectionParser {
 		}
 	}
 
+	public Header getHeader() {
+		return header;
+	}
 }
