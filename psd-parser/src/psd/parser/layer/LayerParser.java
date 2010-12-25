@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 
 import psd.parser.PsdInputStream;
-import psd.parser.layer.additional.PsdLayerMetaInfo;
 
 public class LayerParser {
 
@@ -172,12 +171,6 @@ public class LayerParser {
 		String name = new String(str, 0, strSize, "ISO-8859-1");
 		if (handler != null) {
 			handler.nameLoaded(name);
-		}
-	}
-
-	private void parseAdditionalLayerInformation(PsdInputStream stream, String tag, int size) throws IOException {
-		if (tag.equals("shmd")) {
-			PsdLayerMetaInfo metaInfo = new PsdLayerMetaInfo(stream);
 		}
 	}
 

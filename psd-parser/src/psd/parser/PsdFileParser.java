@@ -16,7 +16,7 @@ public class PsdFileParser {
 		headerParser = new HeaderSectionParser();
 		colorModeSectionParser = new ColorModeSectionParser();
 		imageResourceSectionParser = new ImageResourceSectionParser();
-		layersSectionParser = new LayersSectionParser();
+		layersSectionParser = new LayersSectionParser(headerParser.getHeader());
 	}
 	
 	public HeaderSectionParser getHeaderSectionParser() {
@@ -36,9 +36,6 @@ public class PsdFileParser {
 		headerParser.parse(stream);
 		colorModeSectionParser.parse(stream);
 		imageResourceSectionParser.parse(stream);
-		layersSectionParser.setPsdWidth(headerParser.getHeader().getWidth());
-		layersSectionParser.setPsdHeight(headerParser.getHeader().getHeight());
-		layersSectionParser.setChannelsCount(headerParser.getHeader().getChannelsCount());
 		layersSectionParser.parse(stream);
 	}
 }

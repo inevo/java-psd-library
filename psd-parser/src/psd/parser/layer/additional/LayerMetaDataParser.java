@@ -20,65 +20,41 @@ package psd.parser.layer.additional;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.*;
 
 import psd.parser.PsdInputStream;
+import psd.parser.layer.LayerAdditionalInformationParser;
 import psd.parser.object.*;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PsdLayerMetaInfo.
- */
-public class PsdLayerMetaInfo {
+public class LayerMetaDataParser implements LayerAdditionalInformationParser {
 
-	/** The logger. */
-	private Logger logger = Logger.getLogger("psd.layer");
-	
-	/** The frames info. */
+	public static final String TAG = "shmd";
+
 	private HashMap<Integer, PsdLayerFrameInfo> framesInfo;
-	
-	/** The frames info list. */
-	ArrayList<PsdLayerFrameInfo> framesInfoList;
+	private ArrayList<PsdLayerFrameInfo> framesInfoList;
 
-	
-	/**
-	 * Instantiates a new psd layer meta info.
-	 *
-	 * @param stream the stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public PsdLayerMetaInfo(PsdInputStream stream) throws IOException {
-		
+	@Override
+	public void parse(PsdInputStream stream, String tag, int size) throws IOException {
 		int countOfMetaData = stream.readInt();
 		for (int i = 0; i < countOfMetaData; i++) {
-			String tag = stream.readString(4);
-			if (!tag.equals("8BIM")) {
-				throw new IOException(
-						"layer information animation signature error");
+			String dataTag = stream.readString(4);
+			if (!dataTag.equals("8BIM")) {
+				throw new IOException("layer information animation signature error");
 			}
 			String key = stream.readString(4);
-			stream.readByte(); // int copyOnSheetDuplication =
+			int copyOnSheetDuplication = stream.readByte();
 			stream.skipBytes(3); // padding
 			int len = stream.readInt();
 			int pos = stream.getPos();
 			if (key.equals("mlst")) {
 				readFramesInfo(stream);
 			} else {
-				logger.warning("PsdLayerMetaInfo.UnknownKey: " + key + " size: " + len);
 			}
 
 			stream.skipBytes(len - (stream.getPos() - pos));
 		}
 	}
-
-	/**
-	 * Read frames info.
-	 *
-	 * @param stream the stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void readFramesInfo(PsdInputStream stream)
-			throws IOException {
+	
+	private void readFramesInfo(PsdInputStream stream) throws IOException {
 		stream.skipBytes(4); // ???
 		PsdDescriptor animDescriptor = new PsdDescriptor(stream);
 		PsdList list = (PsdList) animDescriptor.get("LaSt");
@@ -100,21 +76,13 @@ public class PsdLayerMetaInfo {
 					xOffset = ((PsdLong) ofst.get("Hrzn")).getValue();
 					yOffset = ((PsdLong) ofst.get("Vrtc")).getValue();
 				}
-				
+
 				PsdLayerFrameInfo info = new PsdLayerFrameInfo(id, xOffset, yOffset, visible);
 				framesInfo.put(id, info);
 				framesInfoList.add(info);
 			}
 		}
-		
+
 	}
-	
-	/**
-	 * Gets the layer frames info.
-	 *
-	 * @return the layer frames info
-	 */
-	public List<PsdLayerFrameInfo> getLayerFramesInfo() {
-		return Collections.unmodifiableList(framesInfoList);
-	}
+
 }

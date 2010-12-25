@@ -5,28 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import psd.parser.*;
+import psd.parser.header.Header;
 
 public class LayersSectionParser {
 
 	private LayersSectionHandler handler;
-	private int psdWidth;
-	private int psdHeight;
-	private int channelsCount;
+	private final Header header;
+	
+	public LayersSectionParser(Header header) {
+		this.header = header;
+	}
 
 	public void setHandler(LayersSectionHandler handler) {
 		this.handler = handler;
-	}
-
-	public void setPsdWidth(int psdWidth) {
-		this.psdWidth = psdWidth;
-	}
-
-	public void setPsdHeight(int psdHeight) {
-		this.psdHeight = psdHeight;
-	}
-
-	public void setChannelsCount(int channelsCount) {
-		this.channelsCount = channelsCount;
 	}
 
 	public void parse(PsdInputStream stream) throws IOException {
@@ -68,17 +59,17 @@ public class LayersSectionParser {
 	private void parseBaseLayer(PsdInputStream stream) throws IOException {
 		LayerParser baseLayerParser = new LayerParser();
 		handler.createBaseLayer(baseLayerParser);
-		baseLayerParser.fireBoundsChanged(0, 0, psdWidth, psdHeight);
+		baseLayerParser.fireBoundsChanged(0, 0, header.getWidth(), header.getHeight());
 
-		ArrayList<Channel> channels = new ArrayList<Channel>(channelsCount);
-		for (int j = 0; j < channelsCount; j++) {
+		ArrayList<Channel> channels = new ArrayList<Channel>(header.getChannelsCount());
+		for (int j = 0; j < header.getChannelsCount(); j++) {
 			channels.add(new Channel(j == 3 ? -1 : j));
 		}
 		//run-length-encoding
 		boolean rle = stream.readShort() == 1;
 		short[] lineLengths = null;
 		if (rle) {
-			int nLines = psdHeight * channelsCount;
+			int nLines = header.getHeight() * header.getChannelsCount();
 			lineLengths = new short[nLines];
 
 			for (int i = 0; i < nLines; i++) {
@@ -89,7 +80,7 @@ public class LayersSectionParser {
 		ImagePlaneParser planeParser = new ImagePlaneParser(stream);
 		int planeNumber = 0;
 		for (Channel c : channels) {
-			c.setData(planeParser.readPlane(psdWidth, psdHeight, lineLengths, planeNumber));
+			c.setData(planeParser.readPlane(header.getWidth(), header.getHeight(), lineLengths, planeNumber));
 			planeNumber++;
 		}
 		baseLayerParser.fireChannelsLoaded(channels);
