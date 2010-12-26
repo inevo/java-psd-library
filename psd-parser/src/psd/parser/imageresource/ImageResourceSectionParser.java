@@ -28,6 +28,7 @@ public class ImageResourceSectionParser {
 			int sizeOfName = stream.readByte() & 0xFF;
 			if ((sizeOfName & 0x01) == 0)
 				sizeOfName++;
+			@SuppressWarnings("unused")
 			String name = stream.readString(sizeOfName);
 			length -= sizeOfName + 1;
 
