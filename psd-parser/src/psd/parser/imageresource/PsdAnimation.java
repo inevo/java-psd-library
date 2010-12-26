@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.metadata;
+package psd.parser.imageresource;
 
 import java.io.IOException;
 import java.util.ArrayList;

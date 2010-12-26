@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.metadata;
+package psd.parser.imageresource;
 
 // TODO: Auto-generated Javadoc
 /**

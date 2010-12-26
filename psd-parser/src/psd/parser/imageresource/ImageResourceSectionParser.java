@@ -3,7 +3,6 @@ package psd.parser.imageresource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import psd.metadata.PsdAnimation;
 import psd.parser.PsdInputStream;
 
 public class ImageResourceSectionParser {
