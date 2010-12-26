@@ -22,11 +22,8 @@ import java.io.IOException;
 
 import psd.parser.PsdInputStream;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PsdBoolean.
- *
- * @author Dmitry Belsky
  */
 public class PsdBoolean extends PsdObject {
 
