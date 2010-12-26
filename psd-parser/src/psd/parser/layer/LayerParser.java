@@ -7,7 +7,7 @@ import psd.parser.PsdInputStream;
 
 public class LayerParser {
 
-	private ArrayList<Channel> channels;
+	private List<Channel> channels;
 	private LayerHandler handler;
 	private Map<String, LayerAdditionalInformationParser> additionalInformationParsers;
 	private LayerAdditionalInformationParser defaultAdditionalInformationParser;
@@ -176,7 +176,6 @@ public class LayerParser {
 
 	public void parseImageSection(PsdInputStream stream) throws IOException {
 		ImagePlaneParser planeParser = new ImagePlaneParser(stream);
-		int planeNum = 0;
 		for (Channel channel : channels) {
 			switch (channel.getId()) {
 			case Channel.ALPHA:
@@ -189,7 +188,6 @@ public class LayerParser {
 				stream.skipBytes(channel.getDataLength());
 				// layer mask
 			}
-			planeNum++;
 		}
 		if (handler != null) {
 			handler.channelsLoaded(channels);

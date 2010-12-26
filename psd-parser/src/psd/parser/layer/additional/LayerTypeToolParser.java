@@ -29,6 +29,12 @@ import java.io.*;
 public class LayerTypeToolParser implements LayerAdditionalInformationParser {
 	
 	public static final String TAG = "TySh";
+
+	private final LayerTypeToolHandler handler;
+	
+	public LayerTypeToolParser(LayerTypeToolHandler handler) {
+		this.handler = handler;
+	}
 	
 	@Override
 	public void parse(PsdInputStream stream, String tag, int size) throws IOException {
@@ -39,13 +45,19 @@ public class LayerTypeToolParser implements LayerAdditionalInformationParser {
 		int version = dataStream.readShort();
 		assert version == 1;
 		Matrix transform = new Matrix(dataStream);
-		// TODO handle transform
+		if (handler != null) {
+			handler.typeToolTransformParsed(transform);
+		}
+
 		int descriptorVersion = dataStream.readShort();
 		if (descriptorVersion == 50) {
 			int xTextDescriptorVersion = dataStream.readInt();
 			PsdDescriptor descriptor = new PsdDescriptor(new PsdInputStream(dataStream));
-			// TODO handle descritpor
+			if (handler != null) {
+				handler.typeToolDescriptorParsed(xTextDescriptorVersion, descriptor);
+			}
 		} else {
+			// unknown data
 			assert false;
 		}
 	}
