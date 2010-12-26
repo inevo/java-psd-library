@@ -1,7 +1,8 @@
 package psd.parser.imageresource;
 
+import psd.parser.object.PsdDescriptor;
+
 
 public interface ImageResourceSectionHandler {
-	public void animationLoaded(PsdAnimation animation);
-
+	public void imageResourceManiSectionParsed(PsdDescriptor descriptor);
 }

@@ -11,7 +11,7 @@ public class LayersSectionParser {
 
 	private LayersSectionHandler handler;
 	private final Header header;
-	
+
 	public LayersSectionParser(Header header) {
 		this.header = header;
 	}
@@ -40,7 +40,9 @@ public class LayersSectionParser {
 				for (int i = 0; i < layersCount; i++) {
 					LayerParser layerParser = new LayerParser();
 					parsers.add(layerParser);
-					handler.createLayer(layerParser);
+					if (handler != null) {
+						handler.createLayer(layerParser);
+					}
 					layerParser.parse(stream);
 				}
 
@@ -58,7 +60,9 @@ public class LayersSectionParser {
 
 	private void parseBaseLayer(PsdInputStream stream) throws IOException {
 		LayerParser baseLayerParser = new LayerParser();
-		handler.createBaseLayer(baseLayerParser);
+		if (handler != null) {
+			handler.createBaseLayer(baseLayerParser);
+		}
 		baseLayerParser.fireBoundsChanged(0, 0, header.getWidth(), header.getHeight());
 
 		ArrayList<Channel> channels = new ArrayList<Channel>(header.getChannelsCount());
@@ -76,7 +80,7 @@ public class LayersSectionParser {
 				lineLengths[i] = stream.readShort();
 			}
 		}
-		
+
 		ImagePlaneParser planeParser = new ImagePlaneParser(stream);
 		int planeNumber = 0;
 		for (Channel c : channels) {
