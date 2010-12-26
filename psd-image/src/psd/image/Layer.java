@@ -21,40 +21,32 @@ package psd.image;
 import java.awt.image.*;
 import java.util.*;
 
-import psd.parser.layer.ChannelInfo;
+import psd.parser.layer.Channel;
 import psd.parser.layer.LayerHandler;
 import psd.parser.layer.LayerType;
-import psd.parser.layer.additional.PsdLayerMetaInfo;
-import psd.parser.layer.additional.LayerTypeToolParser;
+import psd.parser.layer.additional.LayerSectionDividerHandler;
+import psd.parser.layer.additional.LayerUnicodeNameHandler;
+import psd.util.BufferedImageBuilder;
 
-public class Layer implements LayerHandler {
+public class Layer implements LayerHandler, LayerUnicodeNameHandler, LayerSectionDividerHandler {
 	private int top;
 	private int left;
 	private int bottom;
 	private int right;
-	
+
 	private int numberOfChannels;
-	
-	private List<ChannelInfo> channelsInfo;
-	
+
 	private int opacity;
+
 	private boolean clipping;
 
 	private boolean visible;
-	
+
 	private String name;
 
 	private BufferedImage image;
-	
-	private int layerId;
 
 	private LayerType type;
-
-	private Layer parent;
-	
-	private PsdLayerMetaInfo metaInfo;
-	
-	private LayerTypeToolParser typeTool;
 
 	public Layer() {
 		left = 0;
@@ -65,14 +57,6 @@ public class Layer implements LayerHandler {
 		opacity = -1;
 		type = LayerType.NORMAL;
 
-		parent = null;
-		typeTool = null;
-		metaInfo = null;
-		parent = null;
-	}
-
-	public PsdLayerMetaInfo getMetaInfo() {
-		return metaInfo;
 	}
 
 	public String getName() {
@@ -115,43 +99,21 @@ public class Layer implements LayerHandler {
 		return opacity;
 	}
 
-	public int getLayerId() {
-		return layerId;
-	}
-
 	public boolean isClipping() {
 		return clipping;
 	}
 
-	public Layer getParent() {
-		return parent;
-	}
-
-	public void setParent(Layer parent) {
-		this.parent = parent;
-	}
-
-	public LayerTypeToolParser getTypeTool() {
-		return typeTool;
-	}
-
 	@Override
 	public String toString() {
-		return "Layer: name=" + name + " left=" + left + " top=" + top
-				+ " vis=" + visible + " [group=" + parent + "]";
+		return "Layer: name=" + name + " left=" + left + " top=" + top + " vis=" + visible;
 	}
-	
+
 	@Override
 	public void boundsLoaded(int left, int top, int right, int bottom) {
 		this.left = left;
 		this.top = top;
 		this.right = right;
 		this.bottom = bottom;
-	}
-
-	@Override
-	public void channelsInfoLoaded(List<ChannelInfo> channelsInfo) {
-		this.channelsInfo = channelsInfo;
 	}
 
 	@Override
@@ -177,6 +139,23 @@ public class Layer implements LayerHandler {
 	@Override
 	public void nameLoaded(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public void channelsLoaded(List<Channel> channels) {
+		BufferedImageBuilder imageBuilder = new BufferedImageBuilder(channels, getWidth(), getHeight());
+		imageBuilder.setOpacity(opacity);
+		image = imageBuilder.makeImage();
+	}
+
+	@Override
+	public void layerUnicodeNameParsed(String unicodeName) {
+		this.name = unicodeName;
+	}
+
+	@Override
+	public void sectionDividerParsed(LayerType type) {
+		this.type = type;
 	}
 
 }

@@ -21,52 +21,26 @@ package psd.image;
 import java.io.*;
 import java.util.*;
 
-import psd.metadata.*;
 import psd.parser.*;
-import psd.parser.header.Header;
-import psd.parser.header.HeaderSectionHandler;
-import psd.parser.imageresource.ImageResourceSectionHandler;
+import psd.parser.header.*;
 import psd.parser.layer.*;
 import psd.parser.layer.additional.*;
 
-public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, ImageResourceSectionHandler {
+public class PsdImage implements HeaderSectionHandler, LayersSectionHandler {
 	private Header header;
 	private ArrayList<Layer> layers;
 	private Layer baseLayer;
 
-	private PsdAnimation animation;
-
 	public PsdImage(File psdFile) throws IOException {
 		PsdFileParser parser = new PsdFileParser();
 		parser.getHeaderSectionParser().setHandler(this);
-		parser.getImageResourceSectionParser().setHandler(this);
 		parser.getLayersSectionParser().setHandler(this);
 
 		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(psdFile));
 		parser.parse(stream);
 		stream.close();
-
-		Layer parentLayer = null;
-		for (int i = getLayers().size() - 1; i >= 0; i--) {
-			Layer layer = getLayer(i);
-
-			switch (layer.getType()) {
-			case NORMAL:
-				layer.setParent(parentLayer);
-				break;
-			case FOLDER:
-				layer.setParent(parentLayer);
-				parentLayer = layer;
-				break;
-			case HIDDEN:
-				if (parentLayer != null) {
-					parentLayer = parentLayer.getParent();
-				}
-				break;
-			}
-		}
 	}
-
+	
 	public List<Layer> getLayers() {
 		if (this.layers == null) {
 			this.layers = new ArrayList<Layer>();
@@ -77,10 +51,6 @@ public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, Ima
 
 	public Layer getLayer(int index) {
 		return layers.get(index);
-	}
-
-	public PsdAnimation getAnimation() {
-		return animation;
 	}
 
 	public int getWidth() {
@@ -114,18 +84,18 @@ public class PsdImage implements HeaderSectionHandler, LayersSectionHandler, Ima
 
 	@Override
 	public void createLayer(LayerParser parser) {
-		parser.putAdditionalInformationParser(LayerIdParser.TAG, new LayerIdParser());
-		parser.putAdditionalInformationParser(LayerSectionDeviderParser.TAG, new LayerSectionDeviderParser());
-		parser.putAdditionalInformationParser(LayerUnicodeNameParser.TAG, new LayerUnicodeNameParser());
-		parser.putAdditionalInformationParser(LayerTypeToolParser.TAG, new LayerTypeToolParser());
-		
 		Layer layer = new Layer();
+		parser.putAdditionalInformationParser(LayerSectionDividerParser.TAG, new LayerSectionDividerParser(layer));
+		parser.putAdditionalInformationParser(LayerUnicodeNameParser.TAG, new LayerUnicodeNameParser(layer));
+		
 		layers.add(layer);
 		parser.setHandler(layer);
 	}
 
 	@Override
-	public void animationLoaded(PsdAnimation animation) {
+	public void createBaseLayer(LayerParser parser) {
+		if (layers.isEmpty()) {
+			createLayer(parser);
+		}
 	}
-
 }
