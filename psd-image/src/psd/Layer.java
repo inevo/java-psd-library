@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.image;
+package psd;
 
 import java.awt.image.*;
 import java.util.*;

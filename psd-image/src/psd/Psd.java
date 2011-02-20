@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package psd.image;
+package psd;
 
 import java.io.*;
 import java.util.*;
@@ -26,12 +26,12 @@ import psd.parser.header.*;
 import psd.parser.layer.*;
 import psd.parser.layer.additional.*;
 
-public class PsdImage implements HeaderSectionHandler, LayersSectionHandler {
+public class Psd implements HeaderSectionHandler, LayersSectionHandler {
 	private Header header;
 	private ArrayList<Layer> layers;
 	private Layer baseLayer;
 
-	public PsdImage(File psdFile) throws IOException {
+	public Psd(File psdFile) throws IOException {
 		PsdFileParser parser = new PsdFileParser();
 		parser.getHeaderSectionParser().setHandler(this);
 		parser.getLayersSectionParser().setHandler(this);
