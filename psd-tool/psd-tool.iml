@@ -7,6 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="psd-image" exported="" />
+    <orderEntry type="module" module-name="psd-parser" exported="" />
   </component>
 </module>
 
