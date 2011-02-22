@@ -26,76 +26,88 @@ import psd.parser.header.*;
 import psd.parser.layer.*;
 import psd.parser.layer.additional.*;
 
-public class Psd implements HeaderSectionHandler, LayersSectionHandler {
+public class Psd implements LayersContainer {
 	private Header header;
-	private ArrayList<Layer> layers;
-	private Layer baseLayer;
+	private List<Layer> layers = new ArrayList<Layer>();
+    private Layer baseLayer;
 
 	public Psd(File psdFile) throws IOException {
 		PsdFileParser parser = new PsdFileParser();
-		parser.getHeaderSectionParser().setHandler(this);
-		parser.getLayersSectionParser().setHandler(this);
+		parser.getHeaderSectionParser().setHandler(new HeaderSectionHandler() {
+            @Override
+            public void headerLoaded(Header header) {
+                Psd.this.header = header;
+            }
+        });
+
+        final List<Layer> fullLayersList = new ArrayList<Layer>();
+		parser.getLayersSectionParser().setHandler(new LayersSectionHandler() {
+            @Override
+            public void createLayer(LayerParser parser) {
+                fullLayersList.add(new Layer(parser));
+            }
+
+            @Override
+            public void createBaseLayer(LayerParser parser) {
+                baseLayer = new Layer(parser);
+                if (fullLayersList.isEmpty()) {
+                    fullLayersList.add(baseLayer);
+                }
+            }
+        });
 
 		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(psdFile));
 		parser.parse(stream);
 		stream.close();
+
+        layers = makeLayersHierarchy(fullLayersList);
 	}
 	
-	public List<Layer> getLayers() {
-		if (this.layers == null) {
-			this.layers = new ArrayList<Layer>();
-			layers.add(this.baseLayer);
-		}
-		return Collections.unmodifiableList(layers);
-	}
+    private List<Layer> makeLayersHierarchy(List<Layer> layers) {
+        LinkedList<LinkedList<Layer>> layersStack = new LinkedList<LinkedList<Layer>>();
+        ArrayList<Layer> rootLayers = new ArrayList<Layer>();
+        for (Layer layer : layers) {
+            switch (layer.getType()) {
+            case HIDDEN: {
+                layersStack.addFirst(new LinkedList<Layer>());
+                break;
+            }
+            case FOLDER: {
+                assert !layersStack.isEmpty();
+                LinkedList<Layer> folderLayers = layersStack.removeFirst();
+                for (Layer l : folderLayers) {
+                    layer.addLayer(l);
+                }
+            }
+                // break isn't needed
+            case NORMAL: {
+                if (layersStack.isEmpty()) {
+                    rootLayers.add(layer);
+                } else {
+                    layersStack.getFirst().add(layer);
+                }
+                break;
+            }
+            default:
+                assert false;
+            }
+        }
+        return rootLayers;
+    }
 
-	public Layer getLayer(int index) {
-		return layers.get(index);
-	}
 
-	public int getWidth() {
-		return header.getWidth();
-	}
+    @Override
+    public Layer getLayer(int index) {
+        return layers.get(index);
+    }
 
-	public int getHeight() {
-		return header.getHeight();
-	}
+    @Override
+    public int indexOfLayer(Layer layer) {
+        return layers.indexOf(layer);
+    }
 
-	public ColorMode getColorMode() {
-		return header.getColorMode();
-	}
-
-	public int getDepth() {
-		return header.getDepth();
-	}
-
-	public int getChannelsCount() {
-		return header.getChannelsCount();
-	}
-
-	public Layer getBaseLayer() {
-		return baseLayer;
-	}
-
-	@Override
-	public void headerLoaded(Header header) {
-		this.header = header;
-	}
-
-	@Override
-	public void createLayer(LayerParser parser) {
-		Layer layer = new Layer();
-		parser.putAdditionalInformationParser(LayerSectionDividerParser.TAG, new LayerSectionDividerParser(layer));
-		parser.putAdditionalInformationParser(LayerUnicodeNameParser.TAG, new LayerUnicodeNameParser(layer));
-		
-		layers.add(layer);
-		parser.setHandler(layer);
-	}
-
-	@Override
-	public void createBaseLayer(LayerParser parser) {
-		if (layers.isEmpty()) {
-			createLayer(parser);
-		}
-	}
+    @Override
+    public int getLayersCount() {
+        return layers.size();
+    }
 }

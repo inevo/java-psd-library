@@ -18,144 +18,143 @@
 
 package psd;
 
+import psd.parser.layer.Channel;
+import psd.parser.layer.LayerHandler;
+import psd.parser.layer.LayerParser;
+import psd.parser.layer.LayerType;
+import psd.parser.layer.additional.LayerSectionDividerHandler;
+import psd.parser.layer.additional.LayerSectionDividerParser;
+import psd.parser.layer.additional.LayerUnicodeNameHandler;
+import psd.parser.layer.additional.LayerUnicodeNameParser;
+import psd.util.BufferedImageBuilder;
+
 import java.awt.image.*;
 import java.util.*;
 
-import psd.parser.layer.Channel;
-import psd.parser.layer.LayerHandler;
-import psd.parser.layer.LayerType;
-import psd.parser.layer.additional.LayerSectionDividerHandler;
-import psd.parser.layer.additional.LayerUnicodeNameHandler;
-import psd.util.BufferedImageBuilder;
 
-public class Layer implements LayerHandler, LayerUnicodeNameHandler, LayerSectionDividerHandler {
-	private int top;
-	private int left;
-	private int bottom;
-	private int right;
+public class Layer implements LayersContainer{
+    private int top = 0;
+    private int left = 0;
+    private int bottom = 0;
+    private int right = 0;
 
-	private int numberOfChannels;
+    private int opacity = -1;
 
-	private int opacity;
+    private boolean visible = true;
 
-	private boolean clipping;
+    private String name;
 
-	private boolean visible;
+    private BufferedImage image;
+    private LayerType type = LayerType.NORMAL;
 
-	private String name;
+    private ArrayList<Layer> layers = new ArrayList<Layer>();
 
-	private BufferedImage image;
+    public Layer(LayerParser parser) {
+        parser.setHandler(new LayerHandler() {
+            @Override
+            public void boundsLoaded(int left, int top, int right, int bottom) {
+                Layer.this.left = left;
+                Layer.this.top = top;
+                Layer.this.right = right;
+                Layer.this.bottom = bottom;
+            }
 
-	private LayerType type;
+            @Override
+            public void blendModeLoaded(String blendMode) {
+            }
 
-	public Layer() {
-		left = 0;
-		top = 0;
-		right = 0;
-		bottom = 0;
-		visible = true;
-		opacity = -1;
-		type = LayerType.NORMAL;
+            @Override
+            public void opacityLoaded(int opacity) {
+                Layer.this.opacity = opacity;
+            }
 
-	}
+            @Override
+            public void clippingLoaded(boolean clipping) {
+            }
 
-	public String getName() {
-		return name;
-	}
+            @Override
+            public void visibleLoaded(boolean visible) {
+                Layer.this.visible = visible;
+            }
 
-	public BufferedImage getImage() {
-		return image;
-	}
+            @Override
+            public void nameLoaded(String name) {
+                Layer.this.name = name;
+            }
 
-	public boolean isVisible() {
-		return visible;
-	}
+            @Override
+            public void channelsLoaded(List<Channel> channels) {
+                BufferedImageBuilder imageBuilder = new BufferedImageBuilder(channels, getWidth(), getHeight());
+                imageBuilder.setOpacity(opacity);
+                image = imageBuilder.makeImage();
+            }
+        });
 
-	public int getLeft() {
-		return left;
-	}
+        parser.putAdditionalInformationParser(LayerSectionDividerParser.TAG, new LayerSectionDividerParser(new LayerSectionDividerHandler() {
+            @Override
+            public void sectionDividerParsed(LayerType type) {
+                Layer.this.type = type;
+            }
+        }));
 
-	public int getTop() {
-		return top;
-	}
+        parser.putAdditionalInformationParser(LayerUnicodeNameParser.TAG, new LayerUnicodeNameParser(new LayerUnicodeNameHandler() {
+            @Override
+            public void layerUnicodeNameParsed(String unicodeName) {
+                name = unicodeName;
+            }
+        }));
+    }
 
-	public int getWidth() {
-		return right - left;
-	}
+    public void addLayer(Layer layer) {
+        layers.add(layer);
+    }
 
-	public int getHeight() {
-		return bottom - top;
-	}
+    @Override
+    public Layer getLayer(int index) {
+        return layers.get(index);
+    }
 
-	public LayerType getType() {
-		return type;
-	}
+    @Override
+    public int indexOfLayer(Layer layer) {
+        return layers.indexOf(layer);
+    }
 
-	public int getNumberOfChannels() {
-		return numberOfChannels;
-	}
+    @Override
+    public int getLayersCount() {
+        return layers.size();
+    }
 
-	public int getOpacity() {
-		return opacity;
-	}
+    public BufferedImage getImage() {
+        return image;
+    }
 
-	public boolean isClipping() {
-		return clipping;
-	}
+    public int getX() {
+        return left;
+    }
 
-	@Override
-	public String toString() {
-		return "Layer: name=" + name + " left=" + left + " top=" + top + " vis=" + visible;
-	}
+    public int getY() {
+        return top;
+    }
 
-	@Override
-	public void boundsLoaded(int left, int top, int right, int bottom) {
-		this.left = left;
-		this.top = top;
-		this.right = right;
-		this.bottom = bottom;
-	}
+    public int getWidth() {
+        return right - left;
+    }
 
-	@Override
-	public void blendModeLoaded(String blendMode) {
-		System.out.println("blendMode: " + blendMode);
-	}
+    public int getHeight() {
+        return bottom - top;
+    }
 
-	@Override
-	public void opacityLoaded(int opacity) {
-		this.opacity = opacity;
-	}
+    public LayerType getType() {
+        return type;
+    }
 
-	@Override
-	public void clippingLoaded(boolean clipping) {
-		this.clipping = clipping;
-	}
+    public boolean isVisible() {
+        return visible;
+    }
 
-	@Override
-	public void visibleLoaded(boolean visible) {
-		this.visible = visible;
-	}
-
-	@Override
-	public void nameLoaded(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public void channelsLoaded(List<Channel> channels) {
-		BufferedImageBuilder imageBuilder = new BufferedImageBuilder(channels, getWidth(), getHeight());
-		imageBuilder.setOpacity(opacity);
-		image = imageBuilder.makeImage();
-	}
-
-	@Override
-	public void layerUnicodeNameParsed(String unicodeName) {
-		this.name = unicodeName;
-	}
-
-	@Override
-	public void sectionDividerParsed(LayerType type) {
-		this.type = type;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }
