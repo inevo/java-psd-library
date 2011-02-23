@@ -30,8 +30,11 @@ public class Psd implements LayersContainer {
 	private Header header;
 	private List<Layer> layers = new ArrayList<Layer>();
     private Layer baseLayer;
+    private String name;
 
 	public Psd(File psdFile) throws IOException {
+        name = psdFile.getName();
+
 		PsdFileParser parser = new PsdFileParser();
 		parser.getHeaderSectionParser().setHandler(new HeaderSectionHandler() {
             @Override
@@ -95,6 +98,13 @@ public class Psd implements LayersContainer {
         return rootLayers;
     }
 
+    public int getWidth() {
+        return header.getWidth();
+    }
+
+    public int getHeight() {
+        return header.getHeight();
+    }
 
     @Override
     public Layer getLayer(int index) {
@@ -109,5 +119,10 @@ public class Psd implements LayersContainer {
     @Override
     public int getLayersCount() {
         return layers.size();
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

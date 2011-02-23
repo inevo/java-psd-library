@@ -18,10 +18,8 @@
 
 package psd;
 
-import psd.parser.layer.Channel;
-import psd.parser.layer.LayerHandler;
-import psd.parser.layer.LayerParser;
-import psd.parser.layer.LayerType;
+import psd.parser.BlendMode;
+import psd.parser.layer.*;
 import psd.parser.layer.additional.LayerSectionDividerHandler;
 import psd.parser.layer.additional.LayerSectionDividerParser;
 import psd.parser.layer.additional.LayerUnicodeNameHandler;
@@ -31,14 +29,13 @@ import psd.util.BufferedImageBuilder;
 import java.awt.image.*;
 import java.util.*;
 
-
-public class Layer implements LayersContainer{
+public class Layer implements LayersContainer {
     private int top = 0;
     private int left = 0;
     private int bottom = 0;
     private int right = 0;
 
-    private int opacity = -1;
+    private int alpha = 255;
 
     private boolean visible = true;
 
@@ -60,12 +57,16 @@ public class Layer implements LayersContainer{
             }
 
             @Override
-            public void blendModeLoaded(String blendMode) {
+            public void blendModeLoaded(BlendMode blendMode) {
+            }
+
+            @Override
+            public void blendingRangesLoaded(BlendingRanges ranges) {
             }
 
             @Override
             public void opacityLoaded(int opacity) {
-                Layer.this.opacity = opacity;
+                Layer.this.alpha = opacity;
             }
 
             @Override
@@ -73,7 +74,7 @@ public class Layer implements LayersContainer{
             }
 
             @Override
-            public void visibleLoaded(boolean visible) {
+            public void flagsLoaded(boolean transparencyProtected, boolean visible, boolean obsolete, boolean isPixelDataIrrelevantValueUseful, boolean pixelDataIrrelevant) {
                 Layer.this.visible = visible;
             }
 
@@ -85,9 +86,14 @@ public class Layer implements LayersContainer{
             @Override
             public void channelsLoaded(List<Channel> channels) {
                 BufferedImageBuilder imageBuilder = new BufferedImageBuilder(channels, getWidth(), getHeight());
-                imageBuilder.setOpacity(opacity);
                 image = imageBuilder.makeImage();
             }
+
+            @Override
+            public void maskLoaded(Mask mask) {
+                System.out.println("mask: " + mask.getWidth() + "x" + mask.getHeight());
+            }
+
         });
 
         parser.putAdditionalInformationParser(LayerSectionDividerParser.TAG, new LayerSectionDividerParser(new LayerSectionDividerHandler() {
@@ -157,4 +163,7 @@ public class Layer implements LayersContainer{
         return name;
     }
 
+    public int getAlpha() {
+        return alpha;
+    }
 }
