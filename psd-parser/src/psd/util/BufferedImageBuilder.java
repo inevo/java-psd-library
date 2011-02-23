@@ -41,7 +41,7 @@ public class BufferedImageBuilder {
 			int r = rChannel[n] & 0xff;
 			int g = gChannel[n] & 0xff;
 			int b = bChannel[n] & 0xff;
-			data[n] = a << 16 | r << 16 | g << 8 | b;
+			data[n] = a << 24 | r << 16 | g << 8 | b;
 			n--;
 		}
 		return im;

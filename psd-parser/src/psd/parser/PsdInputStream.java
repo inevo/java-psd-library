@@ -170,7 +170,7 @@ public class PsdInputStream extends InputStream {
 		return (((long) c1 << 56) + ((long) (c2 & 255) << 48)
 				+ ((long) (c3 & 255) << 40) + ((long) (c4 & 255) << 32)
 				+ ((long) (c5 & 255) << 24) + ((c6 & 255) << 16)
-				+ ((c7 & 255) << 8) + ((c8 & 255) << 0));
+				+ ((c7 & 255) << 8) + (c8 & 255));
 	}
 
 	public final double readDouble() throws IOException {
@@ -179,7 +179,7 @@ public class PsdInputStream extends InputStream {
 
 	public int skipBytes(int n) throws IOException {
 		int total = 0;
-		int cur = 0;
+		int cur;
 		while ((total < n) && ((cur = (int) skip(n - total)) > 0)) {
 			total += cur;
 		}
