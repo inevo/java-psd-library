@@ -20,4 +20,6 @@ public interface LayerHandler {
 	public void channelsLoaded(List<Channel> channels);
 
     public void maskLoaded(Mask mask);
+
+    public void blendingRangesLoaded(BlendingRanges ranges);
 }

@@ -125,38 +125,9 @@ public class LayerParser {
         int extraPos = stream.getPos();
 
         parseMaskAndAdjustmentData(stream);
-
-        int size;
-        // LAYER BLENDING RANGES DATA
-        // Length of layer blending ranges data
-        size = stream.readInt();
-        stream.skipBytes(size);
-
+        parseBlendingRangesData(stream);
         parseName(stream);
-
-        int prevPos = stream.getPos();
-        while (stream.getPos() - extraPos < extraSize) {
-            String tag = stream.readString(4);
-            if (!tag.equals("8BIM")) {
-                throw new IOException("layer information signature error");
-            }
-            tag = stream.readString(4);
-
-            size = stream.readInt();
-            size = (size + 1) & ~0x01;
-            prevPos = stream.getPos();
-
-            LayerAdditionalInformationParser additionalParser = additionalInformationParsers.get(tag);
-            if (additionalParser == null) {
-                additionalParser = defaultAdditionalInformationParser;
-            }
-
-            if (additionalParser != null) {
-                additionalParser.parse(stream, tag, size);
-            }
-
-            stream.skipBytes(prevPos + size - stream.getPos());
-        }
+        parseAdditionalSections(stream, extraSize + extraPos);
 
         stream.skipBytes(extraSize - (stream.getPos() - extraPos));
     }
@@ -193,7 +164,49 @@ public class LayerParser {
                 mask.bottom = stream.readInt();
                 mask.right = stream.readInt();
             }
-            handler.maskLoaded(mask);
+            if (handler != null) {
+                handler.maskLoaded(mask);
+            }
+        }
+    }
+
+    private void parseBlendingRangesData(PsdInputStream stream) throws IOException {
+        int size = stream.readInt();
+        int pos = stream.getPos();
+        BlendingRanges ranges = new BlendingRanges();
+
+        // Composite gray blend source. Contains 2 black values followed by 2
+        // white values. Present but irrelevant for Lab & Grayscale.
+        ranges.grayBlackSrc = stream.readShort() & 0xffff;
+        ranges.grayWhiteSrc = stream.readShort() & 0xffff;
+
+        // Composite gray blend destination range
+        ranges.grayBlackDst = stream.readShort() & 0xffff;
+        ranges.grayWhiteDst = stream.readShort() & 0xffff;
+
+        ranges.numberOfBlendingChannels = (size - 8) / 8;
+        if (ranges.numberOfBlendingChannels > 0) {
+            ranges.channelBlackSrc = new int[ranges.numberOfBlendingChannels];
+            ranges.channelWhiteSrc = new int[ranges.numberOfBlendingChannels];
+            ranges.channelBlackDst = new int[ranges.numberOfBlendingChannels];
+            ranges.channelWhiteDst = new int[ranges.numberOfBlendingChannels];
+
+            for (int i = 0; i < ranges.numberOfBlendingChannels; i++) {
+                // channel source range
+                ranges.channelBlackSrc[i] = stream.readShort() & 0xffff;
+                ranges.channelWhiteSrc[i] = stream.readShort() & 0xffff;
+
+                // channel destination range
+                ranges.channelBlackDst[i] = stream.readShort() & 0xffff;
+                ranges.channelWhiteDst[i] = stream.readShort() & 0xffff;
+            }
+
+            if (handler != null) {
+                handler.blendingRangesLoaded(ranges);
+            }
+        } else {
+            // invalid blending channels
+            stream.skipBytes(size - (stream.getPos() - pos));
         }
     }
 
@@ -203,7 +216,8 @@ public class LayerParser {
         size = ((size + 1 + 3) & ~0x03) - 1;
         byte[] str = new byte[size];
         int strSize = str.length;
-        stream.read(str);
+        int readBytesCount = stream.read(str);
+        assert readBytesCount == size;
         for (int i = 0; i < str.length; i++) {
             if (str[i] == 0) {
                 strSize = i;
@@ -213,6 +227,31 @@ public class LayerParser {
         String name = new String(str, 0, strSize, "ISO-8859-1");
         if (handler != null) {
             handler.nameLoaded(name);
+        }
+    }
+
+    private void parseAdditionalSections(PsdInputStream stream, int endPos) throws IOException {
+        while (stream.getPos() < endPos) {
+            String tag = stream.readString(4);
+            if (!tag.equals("8BIM")) {
+                throw new IOException("layer information signature error");
+            }
+            tag = stream.readString(4);
+
+            int size = stream.readInt();
+            size = (size + 1) & ~0x01;
+            int prevPos = stream.getPos();
+
+            LayerAdditionalInformationParser additionalParser = additionalInformationParsers.get(tag);
+            if (additionalParser == null) {
+                additionalParser = defaultAdditionalInformationParser;
+            }
+
+            if (additionalParser != null) {
+                additionalParser.parse(stream, tag, size);
+            }
+
+            stream.skipBytes(prevPos + size - stream.getPos());
         }
     }
 
