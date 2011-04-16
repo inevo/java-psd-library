@@ -24,7 +24,6 @@ import java.util.*;
 import psd.parser.*;
 import psd.parser.header.*;
 import psd.parser.layer.*;
-import psd.parser.layer.additional.*;
 
 public class Psd implements LayersContainer {
 	private Header header;
