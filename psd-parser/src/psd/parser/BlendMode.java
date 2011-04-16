@@ -1,7 +1,5 @@
 package psd.parser;
 
-import java.util.HashMap;
-
 public enum BlendMode {
     NORMAL("norm"),
     DISSOLVE("diss"),
