@@ -61,8 +61,10 @@ public class UiLauncher {
     }
 
     private static void showFrame() {
-        MainFrame frame = new MainFrame();
-        frame.getFrame().setVisible(true);
+        JFrame frame = new MainFrame().getFrame();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.doLayout();
+        frame.setVisible(true);
     }
 
 }

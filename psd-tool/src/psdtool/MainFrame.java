@@ -13,15 +13,22 @@ public class MainFrame {
 
     private JFrame frame;
     private TreeLayerModel treeLayerModel = new TreeLayerModel();
+    private PsdView psdView;
 
     public MainFrame() {
         frame = new JFrame("Psd Tool");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTree tree = new JTree(treeLayerModel);
-//        JPanel panel = new JPanel();
-//        panel.add(tree);
-        frame.getContentPane().add(tree);
+        tree.setBorder(null);
+        tree.setPreferredSize(new Dimension(300, 400));
+
+        psdView = new PsdView();
+
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        split.setLeftComponent(new JScrollPane(tree));
+        split.setRightComponent(new JScrollPane(psdView));
+        frame.getContentPane().add(split);
         frame.setJMenuBar(buildMenu());
 
         frame.pack();
@@ -43,8 +50,9 @@ public class MainFrame {
     }
 
     private class OpenFileAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
 
-        public OpenFileAction() {
+		public OpenFileAction() {
             super("Open file");
         }
 
@@ -66,7 +74,7 @@ public class MainFrame {
                 try {
                     Psd psd = new Psd(psdFile);
                     treeLayerModel.setPsd(psd);
-                    System.out.println("done");
+                    psdView.setPsd(psd);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
