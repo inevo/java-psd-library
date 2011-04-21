@@ -20,10 +20,8 @@ package psd;
 
 import psd.parser.BlendMode;
 import psd.parser.layer.*;
-import psd.parser.layer.additional.LayerSectionDividerHandler;
-import psd.parser.layer.additional.LayerSectionDividerParser;
-import psd.parser.layer.additional.LayerUnicodeNameHandler;
-import psd.parser.layer.additional.LayerUnicodeNameParser;
+import psd.parser.layer.additional.*;
+import psd.parser.layer.additional.effects.PSDEffect;
 import psd.util.BufferedImageBuilder;
 
 import java.awt.image.*;
@@ -45,6 +43,8 @@ public class Layer implements LayersContainer {
     private LayerType type = LayerType.NORMAL;
 
     private ArrayList<Layer> layers = new ArrayList<Layer>();
+
+    private ArrayList<PSDEffect> layerEffects = new ArrayList<PSDEffect>();
 
     public Layer(LayerParser parser) {
         parser.setHandler(new LayerHandler() {
@@ -103,6 +103,13 @@ public class Layer implements LayersContainer {
             }
         }));
 
+        parser.putAdditionalInformationParser(LayerEffectsParser.TAG, new LayerEffectsParser(new LayerEffectsHandler() {
+            @Override
+            public void handleEffects(List<PSDEffect> effects) {
+                layerEffects.addAll(effects);
+            }
+        }));
+
         parser.putAdditionalInformationParser(LayerUnicodeNameParser.TAG, new LayerUnicodeNameParser(new LayerUnicodeNameHandler() {
             @Override
             public void layerUnicodeNameParsed(String unicodeName) {
@@ -132,6 +139,10 @@ public class Layer implements LayersContainer {
 
     public BufferedImage getImage() {
         return image;
+    }
+
+    public List<PSDEffect> getEffectsList() {
+        return layerEffects;
     }
 
     public int getX() {

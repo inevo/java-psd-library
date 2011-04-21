@@ -3,6 +3,7 @@ package psdtool;
 import psd.Layer;
 import psd.LayersContainer;
 import psd.Psd;
+import psd.parser.layer.additional.effects.PSDEffect;
 
 import javax.swing.*;
 import java.awt.*;
