@@ -18,6 +18,7 @@
 
 package psd.parser;
 
+import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,10 +27,10 @@ public class PsdInputStream extends InputStream {
 
 	private int pos;
 	private int markPos;
-	private final InputStream in;
+	private final DataInputStream in;
 
 	public PsdInputStream(InputStream in) {
-		this.in = in;
+		this.in = new DataInputStream(in);
 		pos = 0;
 		markPos = 0;
 	}
@@ -129,6 +130,14 @@ public class PsdInputStream extends InputStream {
 		}
 		return (byte) (ch);
 	}
+
+    public int readUnsignedByte() throws IOException {
+        int res = in.readUnsignedByte();
+		if (res != -1) {
+			pos++;
+		}
+		return res;
+    }
 
 	public short readShort() throws IOException {
 		int ch1 = read();

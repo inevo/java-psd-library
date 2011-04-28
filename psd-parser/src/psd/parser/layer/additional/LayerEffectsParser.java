@@ -139,11 +139,11 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         //2 bytes for space
         stream.skipBytes(4);
 
-        int colorR = Math.abs(stream.readByte());
+        int colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorG =  Math.abs(stream.readByte());
+        int colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorB = Math.abs(stream.readByte());
+        int colorB = stream.readUnsignedByte();
 
         Color colorValue = new Color(colorR, colorG, colorB);
 
@@ -161,15 +161,15 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         String blendModeKey = stream.readString(4);
         boolean effectIsEnabled = stream.readBoolean(); //1 Effect enabled
         boolean useInAllEFX = stream.readBoolean();     //1 Use this angle in all of the layer effects
-        int alpha = Math.abs(new Float((stream.readByte()/255.0)*100.0).intValue());            //1 Opacity as a percent
+        float alpha = new Float(stream.readUnsignedByte()/255.0);            //1 Opacity as a percent
 
         //get native color
         stream.skipBytes(4);           //2 bytes for space
-        colorR =  Math.abs(stream.readByte());
+        colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        colorG = Math.abs(stream.readByte());
+        colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        colorB = Math.abs(stream.readByte());
+        colorB = stream.readUnsignedByte();
         stream.skipBytes(1);
 
         Color nativeColor = new Color(colorR, colorG, colorB);
@@ -177,7 +177,7 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         /*create a dropshadow effect*/
         DropShadowEffect effect = new DropShadowEffect(inner);
         effect.setAlpha(alpha);
-        effect.setAngle(180 - angle);
+        effect.setAngle(180-angle);
         effect.setBlur(blur);
         effect.setColor(colorValue);
         effect.setDistance(distance);
@@ -206,11 +206,11 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
 
         //2 bytes for space
         stream.skipBytes(4);
-        int colorR = Math.abs(stream.readByte());
+        int colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorG =  Math.abs(stream.readByte());
+        int colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorB = Math.abs(stream.readByte());
+        int colorB = stream.readUnsignedByte();
 
         Color colorValue = new Color(colorR, colorG, colorB);
 
@@ -227,7 +227,7 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         */
         String blendModeKey = stream.readString(4);
         boolean effectIsEnabled = stream.readBoolean(); //1 Effect enabled
-        int alpha = Math.abs(new Float((stream.readByte()/255.0)*100.0).intValue());            //1 Opacity as a percent
+        float alpha = new Float(stream.readUnsignedByte()/255.0);            //1 Opacity as a percent
 
         if (version == 2){
 
@@ -236,11 +236,11 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
 
             //get native color
             stream.skipBytes(3);
-            colorR = Math.abs(stream.readByte());
+            colorR = stream.readUnsignedByte();
             stream.skipBytes(1);
-            colorG = Math.abs(stream.readByte());
+            colorG = stream.readUnsignedByte();
             stream.skipBytes(1);
-            colorB = Math.abs(stream.readByte());
+            colorB = stream.readUnsignedByte();
             stream.skipBytes(2);
 
             Color nativeColor = new Color(colorR, colorG, colorB);
@@ -303,11 +303,11 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         //Highlight color: 2 bytes for space followed by 4 * 2 byte color component
         stream.skipBytes(3);
 
-        int colorR = Math.abs(stream.readByte());
+        int colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorG =  Math.abs(stream.readByte());
+        int colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorB = Math.abs(stream.readByte());
+        int colorB = stream.readUnsignedByte();
 
         stream.skipBytes(2);
 
@@ -316,24 +316,24 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         //Shadow color: 2 bytes for space followed by 4 * 2 byte color component
         stream.skipBytes(3);
 
-        colorR = Math.abs(stream.readByte());
+        colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        colorG =  Math.abs(stream.readByte());
+        colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        colorB = Math.abs(stream.readByte());
+        colorB = stream.readUnsignedByte();
 
         Color shadowColor = new Color(colorR, colorG, colorB);
 
         stream.skipBytes(2);
 
         //Bevel style
-        int bevelStyle = Math.abs(stream.readByte());
+        int bevelStyle = stream.readUnsignedByte();
 
         //Hightlight opacity as a percent
-        int highlightOpacity = Math.abs(new Float((stream.readByte()/255.0)*100.0).intValue());
+        float highlightOpacity = new Float(stream.readUnsignedByte()/255.0);
 
         //Shadow opacity as a percent
-        int shadowOpacity = Math.abs(new Float((stream.readByte()/255.0)*100.0).intValue());
+        float shadowOpacity = new Float(stream.readUnsignedByte()/255.0);
 
         //Effect enabled
         boolean isEffectEnabled = stream.readBoolean();
@@ -342,18 +342,18 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         boolean useInAllLayerEffects = stream.readBoolean();
 
         //Bevel Up or down
-        int direction = Math.abs(stream.readByte());
+        int direction = stream.readUnsignedByte();
 
         Color realHighlightColor = null, realShadowColor = null;
         if (version == 2) {
             //Real Highlight color: 2 bytes for space followed by 4 * 2 byte color component
             stream.skipBytes(3);
 
-            int realColorR = Math.abs(stream.readByte());
+            int realColorR = stream.readUnsignedByte();
             stream.skipBytes(1);
-            int realColorG =  Math.abs(stream.readByte());
+            int realColorG = stream.readUnsignedByte();
             stream.skipBytes(1);
-            int realColorB = Math.abs(stream.readByte());
+            int realColorB = stream.readUnsignedByte();
 
             realHighlightColor = new Color(realColorR, realColorG, realColorB);
 
@@ -362,11 +362,11 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
             //Real Shadow color: 2 bytes for space followed by 4 * 2 byte color component
             stream.skipBytes(3);
 
-            int realShadowColorR = Math.abs(stream.readByte());
+            int realShadowColorR = stream.readUnsignedByte();
             stream.skipBytes(1);
-            int realShadowColorG =  Math.abs(stream.readByte());
+            int realShadowColorG = stream.readUnsignedByte();
             stream.skipBytes(1);
-            int realShadowColorB = Math.abs(stream.readByte());
+            int realShadowColorB = stream.readUnsignedByte();
 
             realShadowColor = new Color(realShadowColorR, realShadowColorG, realShadowColorB);
 
@@ -417,28 +417,28 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
         //Highlight color: 2 bytes for space followed by 4 * 2 byte color component
         stream.skipBytes(3);
 
-        int colorR = Math.abs(stream.readByte());
+        int colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorG =  Math.abs(stream.readByte());
+        int colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        int colorB = Math.abs(stream.readByte());
+        int colorB = stream.readUnsignedByte();
 
         Color highlightColor = new Color(colorR, colorG, colorB);
 
         stream.skipBytes(2);
 
-        int opacity = Math.abs(new Float((stream.readByte()/255.0)*100.0).intValue());
+        float opacity = new Float(stream.readUnsignedByte()/255.0);
 
         boolean effectEnabled = stream.readBoolean();
 
         //Highlight color: 2 bytes for space followed by 4 * 2 byte color component
         stream.skipBytes(3);
 
-        colorR = Math.abs(stream.readByte());
+        colorR = stream.readUnsignedByte();
         stream.skipBytes(1);
-        colorG =  Math.abs(stream.readByte());
+        colorG = stream.readUnsignedByte();
         stream.skipBytes(1);
-        colorB = Math.abs(stream.readByte());
+        colorB = stream.readUnsignedByte();
 
         Color nativeColor = new Color(colorR, colorG, colorB);
 

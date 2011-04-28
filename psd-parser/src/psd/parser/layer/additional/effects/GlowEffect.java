@@ -12,7 +12,7 @@ public class GlowEffect extends PSDEffect {
     private boolean inner = false;
     private int version;
 
-    private int alpha;
+    private float alpha;
     private int blur;
     private Color color;
     private int quality;
@@ -45,11 +45,11 @@ public class GlowEffect extends PSDEffect {
         }
     }
 
-    public int getAlpha() {
+    public float getAlpha() {
         return alpha;
     }
 
-    public void setAlpha(int alpha) {
+    public void setAlpha(float alpha) {
         this.alpha = alpha;
     }
 

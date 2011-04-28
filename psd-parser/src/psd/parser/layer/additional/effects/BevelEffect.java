@@ -14,8 +14,8 @@ public class BevelEffect extends PSDEffect {
     private Color highlightColor;
     private Color shadowColor;
     private int bevelStyle;
-    private int highlightOpacity;
-    private int shadowOpacity;
+    private float highlightOpacity;
+    private float shadowOpacity;
     private boolean useInAllLayerEffects;
     private int direction;
     private Color realHighlightColor;
@@ -89,19 +89,19 @@ public class BevelEffect extends PSDEffect {
         this.bevelStyle = bevelStyle;
     }
 
-    public int getHighlightOpacity() {
+    public float getHighlightOpacity() {
         return highlightOpacity;
     }
 
-    public void setHighlightOpacity(int highlightOpacity) {
+    public void setHighlightOpacity(float highlightOpacity) {
         this.highlightOpacity = highlightOpacity;
     }
 
-    public int getShadowOpacity() {
+    public float getShadowOpacity() {
         return shadowOpacity;
     }
 
-    public void setShadowOpacity(int shadowOpacity) {
+    public void setShadowOpacity(float shadowOpacity) {
         this.shadowOpacity = shadowOpacity;
     }
 

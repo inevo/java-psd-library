@@ -11,7 +11,7 @@ public class DropShadowEffect extends PSDEffect {
 
     private boolean inner = false;
 
-    private int alpha;
+    private float alpha;
     private int angle;
     private int blur;
     private Color color;
@@ -47,11 +47,11 @@ public class DropShadowEffect extends PSDEffect {
         }
     }
 
-    public int getAlpha() {
+    public float getAlpha() {
         return alpha;
     }
 
-    public void setAlpha(int alpha) {
+    public void setAlpha(float alpha) {
         this.alpha = alpha;
     }
 

@@ -8,7 +8,7 @@ public class SolidFillEffect extends PSDEffect {
 
     private BlendMode blendMode;
     private Color highlightColor;
-    private int opacity;
+    private float opacity;
     private Color nativeColor;
 
     public SolidFillEffect(){
@@ -31,11 +31,11 @@ public class SolidFillEffect extends PSDEffect {
         this.highlightColor = highlightColor;
     }
 
-    public int getOpacity() {
+    public float getOpacity() {
         return opacity;
     }
 
-    public void setOpacity(int opacity) {
+    public void setOpacity(float opacity) {
         this.opacity = opacity;
     }
 

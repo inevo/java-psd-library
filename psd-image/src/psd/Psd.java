@@ -31,6 +31,38 @@ public class Psd implements LayersContainer {
     private Layer baseLayer;
     private String name;
 
+    public Psd(InputStream stream) throws IOException {
+        name = "unknown name";
+
+		PsdFileParser parser = new PsdFileParser();
+		parser.getHeaderSectionParser().setHandler(new HeaderSectionHandler() {
+            @Override
+            public void headerLoaded(Header header) {
+                Psd.this.header = header;
+            }
+        });
+
+        final List<Layer> fullLayersList = new ArrayList<Layer>();
+		parser.getLayersSectionParser().setHandler(new LayersSectionHandler() {
+            @Override
+            public void createLayer(LayerParser parser) {
+                fullLayersList.add(new Layer(parser));
+            }
+
+            @Override
+            public void createBaseLayer(LayerParser parser) {
+                baseLayer = new Layer(parser);
+                if (fullLayersList.isEmpty()) {
+                    fullLayersList.add(baseLayer);
+                }
+            }
+        });
+
+		parser.parse(stream);
+
+        layers = makeLayersHierarchy(fullLayersList);
+    }
+
 	public Psd(File psdFile) throws IOException {
         name = psdFile.getName();
 
@@ -103,6 +135,18 @@ public class Psd implements LayersContainer {
 
     public int getHeight() {
         return header.getHeight();
+    }
+
+    public int getChannelsCount() {
+        return header.getChannelsCount();
+    }
+
+    public int getDepth(){
+        return header.getDepth();
+    }
+
+    public ColorMode getColorMode() {
+        return header.getColorMode();
     }
 
     @Override
