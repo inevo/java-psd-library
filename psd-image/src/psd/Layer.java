@@ -36,11 +36,16 @@ public class Layer implements LayersContainer {
     private int alpha = 255;
 
     private boolean visible = true;
+    private boolean clippingLoaded;
 
     private String name;
 
     private BufferedImage image;
     private LayerType type = LayerType.NORMAL;
+
+    private BlendMode layerBlendMode;
+    private BlendingRanges layerBlendingRanges;
+    private Mask mask;
 
     private ArrayList<Layer> layers = new ArrayList<Layer>();
 
@@ -58,10 +63,12 @@ public class Layer implements LayersContainer {
 
             @Override
             public void blendModeLoaded(BlendMode blendMode) {
+                Layer.this.setLayerBlendMode(blendMode);
             }
 
             @Override
             public void blendingRangesLoaded(BlendingRanges ranges) {
+                Layer.this.setLayerBlendingRanges(ranges);
             }
 
             @Override
@@ -71,6 +78,7 @@ public class Layer implements LayersContainer {
 
             @Override
             public void clippingLoaded(boolean clipping) {
+                Layer.this.setClippingLoaded(clipping);
             }
 
             @Override
@@ -91,7 +99,7 @@ public class Layer implements LayersContainer {
 
             @Override
             public void maskLoaded(Mask mask) {
-                System.out.println("mask: " + mask.getWidth() + "x" + mask.getHeight());
+                Layer.this.setMask(mask);
             }
 
         });
@@ -176,5 +184,37 @@ public class Layer implements LayersContainer {
 
     public int getAlpha() {
         return alpha;
+    }
+
+    public boolean isClippingLoaded() {
+        return clippingLoaded;
+    }
+
+    public void setClippingLoaded(boolean clippingLoaded) {
+        this.clippingLoaded = clippingLoaded;
+    }
+
+    public BlendMode getLayerBlendMode() {
+        return layerBlendMode;
+    }
+
+    public void setLayerBlendMode(BlendMode layerBlendMode) {
+        this.layerBlendMode = layerBlendMode;
+    }
+
+    public BlendingRanges getLayerBlendingRanges() {
+        return layerBlendingRanges;
+    }
+
+    public void setLayerBlendingRanges(BlendingRanges layerBlendingRanges) {
+        this.layerBlendingRanges = layerBlendingRanges;
+    }
+
+    public Mask getMask() {
+        return mask;
+    }
+
+    public void setMask(Mask mask) {
+        this.mask = mask;
     }
 }

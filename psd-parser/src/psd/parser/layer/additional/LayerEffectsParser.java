@@ -108,6 +108,7 @@ public class LayerEffectsParser implements LayerAdditionalInformationParser {
                 PSDEffect ef = parseSolidFill(stream);
                 effects.add(ef);
             } else {
+                remainingSize = stream.readInt();
                 stream.skipBytes(remainingSize);
                 if (handler != null) {
                     handler.handleEffects(effects);

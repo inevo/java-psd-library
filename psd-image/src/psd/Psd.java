@@ -168,4 +168,8 @@ public class Psd implements LayersContainer {
     public String toString() {
         return name;
     }
+
+    public Layer getBaseLayer() {
+        return this.baseLayer;
+    }
 }
