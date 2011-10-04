@@ -10,4 +10,10 @@
         <module>psd-parser</module>
         <module>psd-tool</module>
     </modules>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>encontra-snapshots</id>
+            <url>http://nexus.inevo.pt/content/repositories/encontra-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
